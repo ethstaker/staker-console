@@ -16,9 +16,12 @@ export const useSendMany = () => {
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const allowSendMany = useMemo(() => {
+    // Disable Send Many until Hoodi support and thorough testing
+    /*
     if (capabilities && chainId) {
       return capabilities[chainId]?.atomic?.status === "ready";
     }
+    */
     return false;
   }, [capabilities, chainId]);
 

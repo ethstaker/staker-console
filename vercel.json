@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    { "source": "/api/hoodi/(.*)", "destination": "https://deposit-backend.sprocketpool.net/api/$1" },
+    { "source": "/api/mainnet/(.*)", "destination": "" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com https://fonts.reown.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' 'unsafe-inline' moz-extension: chrome-extension:; frame-src 'self' https://verify.walletconnect.org; connect-src 'self' https://* wss://*; worker-src 'self' blob:; upgrade-insecure-requests"
+        }
+      ]
+    }
+  ]
+}

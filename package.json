@@ -18,7 +18,7 @@
     "ts:check:strict": "tsc --noEmit --skipLibCheck",
     "ts:check:staged": "node scripts/ts-check-staged.js",
     "test:unit": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@chainsafe/ssz": "^1.2.2",
@@ -46,7 +46,7 @@
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^5.1.0",
     "autoprefixer": "^10.4.20",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
@@ -57,7 +57,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-tailwindcss": "^3.18.2",
     "globals": "^16.5.0",
-    "husky": "^8.0.0",
+    "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
     "postcss": "^8.4.41",
     "prettier": "3.6.2",

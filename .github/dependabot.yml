@@ -5,8 +5,34 @@ updates:
     schedule:
       interval: "weekly"
     groups:
+      build-and-dev:
+        patterns:
+          - "autoprefixer"
+          - "eslint*"
+          - "@eslint*"
+          - "globals"
+          - "husky"
+          - "lint-staged"
+          - "postcss"
+          - "prettier"
+          - "serve"
+          - "tsc-files"
+          - "vite*"
+          - "@vitejs/*"
+      mui:
+        patterns:
+          - "@mui/*"
+        update-types: ["major", "minor"]
       react-ecosystem:
         patterns:
           - "react*"
           - "@types/react*"
+        update-types: ["major", "minor"]
+      reown:
+        patterns:
+          - "@reown/*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "@typescript"
         update-types: ["major", "minor"]

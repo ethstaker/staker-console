@@ -9,3 +9,4 @@ updates:
         patterns:
           - "react*"
           - "@types/react*"
+        update-types: ["major", "minor"]

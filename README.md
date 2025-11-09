@@ -13,7 +13,7 @@ A web-based dashboard for managing Ethereum validators, allowing users to deposi
 
 ## Prerequisites
 
-- Node.js v20 or higher
+- Node.js v20.19 or higher
 - npm or yarn
 - AppKit Project ID
 

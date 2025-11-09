@@ -18,7 +18,7 @@
     "ts:check:strict": "tsc --noEmit --skipLibCheck",
     "ts:check:staged": "node scripts/ts-check-staged.js",
     "test:unit": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@chainsafe/ssz": "^1.2.2",

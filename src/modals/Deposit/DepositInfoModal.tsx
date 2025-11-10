@@ -222,10 +222,10 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   <Typography className="mb-2 font-semibold text-white">
                     Validator Types:
                   </Typography>
-                  <Typography className="mb-3 flex items-center gap-2">
+                  <Box className="mb-3 flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.bls} />
                     <span>BLS Credentials</span>
-                  </Typography>
+                  </Box>
                   <Typography className="mb-4 text-secondaryText">
                     These were the original Ethereum validators launched at the
                     start of the Beacon Chain. They do not include an
@@ -235,10 +235,10 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     or 0x02). Because of this limitation, 0x00 validators are
                     considered legacy and are rarely used.
                   </Typography>
-                  <Typography className="mb-3 flex items-center gap-2">
+                  <Box className="mb-3 flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.execution} />
                     <span>Execution Credentials</span>
-                  </Typography>
+                  </Box>
                   <Typography className="mb-4 text-secondaryText">
                     These validators are configured to automatically send
                     staking rewards to the withdrawal address. This means
@@ -247,10 +247,10 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     often called non-compounding validators, since earnings are
                     withdrawn instead of reinvested.
                   </Typography>
-                  <Typography className="mb-3 flex items-center gap-2">
+                  <Box className="mb-3 flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.compounding} />
                     <span>Compounding Credentials</span>
-                  </Typography>
+                  </Box>
                   <Typography className="text-secondaryText">
                     These validators are configured so that rewards remain with
                     the validator until you choose to withdraw them, either

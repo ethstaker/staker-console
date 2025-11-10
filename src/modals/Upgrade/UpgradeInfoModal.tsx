@@ -89,10 +89,10 @@ export const UpgradeInfoModal: React.FC<UpgradeInfoModalProps> = ({
 
               <InfoBox
                 title={
-                  <Typography className="flex items-center gap-2">
+                  <Box className="flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.bls} />
                     <span>BLS Credentials</span>
-                  </Typography>
+                  </Box>
                 }
               >
                 <Typography className="text-secondaryText" variant="body1">
@@ -111,10 +111,10 @@ export const UpgradeInfoModal: React.FC<UpgradeInfoModalProps> = ({
 
               <InfoBox
                 title={
-                  <Typography className="flex items-center gap-2">
+                  <Box className="flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.execution} />
                     <span>Execution Credentials</span>
-                  </Typography>
+                  </Box>
                 }
               >
                 <Typography className="text-secondaryText" variant="body1">
@@ -126,10 +126,10 @@ export const UpgradeInfoModal: React.FC<UpgradeInfoModalProps> = ({
 
               <InfoBox
                 title={
-                  <Typography className="flex items-center gap-2">
+                  <Box className="flex items-center gap-2">
                     <CredentialsTag credentials={Credentials.compounding} />
                     <span>Compounding Credentials</span>
-                  </Typography>
+                  </Box>
                 }
               >
                 <Typography className="text-secondaryText" variant="body1">

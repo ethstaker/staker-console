@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { Helmet } from "react-helmet-async";
 
 const APP_TITLE = "Staker Dashboard";
 
@@ -19,26 +18,12 @@ export const Meta = ({
   const pageTitle = `${APP_TITLE}${title ? " | " + title : ""}`;
 
   return (
-    <Helmet
-      title={pageTitle}
-      meta={[
-        {
-          name: "description",
-          content: description,
-        },
-        {
-          property: "og:title",
-          content: pageTitle,
-        },
-        {
-          property: "og:description",
-          content: description,
-        },
-        {
-          property: "og:type",
-          content: "website",
-        },
-      ]}
-    />
+    <>
+      <title>{pageTitle}</title>
+      <meta name="description" content={description} />
+      <meta name="og:description" content={description} />
+      <meta name="og:title" content={pageTitle} />
+      <meta name="og:type" content="website" />
+    </>
   );
 };

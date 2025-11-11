@@ -28,7 +28,7 @@ import { useSelectedValidator } from "@/context/SelectedValidatorContext";
 import { useValidator } from "@/hooks/useValidator";
 import { useValidators } from "@/hooks/useValidators";
 import { Credentials, TopUpEntry, Validator, ValidatorStatus } from "@/types";
-import { gweiPrecision } from "@/utils/number";
+import { enforceGweiPrecision } from "@/utils/number";
 
 interface TopUpValidatorTableParams {
   entries: TopUpEntry[];
@@ -139,7 +139,7 @@ export const TopUpValidatorTable = ({
     pubkey: string,
     amount: string,
   ) => {
-    const gweiAmount = gweiPrecision(amount);
+    const gweiAmount = enforceGweiPrecision(amount);
     const newEntry = createEntry(index, pubkey, gweiAmount);
     if (!newEntry) {
       return;
@@ -174,7 +174,7 @@ export const TopUpValidatorTable = ({
         ? MAX_EFFECTIVE_BALANCE_02
         : MAX_EFFECTIVE_BALANCE_01;
     const maxUsefulEther = maxEB + 0.26 - validator.totalBalance;
-    const maxUsefulGwei = gweiPrecision(maxUsefulEther.toString(), true);
+    const maxUsefulGwei = enforceGweiPrecision(maxUsefulEther.toString(), true);
     return Math.max(parseFloat(maxUsefulGwei), MIN_DEPOSIT_AMOUNT);
   };
 

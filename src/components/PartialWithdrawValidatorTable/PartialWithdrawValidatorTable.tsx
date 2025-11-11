@@ -25,7 +25,7 @@ import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
 import { useSelectedValidator } from "@/context/SelectedValidatorContext";
 import { useValidators } from "@/hooks/useValidators";
 import { Validator, ValidatorStatus, WithdrawalEntry } from "@/types";
-import { gweiPrecision } from "@/utils/number";
+import { enforceGweiPrecision } from "@/utils/number";
 
 interface PartialWithdrawValidatorTableParams {
   entries: WithdrawalEntry[];
@@ -123,7 +123,7 @@ export const PartialWithdrawValidatorTable = ({
   };
 
   const handleWithdrawalAmountChange = (pubkey: string, amount: string) => {
-    const gweiAmount = gweiPrecision(amount);
+    const gweiAmount = enforceGweiPrecision(amount);
     const newEntry = createEntry(pubkey, gweiAmount.toString());
     if (!newEntry) {
       return;

@@ -4,7 +4,7 @@ import { config } from "@/config/appkit";
 import { getConsolidateContractAddress } from "@/config/networks";
 import { Queue } from "@/types";
 
-import { getQueue } from "./queue";
+import { getQueue } from "../queue";
 
 const CONSOLIDATE_FEE_ADDITION = 3;
 

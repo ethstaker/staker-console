@@ -1,5 +1,5 @@
 import { AccountBalanceWallet as WalletIcon } from "@mui/icons-material";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useAccount } from "wagmi";
 
@@ -75,8 +75,8 @@ const Dashboard: React.FC = () => {
                 Dashboard
               </Typography>
             </Box>
-            <Grid className="mb-8" container spacing={3}>
-              <Grid item xs={12} md={4}>
+            <Box className="mb-8 flex flex-row gap-6">
+              <Box className="flex-1">
                 <MetricCard
                   title="Total Staked Balance"
                   value={`${
@@ -84,18 +84,18 @@ const Dashboard: React.FC = () => {
                   }`}
                   subtitle="Across all connected validators"
                 />
-              </Grid>
-              <Grid item xs={12} md={4}>
+              </Box>
+              <Box className="flex-1">
                 <MetricCard
                   title="Active Validators"
                   value={`${validatorData?.validatorCount || 0}`}
                   subtitle="Currently performing duties"
                 />
-              </Grid>
-              <Grid item xs={12} md={4}>
+              </Box>
+              <Box className="flex-1">
                 <PendingBalanceCard />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
 
             <DashboardValidatorsTable />
           </Box>

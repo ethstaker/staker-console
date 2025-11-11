@@ -1,4 +1,5 @@
 import { getPublicClient } from "@wagmi/core";
+import BigNumber from "bignumber.js";
 
 import { config } from "@/config/appkit";
 import { getWithdrawContractAddress } from "@/config/networks";
@@ -31,7 +32,9 @@ export const generateWithdrawalCalldata = (
   amountInEther: string,
 ): `0x${string}` => {
   const truncatedPubkey = pubkey.substring(2);
-  const gweiAmount = BigInt(amountInEther) * BigInt(10 ** 9);
+  const gweiAmount = new BigNumber(amountInEther)
+    .times(10 ** 9)
+    .integerValue(BigNumber.ROUND_DOWN);
   const paddedGweiAmount = gweiAmount.toString(16).padStart(16, "0");
 
   return `0x${truncatedPubkey}${paddedGweiAmount}`;

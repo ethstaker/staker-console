@@ -171,7 +171,11 @@ export const DashboardValidatorsTable: React.FC = () => {
                 ? [searchedValidator]
                 : filteredValidators
               ).map((validator, index) => (
-                <CustomTableRow key={validator.pubkey} index={index}>
+                <CustomTableRow
+                  key={validator.pubkey}
+                  index={index}
+                  noSelection
+                >
                   <CustomTableCell>{validator.index}</CustomTableCell>
                   <CustomTableCell>
                     <ExplorerLink

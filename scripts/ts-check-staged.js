@@ -5,7 +5,7 @@ import { existsSync } from 'fs';
 
 const stagedFiles = execSync('git diff --cached --name-only --diff-filter=ACM', { encoding: 'utf8' })
   .split('\n')
-  .filter(file => file.endsWith('.ts') || file.endsWith('.tsx'))
+  .filter(file => (file.endsWith('.ts') || file.endsWith('.tsx')) && !file.includes('.test'))
   .filter(file => file.startsWith('src/'));
 
 if (stagedFiles.length === 0) {

@@ -1,6 +1,22 @@
-@config "../tailwind.config.js";
-
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #627eea;
+  --color-primaryDark: #145a3d;
+  --color-secondary: #f8f9fa;
+  --color-background: #1e2128;
+  --color-divider: #2a2a2a;
+  --color-secondaryBackground: #333743;
+  --color-secondaryText: #b3b3b3;
+  --color-white: #ffffff;
+  --color-blue: #03a9f4;
+  --color-success: #59d98e;
+  --color-successDark: #2e7d32;
+  --color-error: #ef4444;
+  --color-warning: #f8c425;
+
+  --text-2xs: 0.625rem;
+}
 
 w3m-modal {
   z-index: 9999 !important;

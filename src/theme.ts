@@ -11,11 +11,13 @@ export const tailwindColors = {
   white: "#FFFFFF",
   blue: "#03a9f4",
   success: "#59D98E",
+  successDark: "2E7D32",
   error: "#ef4444",
   warning: "#F8C425",
 };
 
 const theme = createTheme({
+  cssVariables: true,
   palette: {
     primary: {
       main: tailwindColors.primary,
@@ -33,6 +35,7 @@ const theme = createTheme({
     },
     success: {
       main: tailwindColors.success,
+      dark: tailwindColors.successDark,
     },
     warning: {
       main: tailwindColors.warning,

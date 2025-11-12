@@ -19,7 +19,7 @@ export const FilterInput = ({
 }: FilterInputParams) => {
   return (
     <CustomTextField
-      className="h-[40px] w-[420px]"
+      className="h-10 w-[420px]"
       disabled={disabled}
       placeholder={placeholder}
       variant="outlined"

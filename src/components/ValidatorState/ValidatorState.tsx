@@ -1,5 +1,4 @@
 import { Chip } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import clsx from "clsx";
 import { useMemo } from "react";
 
@@ -10,31 +9,28 @@ interface ValidatorStatusParams {
 }
 
 export const ValidatorState = ({ status }: ValidatorStatusParams) => {
-  const theme = useTheme();
-
   const statusColor = useMemo(() => {
     switch (status) {
       case ValidatorStatus.active_ongoing:
-        return theme.palette.success.main;
+        return "bg-success text-black";
       case ValidatorStatus.active_exiting:
       case ValidatorStatus.pending_queued:
       case ValidatorStatus.pending_initialized:
-        return theme.palette.warning.main;
+        return "bg-warning text-black";
       case ValidatorStatus.exited_unslashed:
       case ValidatorStatus.withdrawal_possible:
       case ValidatorStatus.withdrawal_done:
-        return theme.palette.divider;
+        return "bg-divider text-white";
       case ValidatorStatus.exited_slashed:
       case ValidatorStatus.active_inactive:
       case ValidatorStatus.active_slashed:
-        return theme.palette.error.main;
+        return "bg-error text-white";
     }
   }, [status]);
 
   return (
     <Chip
-      className={clsx("text-white")}
-      style={{ backgroundColor: statusColor }}
+      className={clsx(statusColor)}
       label={ValidatorStatusDisplay[status]}
       size="small"
     />

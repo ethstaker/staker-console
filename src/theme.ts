@@ -16,6 +16,7 @@ export const tailwindColors = {
 };
 
 const theme = createTheme({
+  cssVariables: true,
   palette: {
     primary: {
       main: tailwindColors.primary,

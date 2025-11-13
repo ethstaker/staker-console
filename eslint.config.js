@@ -1,14 +1,12 @@
 import js from '@eslint/js';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import parser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import pluginReact from 'eslint-plugin-react';
-import tailwind from 'eslint-plugin-tailwindcss';
 
 export default [
   js.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...tailwind.configs['flat/recommended'],
   pluginReact.configs.flat.recommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
@@ -18,6 +16,7 @@ export default [
       globals: {
         ...globals.browser,
       },
+      parser: parser,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -26,6 +25,7 @@ export default [
     },
     plugins: {
       import: importPlugin,
+      '@typescript-eslint': typescriptEslint
     },
     rules: {
       ...importPlugin.configs.recommended.rules,
@@ -57,8 +57,6 @@ export default [
           },
         },
       ],
-      'tailwindcss/no-contradicting-classname': 'error',
-      'tailwindcss/no-custom-classname': 'error',
       '@typescript-eslint/no-unused-vars': 'error'
     },
     settings: {

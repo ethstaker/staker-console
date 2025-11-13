@@ -217,10 +217,11 @@ export const DashboardValidatorsTable: React.FC = () => {
                     {validator.credentials !== Credentials.bls &&
                       validator.status === ValidatorStatus.active_ongoing && (
                         <IconButton
+                          size="small"
                           className="m-0 p-0 text-secondaryText"
                           onClick={(e) => handleMenuClick(e, validator)}
                         >
-                          <MoreHoriz />
+                          <MoreHoriz fontSize="inherit" />
                         </IconButton>
                       )}
                   </CustomTableCell>

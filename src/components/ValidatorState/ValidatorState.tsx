@@ -12,25 +12,25 @@ export const ValidatorState = ({ status }: ValidatorStatusParams) => {
   const statusColor = useMemo(() => {
     switch (status) {
       case ValidatorStatus.active_ongoing:
-        return "bg-successDark";
+        return "bg-success text-black";
       case ValidatorStatus.active_exiting:
       case ValidatorStatus.pending_queued:
       case ValidatorStatus.pending_initialized:
-        return "bg-warning";
+        return "bg-warning text-black";
       case ValidatorStatus.exited_unslashed:
       case ValidatorStatus.withdrawal_possible:
       case ValidatorStatus.withdrawal_done:
-        return "bg-divider";
+        return "bg-divider text-white";
       case ValidatorStatus.exited_slashed:
       case ValidatorStatus.active_inactive:
       case ValidatorStatus.active_slashed:
-        return "bg-error";
+        return "bg-error text-white";
     }
   }, [status]);
 
   return (
     <Chip
-      className={clsx("text-white", statusColor)}
+      className={clsx(statusColor)}
       label={ValidatorStatusDisplay[status]}
       size="small"
     />

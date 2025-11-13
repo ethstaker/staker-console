@@ -15,11 +15,21 @@ import Sidebar from "@/sections/Sidebar";
 
 import { ScrollToTop } from "./components/ScrollToTop/ScrollToTop";
 
+const protectedRoutes = [
+  "/deposit",
+  "/topup",
+  "/upgrade",
+  "/consolidate",
+  "/withdraw",
+  "/exit",
+];
+
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isConnecting, isConnected } = useAccount();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { isConnected, isConnecting } = useAccount();
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const [redirectRoute, setRedirectRoute] = useState<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,26 +39,26 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
+    if (isConnected && protectedRoutes.includes(redirectRoute)) {
+      setRedirectRoute("");
+      navigate(redirectRoute, { replace: true });
+    }
+  }, [isConnected, redirectRoute]);
+
+  useEffect(() => {
     if (location.pathname === "/") {
       navigate("/dashboard", { replace: true });
     }
   }, [location, navigate]);
 
   useEffect(() => {
-    const protectedRoutes = [
-      "/deposit",
-      "/topup",
-      "/upgrade",
-      "/consolidate",
-      "/withdraw",
-      "/exit",
-    ];
     const isProtectedRoute = protectedRoutes.includes(location.pathname);
 
     if (!isConnected && isProtectedRoute) {
+      setRedirectRoute(location.pathname);
       navigate("/dashboard", { replace: true });
     }
-  }, [isConnected, location.pathname, navigate]);
+  }, [isConnecting, isConnected, location.pathname, navigate]);
 
   if (isConnecting || !isInitialized) {
     return null;

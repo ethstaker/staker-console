@@ -34,5 +34,5 @@ updates:
       typescript:
         patterns:
           - "typescript*"
-          - "@typescript"
+          - "@typescript*"
         update-types: ["major", "minor"]

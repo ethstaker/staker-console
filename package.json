@@ -46,8 +46,8 @@
     "@types/react-dom": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
-    "@vitejs/plugin-react": "^5.1.0",
-    "autoprefixer": "^10.4.20",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.22",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "eslint": "^9.39.0",
@@ -57,15 +57,15 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
-    "prettier": "3.6.2",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.7.3",
     "tailwindcss": "^4.1.17",
     "tsc-files": "^1.1.4",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.46.2",
-    "vite": "^7.2.2",
-    "vite-plugin-pwa": "^1.0.0",
-    "vitest": "^4.0.8"
+    "vite": "^7.2.6",
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.0.14"
   },
   "lint-staged": {
     "src/**/!(*.test).{ts,tsx}": [

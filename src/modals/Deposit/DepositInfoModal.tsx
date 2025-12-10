@@ -508,10 +508,10 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     <li>
                       1. Download the latest release from:{" "}
                       <Link
-                        href="https://github.com/eth-educators/ethstaker-deposit-cli/releases/"
+                        href="https://github.com/ethstaker/ethstaker-deposit-cli/releases/"
                         target="_blank"
                       >
-                        https://github.com/eth-educators/ethstaker-deposit-cli/releases/
+                        https://github.com/ethstaker/ethstaker-deposit-cli/releases/
                       </Link>
                     </li>
                     <li>2. Decompress the file you downloaded</li>
@@ -1040,7 +1040,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   </Typography>
                   <Box className="rounded bg-[#171717] p-2 font-mono text-sm text-white">
                     git clone -b master --single-branch
-                    https://github.com/eth-educators/ethstaker-deposit-cli.git
+                    https://github.com/ethstaker/ethstaker-deposit-cli.git
                   </Box>
                   <Typography className="mt-2 text-secondaryText">
                     to download the{" "}

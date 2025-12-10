@@ -1,6 +1,6 @@
-# Staker Dashboard
+# Staker Console
 
-A web-based dashboard for managing Ethereum validators, allowing users to deposit, top-up, upgrade, consolidate, withdraw, and exit validators through an intuitive interface.
+A web-based application for managing Ethereum validators, allowing users to deposit, top-up, upgrade, consolidate, withdraw, and exit validators through an intuitive interface.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ A web-based dashboard for managing Ethereum validators, allowing users to deposi
 
 ```bash
 git clone <repository-url>
-cd staker-dashboard
+cd staker-console
 npm install
 ```
 
@@ -77,8 +77,8 @@ npm run start
 ### Docker
 
 ```bash
-docker build --build-arg VITE_APPKIT_PUBLIC_PROJECT_ID=<insert-appkit-project-id> -t staker-dashboard .
-docker run -p 3001:80 staker-dashboard
+docker build --build-arg VITE_APPKIT_PUBLIC_PROJECT_ID=<insert-appkit-project-id> -t staker-console .
+docker run -p 3001:80 staker-console
 ```
 
 ## Adding New Networks
@@ -150,7 +150,7 @@ Ensure your backend API has an endpoint for the new network at the path specifie
 We welcome contributions from the community! Here's how to contribute:
 
 1. **Fork the repository** - Click the "Fork" button at the top right of this page
-2. **Clone your fork** - `git clone https://github.com/your-username/staker-dashboard.git`
+2. **Clone your fork** - `git clone https://github.com/your-username/staker-console.git`
 3. **Create a branch from main** - `git checkout -b feature/your-feature-name`
 4. **Make your changes** - Implement your feature or bug fix
 5. **Commit your changes** - Use clear, descriptive commit messages (the linter will run upon commit)

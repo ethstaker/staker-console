@@ -1,8 +1,8 @@
 {
-  "name": "staker-dashboard",
+  "name": "staker-console",
   "version": "0.1.0",
   "type": "module",
-  "description": "Staker Dashboard",
+  "description": "Staker Console",
   "license": "GPL-3.0",
   "scripts": {
     "dev": "vite --force",

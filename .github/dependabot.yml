@@ -22,12 +22,10 @@ updates:
       mui:
         patterns:
           - "@mui/*"
-        update-types: ["major", "minor"]
       react-ecosystem:
         patterns:
           - "react*"
           - "@types/react*"
-        update-types: ["major", "minor"]
       reown:
         patterns:
           - "@reown/*"
@@ -35,4 +33,3 @@ updates:
         patterns:
           - "typescript*"
           - "@typescript*"
-        update-types: ["major", "minor"]

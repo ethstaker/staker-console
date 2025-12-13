@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 
-const APP_TITLE = "Staker Dashboard";
+const APP_TITLE = "Staker Console";
 
 const DEFAULT_DESCRIPTION =
-  "Web-based dashboard for managing your Ethereum validators";
+  "Web-based application for managing your Ethereum validators";
 
 interface MetaProps {
   description?: string;

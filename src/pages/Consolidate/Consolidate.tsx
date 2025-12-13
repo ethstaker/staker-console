@@ -149,76 +149,59 @@ const Consolidate: React.FC = () => {
     return (
       <>
         <Meta title="Consolidate" />
-        <Box
-          sx={{
-            backgroundColor: "#171717",
-            display: "flex",
-            justifyContent: "center",
-            minHeight: "100vh",
-          }}
-        >
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: "1400px",
-              p: 3,
-            }}
-          >
-            <Box className="mb-6">
-              <Box className="mb-4 flex flex-row items-center justify-between">
-                <Typography variant="h4" className="font-bold text-white">
-                  Consolidate Validators
-                </Typography>
-                <Box>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={() => setShowInfoModal(true)}
-                  >
-                    Learn More
-                  </Button>
-                </Box>
-              </Box>
-              <Typography className="mb-6 text-secondaryText">
-                Select a target validator first to begin consolidation.
-              </Typography>
-            </Box>
-
-            <ValidatorsWrapper>
-              <Box
-                className="flex flex-col items-center justify-center"
-                sx={{ minHeight: "400px" }}
+        <Box className="mb-6">
+          <Box className="mb-4 flex flex-row items-center justify-between">
+            <Typography variant="h4" className="font-bold text-white">
+              Consolidate Validators
+            </Typography>
+            <Box>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => setShowInfoModal(true)}
               >
-                <Typography variant="h6" className="mb-4 text-white">
-                  No Target Validator Selected
-                </Typography>
-                <Typography className="mb-6 text-center text-secondaryText">
-                  Please select a target validator to consolidate balances into.
-                </Typography>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={handleChangeTarget}
-                >
-                  Select Target Validator
-                </Button>
-              </Box>
-            </ValidatorsWrapper>
-
-            <TargetValidatorSelectionModal
-              open={showTargetSelectionModal}
-              onClose={handleCloseTargetSelectionModal}
-              validators={validators}
-              currentTarget={targetValidator}
-              onConfirm={handleTargetValidatorSelect}
-            />
-
-            <ConsolidateInfoModal
-              open={showInfoModal}
-              onClose={() => setShowInfoModal(false)}
-            />
+                Learn More
+              </Button>
+            </Box>
           </Box>
+          <Typography className="mb-6 text-secondaryText">
+            Select a target validator first to begin consolidation.
+          </Typography>
         </Box>
+
+        <ValidatorsWrapper>
+          <Box
+            className="flex flex-col items-center justify-center"
+            sx={{ minHeight: "400px" }}
+          >
+            <Typography variant="h6" className="mb-4 text-white">
+              No Target Validator Selected
+            </Typography>
+            <Typography className="mb-6 text-center text-secondaryText">
+              Please select a target validator to consolidate balances into.
+            </Typography>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleChangeTarget}
+            >
+              Select Target Validator
+            </Button>
+          </Box>
+        </ValidatorsWrapper>
+
+        <TargetValidatorSelectionModal
+          open={showTargetSelectionModal}
+          onClose={handleCloseTargetSelectionModal}
+          validators={validators}
+          currentTarget={targetValidator}
+          onConfirm={handleTargetValidatorSelect}
+        />
+
+        <ConsolidateInfoModal
+          open={showInfoModal}
+          onClose={() => setShowInfoModal(false)}
+        />
       </>
     );
   }
@@ -226,141 +209,121 @@ const Consolidate: React.FC = () => {
   return (
     <>
       <Meta title="Consolidate" />
-      <Box
-        sx={{
-          backgroundColor: "#171717",
-          display: "flex",
-          justifyContent: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "1400px",
-            p: 3,
-          }}
-        >
-          <Box className="mb-6">
-            <Box className="mb-4 flex flex-row items-center justify-between">
-              <Typography variant="h4" className="font-bold text-white">
-                Consolidate Validators
-              </Typography>
-              <Box>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setShowInfoModal(true)}
-                >
-                  Learn More
-                </Button>
-              </Box>
-            </Box>
-            <Typography className="mb-6 text-secondaryText">
-              Select 0x01 and 0x02 validators to consolidate into validator{" "}
-              <Typography component="span" className="font-semibold text-white">
-                {targetValidator.index}
-              </Typography>
-              . All selected validators will be exited and balances transferred.
-            </Typography>
+      <Box className="mb-6">
+        <Box className="mb-4 flex flex-row items-center justify-between">
+          <Typography variant="h4" className="font-bold text-white">
+            Consolidate Validators
+          </Typography>
+          <Box>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setShowInfoModal(true)}
+            >
+              Learn More
+            </Button>
           </Box>
+        </Box>
+        <Typography className="mb-6 text-secondaryText">
+          Select 0x01 and 0x02 validators to consolidate into validator{" "}
+          <Typography component="span" className="font-semibold text-white">
+            {targetValidator.index}
+          </Typography>
+          . All selected validators will be exited and balances transferred.
+        </Typography>
+      </Box>
 
-          <TargetValidatorDetails
-            validator={targetValidator}
-            onChangeTarget={handleChangeTarget}
+      <TargetValidatorDetails
+        validator={targetValidator}
+        onChangeTarget={handleChangeTarget}
+      />
+
+      <Box className="mt-8 rounded-sm bg-background p-6">
+        <Box className="mb-6 flex items-center justify-between">
+          <Typography variant="h6" className="font-semibold text-white">
+            Source Validators
+          </Typography>
+          <FilterInput
+            placeholder="Filter your validators by index or public key..."
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
+        </Box>
 
-          <Box className="mt-8 rounded-sm bg-background p-6">
-            <Box className="mb-6 flex items-center justify-between">
-              <Typography variant="h6" className="font-semibold text-white">
-                Source Validators
-              </Typography>
-              <FilterInput
-                placeholder="Filter your validators by index or public key..."
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-            </Box>
+        <ConsolidationSourceValidatorsTable
+          validators={filteredValidators}
+          selectedValidators={sourcePubkeys}
+          onValidatorToggle={handleValidatorToggle}
+        />
+      </Box>
 
-            <ConsolidationSourceValidatorsTable
-              validators={filteredValidators}
-              selectedValidators={sourcePubkeys}
-              onValidatorToggle={handleValidatorToggle}
-            />
-          </Box>
+      <Box className="mt-6 flex justify-end">
+        <Typography className="text-sm text-secondaryText">
+          New Validator Balance:{" "}
+          <Typography component="span" className="text-lg font-bold text-white">
+            {newValidatorBalance.toFixed(4)} ETH
+          </Typography>
+        </Typography>
+      </Box>
 
-          <Box className="mt-6 flex justify-end">
-            <Typography className="text-sm text-secondaryText">
-              New Validator Balance:{" "}
-              <Typography
-                component="span"
-                className="text-lg font-bold text-white"
-              >
-                {newValidatorBalance.toFixed(4)} ETH
-              </Typography>
-            </Typography>
-          </Box>
+      <Box className="mt-4 flex items-center justify-between">
+        <Box />
 
-          <Box className="mt-4 flex items-center justify-between">
-            <Box />
-
-            <Box>
-              <Button
-                color="primary"
-                variant="contained"
-                disabled={selectedCount === 0}
-                onClick={handleConsolidate}
-              >
-                Consolidate Selected ({selectedCount})
-              </Button>
-            </Box>
-          </Box>
-
-          <TargetValidatorSelectionModal
-            open={showTargetSelectionModal}
-            onClose={handleCloseTargetSelectionModal}
-            validators={validators}
-            currentTarget={targetValidator}
-            onConfirm={handleTargetValidatorSelect}
-          />
-
-          <ConsolidateInfoModal
-            open={showInfoModal}
-            onClose={() => setShowInfoModal(false)}
-          />
-
-          {targetValidator && (
-            <>
-              <ConsolidateConfirmModal
-                open={showConfirmModal}
-                onClose={handleCloseConfirmModal}
-                targetValidator={targetValidator}
-                sourceValidators={sourceValidators}
-                addedBalance={addedBalance}
-                sweptBalance={sweptBalance}
-                newBalance={newValidatorBalance}
-                onConfirm={handleConfirmConsolidate}
-              />
-
-              {allowSendMany && sourceValidators.length > 1 ? (
-                <ConsolidateBatchProgressModal
-                  open={showProgressModal}
-                  onClose={handleCloseProgressModal}
-                  targetValidator={targetValidator}
-                  sourceValidators={sourceValidators}
-                />
-              ) : (
-                <ConsolidateProgressModal
-                  open={showProgressModal}
-                  onClose={handleCloseProgressModal}
-                  targetValidator={targetValidator}
-                  sourceValidators={sourceValidators}
-                />
-              )}
-            </>
-          )}
+        <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={selectedCount === 0}
+            onClick={handleConsolidate}
+          >
+            Consolidate Selected ({selectedCount})
+          </Button>
         </Box>
       </Box>
+
+      <TargetValidatorSelectionModal
+        open={showTargetSelectionModal}
+        onClose={handleCloseTargetSelectionModal}
+        validators={validators}
+        currentTarget={targetValidator}
+        onConfirm={handleTargetValidatorSelect}
+      />
+
+      <ConsolidateInfoModal
+        open={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+      />
+
+      {targetValidator && (
+        <>
+          <ConsolidateConfirmModal
+            open={showConfirmModal}
+            onClose={handleCloseConfirmModal}
+            targetValidator={targetValidator}
+            sourceValidators={sourceValidators}
+            addedBalance={addedBalance}
+            sweptBalance={sweptBalance}
+            newBalance={newValidatorBalance}
+            onConfirm={handleConfirmConsolidate}
+          />
+
+          {allowSendMany && sourceValidators.length > 1 ? (
+            <ConsolidateBatchProgressModal
+              open={showProgressModal}
+              onClose={handleCloseProgressModal}
+              targetValidator={targetValidator}
+              sourceValidators={sourceValidators}
+            />
+          ) : (
+            <ConsolidateProgressModal
+              open={showProgressModal}
+              onClose={handleCloseProgressModal}
+              targetValidator={targetValidator}
+              sourceValidators={sourceValidators}
+            />
+          )}
+        </>
+      )}
     </>
   );
 };

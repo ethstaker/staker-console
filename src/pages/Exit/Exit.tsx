@@ -66,91 +66,84 @@ const Exit: React.FC = () => {
   return (
     <>
       <Meta title="Exit" />
-      <Box className="flex min-h-screen justify-center bg-[#171717]">
-        <Box className="w-full max-w-[1400px] p-6">
-          <Box className="mb-6">
-            <Box className="mb-4 flex flex-row items-center justify-between">
-              <Typography variant="h4" className="font-bold text-white">
-                Exit
-              </Typography>
-              <Box>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setShowInfoModal(true)}
-                >
-                  Learn More
-                </Button>
-              </Box>
-            </Box>
-            <Typography className="mb-6 text-secondaryText">
-              Choose the validators you want to fully exit. An exit withdraws
-              the full balance from the selected validators into the connected
-              wallet and permanently removes them from the network.
-            </Typography>
+      <Box className="mb-6">
+        <Box className="mb-4 flex flex-row items-center justify-between">
+          <Typography variant="h4" className="font-bold text-white">
+            Exit
+          </Typography>
+          <Box>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setShowInfoModal(true)}
+            >
+              Learn More
+            </Button>
           </Box>
+        </Box>
+        <Typography className="mb-6 text-secondaryText">
+          Choose the validators you want to fully exit. An exit withdraws the
+          full balance from the selected validators into the connected wallet
+          and permanently removes them from the network.
+        </Typography>
+      </Box>
 
-          <ExitValidatorTable
-            selectedValidators={selectedValidators}
-            setSelectedValidators={setSelectedValidators}
-          />
+      <ExitValidatorTable
+        selectedValidators={selectedValidators}
+        setSelectedValidators={setSelectedValidators}
+      />
 
-          <Box className="mt-6 flex justify-end">
-            <Typography className="text-sm text-secondaryText">
-              Total Withdrawal Amount:{" "}
-              <Typography
-                component="span"
-                className="text-lg font-bold text-white"
-              >
-                {formatBalance(totalExitAmount)} ETH
-              </Typography>
-            </Typography>
-          </Box>
+      <Box className="mt-6 flex justify-end">
+        <Typography className="text-sm text-secondaryText">
+          Total Withdrawal Amount:{" "}
+          <Typography component="span" className="text-lg font-bold text-white">
+            {formatBalance(totalExitAmount)} ETH
+          </Typography>
+        </Typography>
+      </Box>
 
-          <Box className="mt-4 flex items-center justify-between">
-            <Box />
+      <Box className="mt-4 flex items-center justify-between">
+        <Box />
 
-            <Box>
-              <Button
-                color="primary"
-                variant="contained"
-                disabled={selectedValidators.length === 0}
-                onClick={handleExit}
-              >
-                Exit ({selectedValidators.length})
-              </Button>
-            </Box>
-          </Box>
-
-          <ExitConfirmModal
-            open={showConfirmModal}
-            onClose={handleCloseConfirmModal}
-            selectedValidators={selectedValidatorData}
-            walletAddress={address || ""}
-            totalExitAmount={totalExitAmount}
-            onConfirm={handleConfirmExit}
-          />
-
-          {allowSendMany && selectedValidatorData.length > 1 ? (
-            <ExitBatchProgressModal
-              open={showProgressModal}
-              onClose={handleCloseProgressModal}
-              validators={selectedValidatorData}
-            />
-          ) : (
-            <ExitProgressModal
-              open={showProgressModal}
-              onClose={handleCloseProgressModal}
-              validators={selectedValidatorData}
-            />
-          )}
-
-          <ExitInfoModal
-            open={showInfoModal}
-            onClose={() => setShowInfoModal(false)}
-          />
+        <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={selectedValidators.length === 0}
+            onClick={handleExit}
+          >
+            Exit ({selectedValidators.length})
+          </Button>
         </Box>
       </Box>
+
+      <ExitConfirmModal
+        open={showConfirmModal}
+        onClose={handleCloseConfirmModal}
+        selectedValidators={selectedValidatorData}
+        walletAddress={address || ""}
+        totalExitAmount={totalExitAmount}
+        onConfirm={handleConfirmExit}
+      />
+
+      {allowSendMany && selectedValidatorData.length > 1 ? (
+        <ExitBatchProgressModal
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          validators={selectedValidatorData}
+        />
+      ) : (
+        <ExitProgressModal
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          validators={selectedValidatorData}
+        />
+      )}
+
+      <ExitInfoModal
+        open={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+      />
     </>
   );
 };

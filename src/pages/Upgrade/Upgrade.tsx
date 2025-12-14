@@ -56,77 +56,72 @@ const Upgrade: React.FC = () => {
   return (
     <>
       <Meta title="Upgrade" />
-      <Box className="flex min-h-screen justify-center bg-[#171717]">
-        <Box className="w-full max-w-[1400px] p-6">
-          <Box className="mb-6">
-            <Box className="mb-4 flex flex-row items-center justify-between">
-              <Typography variant="h4" className="font-bold text-white">
-                Upgrade
-              </Typography>
-              <Box>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setShowInfoModal(true)}
-                >
-                  Learn More
-                </Button>
-              </Box>
-            </Box>
-            <Typography className="mb-6 text-secondaryText">
-              Upgrade your 0x01 validators to 0x02 compounding validators to
-              enable automatic reward compounding and improved staking
-              efficiency.
-            </Typography>
+      <Box className="mb-6">
+        <Box className="mb-4 flex flex-row items-center justify-between">
+          <Typography variant="h4" className="font-bold text-white">
+            Upgrade
+          </Typography>
+          <Box>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setShowInfoModal(true)}
+            >
+              Learn More
+            </Button>
           </Box>
+        </Box>
+        <Typography className="mb-6 text-secondaryText">
+          Upgrade your 0x01 validators to 0x02 compounding validators to enable
+          automatic reward compounding and improved staking efficiency.
+        </Typography>
+      </Box>
 
-          <UpgradeValidatorsTable
-            selectedPubkeys={selectedPubkeys}
-            setSelectedPubkeys={setSelectedPubkeys}
-          />
+      <UpgradeValidatorsTable
+        selectedPubkeys={selectedPubkeys}
+        setSelectedPubkeys={setSelectedPubkeys}
+      />
 
-          <Box className="mt-4 flex items-center justify-between">
-            <Box />
+      <Box className="mt-4 flex items-center justify-between">
+        <Box />
 
-            <Box>
-              <Button
-                color="primary"
-                variant="contained"
-                disabled={selectedPubkeys.length === 0}
-                onClick={handleUpgrade}
-              >
-                Upgrade ({selectedPubkeys.length})
-              </Button>
-            </Box>
-          </Box>
-
-          <UpgradeConfirmModal
-            open={showConfirmModal}
-            onClose={handleCloseConfirmModal}
-            validators={selectedValidatorObjects}
-            onConfirm={handleConfirmUpgrade}
-          />
-
-          {allowSendMany && selectedValidatorObjects.length > 1 ? (
-            <UpgradeBatchProgressModal
-              open={showProgressModal}
-              onClose={handleCloseProgressModal}
-              validators={selectedValidatorObjects}
-            />
-          ) : (
-            <UpgradeProgressModal
-              open={showProgressModal}
-              onClose={handleCloseProgressModal}
-              validators={selectedValidatorObjects}
-            />
-          )}
-
-          <UpgradeInfoModal
-            open={showInfoModal}
-            onClose={() => setShowInfoModal(false)}
-          />
+        <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={selectedPubkeys.length === 0}
+            onClick={handleUpgrade}
+          >
+            Upgrade ({selectedPubkeys.length})
+          </Button>
         </Box>
       </Box>
+
+      <UpgradeConfirmModal
+        open={showConfirmModal}
+        onClose={handleCloseConfirmModal}
+        validators={selectedValidatorObjects}
+        onConfirm={handleConfirmUpgrade}
+      />
+
+      {allowSendMany && selectedValidatorObjects.length > 1 ? (
+        <UpgradeBatchProgressModal
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          validators={selectedValidatorObjects}
+        />
+      ) : (
+        <UpgradeProgressModal
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          validators={selectedValidatorObjects}
+        />
+      )}
+
+      <UpgradeInfoModal
+        open={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+      />
     </>
   );
 };

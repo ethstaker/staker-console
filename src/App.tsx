@@ -70,11 +70,17 @@ function AppContent() {
   return (
     <Box id="root" className="flex h-dvh overflow-hidden">
       <Sidebar />
-      <Box className="flex grow flex-col overflow-hidden">
+      <Box className="flex h-full grow flex-col overflow-hidden justify-between">
         <Header />
         <ScrollToTop>
-          <Routes />
-          {!isDashboardNoWallet && <Footer />}
+          <Box className="h-full flex flex-col">
+            <Box className="flex grow justify-center bg-[#171717]">
+              <Box className="w-full max-w-[1400px] p-6">
+                <Routes />
+              </Box>
+            </Box>
+            {!isDashboardNoWallet && <Footer />}
+          </Box>
         </ScrollToTop>
       </Box>
     </Box>

@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 import { useMemo } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useConnection, useBalance } from "wagmi";
 
 export const useConnectedBalance = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { data: walletBalanceResponse } = useBalance({ address });
 
   return useMemo(() => {

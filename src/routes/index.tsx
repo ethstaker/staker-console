@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import Consolidate from "@/pages/Consolidate";
 import Dashboard from "@/pages/Dashboard";
@@ -10,7 +10,7 @@ import TopUp from "@/pages/TopUp";
 import Upgrade from "@/pages/Upgrade";
 
 function Pages() {
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
 
   return (
     <Routes>

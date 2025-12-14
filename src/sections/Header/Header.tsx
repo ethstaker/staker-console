@@ -3,10 +3,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 const Header: React.FC = () => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
 
   return (
     <Box className="flex h-16 items-center justify-between border-b border-divider bg-[#171717] px-3">

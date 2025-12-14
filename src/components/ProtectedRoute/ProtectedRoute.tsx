@@ -1,13 +1,13 @@
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
   const navigate = useNavigate();
 
   useEffect(() => {

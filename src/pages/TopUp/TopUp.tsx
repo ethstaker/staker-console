@@ -1,7 +1,7 @@
 import { Box, Typography, Button } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useState, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import { Meta } from "@/components/Meta";
 import { TopUpValidatorTable } from "@/components/TopUpValidatorTable";
@@ -14,7 +14,7 @@ import {
 import { TopUpEntry } from "@/types";
 
 const TopUp: React.FC = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const currentWalletBalance = useConnectedBalance();
   const [entries, setEntries] = useState<TopUpEntry[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);

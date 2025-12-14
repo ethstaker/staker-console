@@ -1,7 +1,7 @@
 import { Box, Typography, Button } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useState, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import { Meta } from "@/components/Meta";
 import { PartialWithdrawValidatorTable } from "@/components/PartialWithdrawValidatorTable";
@@ -16,7 +16,7 @@ import {
 import { WithdrawalEntry } from "@/types";
 
 const PartialWithdraw: React.FC = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
   const [entries, setEntries] = useState<WithdrawalEntry[]>([]);

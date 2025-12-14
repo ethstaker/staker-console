@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import {
   CustomModalTable,
@@ -37,7 +37,7 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
   selectedValidators,
   onConfirm,
 }) => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const currentWalletBalance = useConnectedBalance();
   const [acknowledged, setAcknowledged] = useState(false);
 

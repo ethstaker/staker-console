@@ -40,7 +40,6 @@ export default defineConfig(({ command, mode }) => {
           target: env.VITE_HOODI_API_URL,
           changeOrigin: true,
           secure: true,
-          rewrite: (path) => path.replace(/^\/api\/hoodi/, '/api'),
         },
         '/api/mainnet': {
           target: env.VITE_MAINNET_API_URL,

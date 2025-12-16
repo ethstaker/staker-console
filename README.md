@@ -46,15 +46,17 @@ details from the Beacon Chain.
 
 ### 3. Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory.
 
 ```env
 # Reown AppKit Project ID
 VITE_APPKIT_PUBLIC_PROJECT_ID=your_project_id_here
-# URL to hoodi api service
+# URL to hoodi api service if you would like to support hoodi
 VITE_HOODI_API_URL=https://url:port
-# URL to mainnet api service
+# URL to mainnet api service if you would like to support mainnet
 VITE_MAINNET_API_URL=https://url:port
+# URL to mainnet app if the current instance only supports hoodi
+VITE_MAINNET_APP_URL=https://url
 ```
 
 ## Running the Application

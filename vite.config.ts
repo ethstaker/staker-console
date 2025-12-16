@@ -45,7 +45,6 @@ export default defineConfig(({ command, mode }) => {
           target: env.VITE_MAINNET_API_URL,
           changeOrigin: true,
           secure: true,
-          rewrite: (path) => path.replace(/^\/api\/mainnet/, '/api'),
         },
       },
     },

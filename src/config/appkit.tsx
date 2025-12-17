@@ -1,4 +1,4 @@
-import { AppKitNetwork, hoodi } from "@reown/appkit/networks";
+import { AppKitNetwork, hoodi, mainnet } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { cookieStorage, createStorage } from "wagmi";
 
@@ -8,7 +8,17 @@ if (!projectId) {
   throw new Error("Project Id is not defined.");
 }
 
-export const networks: AppKitNetwork[] = [hoodi];
+const definedNetworks = [];
+
+if (import.meta.env.VITE_HOODI_API_URL) {
+  definedNetworks.push(hoodi);
+}
+
+if (import.meta.env.VITE_MAINNET_API_URL) {
+  definedNetworks.push(mainnet);
+}
+
+export const networks: AppKitNetwork[] = definedNetworks;
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({

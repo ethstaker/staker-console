@@ -39,18 +39,12 @@ export default defineConfig(({ command, mode }) => {
         '/api/hoodi': {
           target: env.VITE_HOODI_API_URL,
           changeOrigin: true,
-          // TODO: Delete when we have EthStaker instance
-          configure: (proxy, options) => {
-            options.auth = `${env.VITE_HOODI_USERNAME}:${env.VITE_HOODI_PASSWORD}`;
-          },
           secure: true,
-          rewrite: (path) => path.replace(/^\/api\/hoodi/, '/api'),
         },
         '/api/mainnet': {
           target: env.VITE_MAINNET_API_URL,
           changeOrigin: true,
           secure: true,
-          rewrite: (path) => path.replace(/^\/api\/mainnet/, '/api'),
         },
       },
     },

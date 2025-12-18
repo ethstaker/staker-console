@@ -4,10 +4,10 @@ A web-based application for managing Ethereum validators, allowing users to depo
 
 ## Tech Stack
 
-- **Frontend Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **UI Library**: Material-UI (MUI) v5
-- **Styling**: TailwindCSS
+- **Frontend Framework**: React 19 with TypeScript
+- **Build Tool**: Vite v7
+- **UI Library**: Material-UI (MUI) v7
+- **Styling**: TailwindCSS v4
 - **Wallet Integration**: Reown AppKit (formerly WalletConnect)
 - **Code Quality**: ESLint, Prettier, Husky (pre-commit hooks)
 

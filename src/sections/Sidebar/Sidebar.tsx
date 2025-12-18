@@ -32,13 +32,19 @@ const Sidebar: React.FC = () => {
     <Box className="flex h-full w-20 flex-col border-r border-divider bg-background">
       <Box className="flex min-h-16 items-center justify-center border-b border-divider">
         <Box
-          className="flex size-10 cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
+          className="relative group size-10 cursor-pointer items-center justify-center"
           onClick={() => navigate("/dashboard")}
         >
           <img
-            src="/eth-staker-logo-blue.svg"
-            alt="Eth Staker Logo"
-            className="size-full"
+            src="/eth-staker-logo-light.svg"
+            alt="Eth Staker Logo Light"
+            className="absolute size-full transition-opacity duration-500 group-hover:opacity-0"
+          />
+
+          <img
+            src="/eth-staker-logo-dark.svg"
+            alt="Eth Staker Logo Dark"
+            className="absolute size-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
           />
         </Box>
       </Box>

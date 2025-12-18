@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Fragment, useEffect, useState } from "react";
 import { BrowserRouter, useLocation, useNavigate } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 import "@/index.css";
 
 import { ErrorSplash } from "@/components/ErrorSplash";
@@ -28,7 +28,7 @@ const protectedRoutes = [
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isConnected, isConnecting } = useAccount();
+  const { isConnected, isConnecting } = useConnection();
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [redirectRoute, setRedirectRoute] = useState<string>("");
 

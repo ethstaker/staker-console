@@ -1,7 +1,7 @@
 import { AccountBalanceWallet as WalletIcon } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import React from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import { DashboardValidatorsTable } from "@/components/DashboardValidatorsTable";
 import { Meta } from "@/components/Meta";
@@ -10,7 +10,7 @@ import { PendingBalanceCard } from "@/components/PendingBalanceCard";
 import { useValidators } from "@/hooks/useValidators";
 
 const Dashboard: React.FC = () => {
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
   const { data: validatorData } = useValidators();
 
   return (

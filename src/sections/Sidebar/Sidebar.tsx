@@ -11,7 +11,7 @@ import { Box, List, ListItem, ListItemButton } from "@mui/material";
 import clsx from "clsx";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 const sidebarItems = [
   { name: "Dashboard", icon: DashboardIcon, path: "/dashboard" },
@@ -26,7 +26,7 @@ const sidebarItems = [
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
 
   return (
     <Box className="flex h-full w-20 flex-col border-r border-divider bg-background">

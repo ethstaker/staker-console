@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useConnection, useBalance } from "wagmi";
 
 import {
   CustomModalTable,
@@ -40,7 +40,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
   totalExitAmount,
   onConfirm,
 }) => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { data: walletBalanceResponse } = useBalance({ address });
   const [confirmationText, setConfirmationText] = useState("");
 

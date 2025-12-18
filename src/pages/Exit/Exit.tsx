@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import { ExitValidatorTable } from "@/components/ExitValidatorTable";
 import { Meta } from "@/components/Meta";
@@ -14,7 +14,7 @@ import {
 } from "@/modals/Exit";
 
 const Exit: React.FC = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);

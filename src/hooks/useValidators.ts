@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { useAccount, useChainId } from "wagmi";
+import { useConnection, useChainId } from "wagmi";
 
 import { getApiBaseURL } from "@/config/networks";
 import {
@@ -31,7 +31,7 @@ const apiFetch = async (address: string | undefined, chainId: number) => {
 };
 
 export const useValidators = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const chainId = useChainId();
 
   const currentAddress = address ? (address as string) : undefined;

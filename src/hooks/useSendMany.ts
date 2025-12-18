@@ -4,13 +4,13 @@ import {
   useWaitForTransactionReceipt,
   useCapabilities,
   useSendCalls,
-  useAccount,
+  useConnection,
 } from "wagmi";
 
 import { SendManyCall } from "@/types";
 
 export const useSendMany = () => {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { data: capabilities } = useCapabilities();
   const chainId = useChainId();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();

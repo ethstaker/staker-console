@@ -14,7 +14,6 @@ import Header from "@/sections/Header";
 import Sidebar from "@/sections/Sidebar";
 
 import { ScrollToTop } from "./components/ScrollToTop/ScrollToTop";
-import { TestnetWarning } from "./components/TestnetWarning";
 
 const protectedRoutes = [
   "/deposit",
@@ -72,7 +71,6 @@ function AppContent() {
     <Box id="root" className="flex h-dvh overflow-hidden">
       <Sidebar />
       <Box className="flex h-full grow flex-col overflow-hidden justify-between">
-        <TestnetWarning />
         <Header />
         <ScrollToTop>
           <Box className="h-full flex flex-col">

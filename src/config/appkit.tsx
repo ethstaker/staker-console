@@ -10,11 +10,14 @@ if (!projectId) {
 
 const definedNetworks = [];
 
-if (import.meta.env.VITE_HOODI_API_URL) {
+if (import.meta.env.VITE_HOODI_API_URL || import.meta.env.VITE_HOODI_APP_URL) {
   definedNetworks.push(hoodi);
 }
 
-if (import.meta.env.VITE_MAINNET_API_URL) {
+if (
+  import.meta.env.VITE_MAINNET_API_URL ||
+  import.meta.env.VITE_MAINNET_APP_URL
+) {
   definedNetworks.push(mainnet);
 }
 

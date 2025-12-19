@@ -1,4 +1,4 @@
-enum Network {
+export enum Network {
   Mainnet = 1,
   Hoodi = 560048,
 }

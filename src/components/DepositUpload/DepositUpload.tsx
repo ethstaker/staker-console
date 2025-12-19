@@ -1,9 +1,10 @@
 import { Upload, Warning } from "@mui/icons-material";
-import { Box, Typography, Button, Alert } from "@mui/material";
+import { Box, Typography, Button, Alert, Link } from "@mui/material";
 import clsx from "clsx";
 import React, { useState, useRef, useEffect } from "react";
 import { useChainId, useSwitchChain } from "wagmi";
 
+import { getChainName, Network } from "@/config/networks";
 import { DepositData } from "@/types";
 import { ChainMismatchError, verifyDepositFile } from "@/utils/deposit";
 
@@ -15,10 +16,11 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
   onFileUploaded,
 }) => {
   const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
+  const { switchChain } = useSwitchChain();
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string>("");
+  const [errorChain, setErrorChain] = useState<number>(0);
   const [uploadedFile, setUploadedFile] = useState<File | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,6 +33,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
   const processFile = async (file: File) => {
     setIsProcessing(true);
     setError("");
+    setErrorChain(0);
 
     try {
       const text = await file.text();
@@ -41,7 +44,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
       onFileUploaded(data, file.name);
     } catch (err) {
       if (err instanceof ChainMismatchError) {
-        await switchChainAsync({ chainId: err.chainId });
+        setErrorChain(err.chainId);
       } else {
         const message =
           err instanceof Error ? err.message : "Failed to process file";
@@ -86,16 +89,49 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
     fileInputRef.current?.click();
   };
 
+  const changeNetwork = (chainId: number) => {
+    if (Network.Hoodi === chainId && import.meta.env.VITE_HOODI_APP_URL) {
+      window.location.href = import.meta.env.VITE_HOODI_APP_URL;
+    } else if (
+      Network.Mainnet === chainId &&
+      import.meta.env.VITE_MAINNET_APP_URL
+    ) {
+      window.location.href = import.meta.env.VITE_MAINNET_APP_URL;
+    } else {
+      switchChain(
+        { chainId: chainId },
+        {
+          onSuccess: () => {
+            setErrorChain(0);
+          },
+        },
+      );
+    }
+  };
+
   return (
     <Box className="flex min-h-[400px] flex-col items-center justify-center">
-      {error && (
+      {(errorChain > 0 || error) && (
         <Alert
           className="my-6 rounded-xl bg-error/50 text-white"
           severity="error"
           variant="filled"
           icon={<Warning />}
         >
-          {error}
+          {errorChain > 0 ? (
+            <Typography>
+              The provided deposit file is expecting {getChainName(errorChain)}.{" "}
+              <Link
+                className="cursor-pointer"
+                onClick={() => changeNetwork(errorChain)}
+              >
+                Click here
+              </Link>{" "}
+              to change networks.
+            </Typography>
+          ) : (
+            error
+          )}
         </Alert>
       )}
       <Box

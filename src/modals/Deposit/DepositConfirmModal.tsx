@@ -87,31 +87,21 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
 
   return (
     <BaseDialog open={open} onClose={handleClose}>
-      <DialogContent sx={{ p: 0 }}>
-        <Box sx={{ p: 0 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              px: 3,
-              py: 2,
-              borderBottom: "1px solid #404040",
-              mb: 2,
-            }}
-          >
-            <Box sx={{ flex: 1 }} />
+      <DialogContent className="p-0">
+        <Box className="p-0">
+          <Box className="flex justify-between items-center px-6 py-4 mb-4 border-b border-b-[#404040]">
+            <Box className="flex-1" />
             <Typography variant="h5" className="font-semibold text-white">
               Confirm Deposit
             </Typography>
-            <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+            <Box className="flex-1 flex justify-end">
               <IconButton className="text-secondaryText" onClick={handleClose}>
                 <Close />
               </IconButton>
             </Box>
           </Box>
 
-          <Box sx={{ px: 3 }}>
+          <Box className="px-6">
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Connected Wallet
             </Typography>
@@ -192,22 +182,12 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
             </WarningAlert>
           </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              px: 3,
-              py: 2,
-              borderTop: "1px solid #404040",
-              mt: 2,
-            }}
-          >
+          <Box className="flex justify-between items-center px-6 py-4 mt-4 border-t border-t-[#404040]">
             <Typography variant="h6" className="text-white">
               Deposit Amount: {formatAmount(totalAmount)} ETH
             </Typography>
 
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box className="flex gap-4">
               <Button
                 color="secondary"
                 variant="outlined"

@@ -1,8 +1,10 @@
 import { TableRow, TableRowProps } from "@mui/material";
 import clsx from "clsx";
+import { ReactNode } from "react";
 
 interface CustomTableRowParams extends TableRowProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  disabled?: boolean;
   index: number;
   isSelected?: boolean;
   noSelection?: boolean;
@@ -10,6 +12,7 @@ interface CustomTableRowParams extends TableRowProps {
 
 export const CustomTableRow = ({
   children,
+  disabled = false,
   index,
   isSelected = false,
   noSelection = false,
@@ -19,7 +22,7 @@ export const CustomTableRow = ({
     <TableRow
       className={clsx(
         {
-          "cursor-pointer hover:bg-primary/30": !noSelection,
+          "cursor-pointer hover:bg-primary/30": !noSelection && !disabled,
         },
         !isSelected
           ? index % 2 === 1

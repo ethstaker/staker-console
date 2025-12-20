@@ -218,7 +218,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   proposing and validating blocks, and you will earn rewards for
                   participating.
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Validator Types:
                   </Typography>
@@ -277,7 +277,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   understand the two types of clients you will need to run a
                   validator successfully.
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Execution Client:
                   </Typography>
@@ -290,7 +290,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     options include Geth, Nethermind, Reth, Besu, and Erigon.
                   </Typography>
                 </Box>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Consensus Client:
                   </Typography>
@@ -360,7 +360,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   The key generation process creates several important
                   components:
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <ul className="ml-4 space-y-2 text-secondaryText">
                     <li>
                       • <strong className="text-white">Validator Keys:</strong>{" "}
@@ -395,7 +395,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   your validator keys, each with different security and
                   complexity trade-offs:
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <ol className="ml-4 space-y-2 text-secondaryText">
                     <li>1. GUI Application (Easiest)</li>
                     <li>2. Command Line Interface (Recommended)</li>
@@ -418,7 +418,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   generate validator keys, perfect for those who prefer visual
                   interfaces.
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Wagyu Key Gen:
                   </Typography>
@@ -435,7 +435,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     </Link>
                   </Typography>
                 </Box>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Generating Deposit Data:
                   </Typography>
@@ -483,7 +483,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   balance of security and usability while being officially
                   maintained by the EthStaker Community.
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     EthStaker Deposit CLI:
                   </Typography>
@@ -503,7 +503,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                 <Typography className="mb-2 font-semibold text-white">
                   Installation & Usage:
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <ol className="ml-4 space-y-2 text-secondaryText">
                     <li>
                       1. Download the latest release from:{" "}
@@ -533,7 +533,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   Generate Deposit Keys
                 </Typography>
 
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Command Options:
                   </Typography>
@@ -646,7 +646,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                         setValidatorCount(1);
                         setEthAmount(32);
                       }}
-                      className={`cursor-pointer rounded-lg border bg-[#2a2a2a] p-4 transition-colors ${
+                      className={`cursor-pointer rounded-lg border bg-divider p-4 transition-colors ${
                         validatorType === "0x01"
                           ? "border-blue"
                           : "border-transparent hover:border-blue"
@@ -667,7 +667,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                         setValidatorCount(1);
                         setEthAmount(32);
                       }}
-                      className={`cursor-pointer rounded-lg border bg-[#2a2a2a] p-4 transition-colors ${
+                      className={`cursor-pointer rounded-lg border bg-divider p-4 transition-colors ${
                         validatorType === "0x02"
                           ? "border-blue"
                           : "border-transparent hover:border-blue"
@@ -816,7 +816,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                       <Box
                         key={os}
                         onClick={() => setOperatingSystem(os)}
-                        className={`cursor-pointer rounded-lg border bg-[#2a2a2a] p-3 text-center transition-colors ${
+                        className={`cursor-pointer rounded-lg border bg-divider p-3 text-center transition-colors ${
                           operatingSystem === os
                             ? "border-blue"
                             : "border-transparent hover:border-blue"
@@ -854,7 +854,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     >
                       Python installation instructions ↗
                     </Link>
-                    <Box className="mb-4 rounded bg-[#2a2a2a] p-3">
+                    <Box className="mb-4 rounded bg-divider p-3">
                       <Typography className="text-secondaryText">
                         You can check your Python version by typing{" "}
                         <code className="rounded bg-[#171717] px-1 text-white">
@@ -900,7 +900,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     >
                       Python installation instructions ↗
                     </Link>
-                    <Box className="mb-4 rounded bg-[#2a2a2a] p-3">
+                    <Box className="mb-4 rounded bg-divider p-3">
                       <Typography className="text-secondaryText">
                         You can check your Python version by typing{" "}
                         <code className="rounded bg-[#171717] px-1 text-white">
@@ -929,7 +929,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     >
                       Python installation instructions ↗
                     </Link>
-                    <Box className="mb-4 rounded bg-[#2a2a2a] p-3">
+                    <Box className="mb-4 rounded bg-divider p-3">
                       <Typography className="text-secondaryText">
                         You can check your Python version by typing{" "}
                         <code className="rounded bg-[#171717] px-1 text-white">
@@ -1034,7 +1034,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   GitHub.
                 </Typography>
 
-                <Box className="mb-4 rounded bg-[#2a2a2a] p-3">
+                <Box className="mb-4 rounded bg-divider p-3">
                   <Typography className="mb-2 text-secondaryText">
                     If you are a git user, you can run
                   </Typography>
@@ -1081,7 +1081,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   Generate Deposit Keys
                 </Typography>
 
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Command Options:
                   </Typography>
@@ -1200,7 +1200,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                         setValidatorCount(1);
                         setEthAmount(32);
                       }}
-                      className={`cursor-pointer rounded-lg border bg-[#2a2a2a] p-4 transition-colors ${
+                      className={`cursor-pointer rounded-lg border bg-divider p-4 transition-colors ${
                         validatorType === "0x01"
                           ? "border-blue"
                           : "border-transparent hover:border-blue"
@@ -1221,7 +1221,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                         setValidatorCount(1);
                         setEthAmount(32);
                       }}
-                      className={`cursor-pointer rounded-lg border bg-[#2a2a2a] p-4 transition-colors ${
+                      className={`cursor-pointer rounded-lg border bg-divider p-4 transition-colors ${
                         validatorType === "0x02"
                           ? "border-blue"
                           : "border-transparent hover:border-blue"
@@ -1355,7 +1355,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                   Properly securing and backing up your generated files is
                   crucial for validator operation and fund recovery.
                 </Typography>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Generated Files:
                   </Typography>
@@ -1396,7 +1396,7 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     <li>• Verify your backup before deleting any files</li>
                   </ul>
                 </Box>
-                <Box className="mb-4 rounded-lg bg-[#2a2a2a] p-4">
+                <Box className="mb-4 rounded-lg bg-divider p-4">
                   <Typography className="mb-2 font-semibold text-white">
                     Next Steps:
                   </Typography>

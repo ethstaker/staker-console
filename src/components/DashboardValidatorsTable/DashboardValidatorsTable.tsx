@@ -75,6 +75,8 @@ export const DashboardValidatorsTable: React.FC = () => {
               [
                 ValidatorStatus.active_ongoing,
                 ValidatorStatus.active_exiting,
+                ValidatorStatus.pending_initialized,
+                ValidatorStatus.pending_queued,
               ].includes(validator.status)) &&
             (validator.pubkey
               .toLowerCase()

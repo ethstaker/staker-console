@@ -3,6 +3,7 @@ import { Box, Link, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { WarningAlert } from "@/components/WarningAlert";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
   ProgressModal,
@@ -130,6 +131,13 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
           )}
 
           {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
+
+          {isConfirmed && (
+            <WarningAlert>
+              It will take a few minutes for the new deposits to reach the
+              Beacon Chain and be reflected in the dashboard.
+            </WarningAlert>
+          )}
         </Box>
       </Box>
     </ProgressModal>

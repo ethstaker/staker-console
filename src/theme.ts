@@ -57,6 +57,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            color: alpha(tailwindColors.white, 0.1),
+          },
+        },
+      },
+    },
   },
   typography: {
     fontSize: 16,

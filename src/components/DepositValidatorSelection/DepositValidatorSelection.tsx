@@ -1,4 +1,4 @@
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, Warning } from "@mui/icons-material";
 import {
   Box,
   Typography,
@@ -9,8 +9,9 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Tooltip,
 } from "@mui/material";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import { CredentialsTag } from "@/components/CredentialsTag";
 import {
@@ -20,6 +21,7 @@ import {
 } from "@/components/CustomTable";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { useConnectedBalance } from "@/hooks/useConnectedBalance";
+import { useValidators } from "@/hooks/useValidators";
 import { Credentials, DepositData } from "@/types";
 
 interface DepositValidatorSelectionProps {
@@ -34,6 +36,29 @@ export const DepositValidatorSelection: React.FC<
 > = ({ depositData, fileName, onBack, onBeginDeposit }) => {
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
   const currentWalletBalance = useConnectedBalance();
+  const { data: validatorData } = useValidators();
+
+  const existingValidators = useMemo(() => {
+    return validatorData.validators.filter(
+      (v) => !!depositData.find((d) => d.pubkey === v.pubkey.slice(2)),
+    );
+  }, [depositData, validatorData]);
+
+  // Unselect any validator deposits that already exist
+  useEffect(() => {
+    if (
+      selectedValidators.find((pubkey) =>
+        existingValidators.find((v) => v.pubkey.slice(2) === pubkey),
+      )
+    ) {
+      setSelectedValidators((prev) =>
+        prev.filter(
+          (pubkey) =>
+            !existingValidators.find((v) => v.pubkey.slice(2) === pubkey),
+        ),
+      );
+    }
+  }, [existingValidators, selectedValidators]);
 
   const toggleValidator = (pubkey: string) => {
     const existingIndex = selectedValidators.indexOf(pubkey);
@@ -77,7 +102,7 @@ export const DepositValidatorSelection: React.FC<
   };
 
   const formatPubkey = (pubkey: string) => {
-    return `0x${pubkey.slice(0, 6)}...${pubkey.slice(-6)}`;
+    return `0x${pubkey.slice(0, 4)}...${pubkey.slice(-6)}`;
   };
 
   const withdrawalAddress = (validator: DepositData): React.ReactNode => {
@@ -154,19 +179,44 @@ export const DepositValidatorSelection: React.FC<
                       ? Credentials.compounding
                       : Credentials.bls;
 
+                const existingValidator = !!existingValidators.find(
+                  (v) => v.pubkey.slice(2) === validator.pubkey,
+                );
+
                 return (
                   <CustomTableRow
+                    disabled={existingValidator}
                     key={validator.pubkey}
                     index={index}
                     isSelected={isSelected}
-                    onClick={() => toggleValidator(validator.pubkey)}
+                    onClick={() => {
+                      if (!existingValidator) {
+                        toggleValidator(validator.pubkey);
+                      }
+                    }}
                   >
                     <CustomTableCell>
-                      <Checkbox checked={isSelected} />
+                      <Checkbox
+                        checked={isSelected}
+                        disabled={existingValidator}
+                      />
                     </CustomTableCell>
                     <CustomTableCell>
                       <Typography className="font-mono text-sm">
-                        {formatPubkey(validator.pubkey)}
+                        {existingValidator ? (
+                          <Box className="flex flex-row items-center gap-2">
+                            <ExplorerLink
+                              hash={`0x${validator.pubkey}`}
+                              shorten
+                              type="publickey"
+                            />
+                            <Tooltip title="This validator already exists. If you would like to deposit additional funds to this validator, please use the Top-Up feature">
+                              <Warning color="warning" />
+                            </Tooltip>
+                          </Box>
+                        ) : (
+                          formatPubkey(validator.pubkey)
+                        )}
                       </Typography>
                     </CustomTableCell>
                     <CustomTableCell>

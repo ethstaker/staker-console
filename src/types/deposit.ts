@@ -1,5 +1,6 @@
 import { ByteVectorType, ContainerType, UintNumberType } from "@chainsafe/ssz";
 
+// DepositData does not have 0x prefix for values
 export interface DepositData {
   pubkey: string;
   withdrawal_credentials: string;

@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",
     "@vitejs/plugin-react": "^5.1.2",
-    "autoprefixer": "^10.4.22",
+    "autoprefixer": "^10.4.23",
     "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "eslint": "^9.39.2",
@@ -63,9 +63,9 @@
     "tsc-files": "^1.1.4",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.50.0",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "vite-plugin-pwa": "^1.2.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "lint-staged": {
     "src/**/!(*.test).{ts,tsx}": [

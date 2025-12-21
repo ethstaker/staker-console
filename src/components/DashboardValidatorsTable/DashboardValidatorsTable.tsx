@@ -1,4 +1,4 @@
-import { Add, MoreHoriz } from "@mui/icons-material";
+import { Add, MoreHoriz, Remove } from "@mui/icons-material";
 import {
   Box,
   Table,
@@ -204,13 +204,15 @@ export const DashboardValidatorsTable: React.FC = () => {
                   <CustomTableCell>
                     <Box className="flex flex-col">
                       {validator.pendingDepositChange > 0 && (
-                        <Typography className="text-xs text-success">
-                          + {validator.pendingDepositChange.toFixed(4)}
+                        <Typography className="text-xs text-success flex items-center gap-1">
+                          <Add className="text-xs" />
+                          {validator.pendingDepositChange.toFixed(4)}
                         </Typography>
                       )}
                       {validator.pendingWithdrawalChange > 0 && (
-                        <Typography className="text-xs text-error">
-                          - {validator.pendingWithdrawalChange.toFixed(4)}
+                        <Typography className="text-xs text-error flex items-center gap-1">
+                          <Remove className="text-xs" />
+                          {validator.pendingWithdrawalChange.toFixed(4)}
                         </Typography>
                       )}
                     </Box>

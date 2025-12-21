@@ -15,6 +15,7 @@ type NetworkConfig = {
   addressExplorer: string;
   transactionExplorer: string;
   beaconExplorer: string;
+  pendingActionExplorer: string;
 };
 
 const networks: Record<Network, NetworkConfig> = {
@@ -30,6 +31,7 @@ const networks: Record<Network, NetworkConfig> = {
     addressExplorer: "https://etherscan.io/address/",
     transactionExplorer: "https://etherscan.io/tx/",
     beaconExplorer: "https://beaconcha.in/validator/",
+    pendingActionExplorer: "https://pectrified.com/mainnet/validator/",
   },
   [Network.Hoodi]: {
     name: "Hoodi",
@@ -43,6 +45,7 @@ const networks: Record<Network, NetworkConfig> = {
     addressExplorer: "https://hoodi.etherscan.io/address/",
     transactionExplorer: "https://hoodi.etherscan.io/tx/",
     beaconExplorer: "https://dora.hoodi.ethpandaops.io/validator/",
+    pendingActionExplorer: "https://pectrified.com/hoodi/validator/",
   },
 };
 
@@ -93,6 +96,9 @@ export const getTransactionExplorer = (chainId: number | undefined): string =>
 
 export const getBeaconExplorer = (chainId: number | undefined): string =>
   getNetworkProperty(chainId, "beaconExplorer");
+
+export const getPendingActionExplorer = (chainId: number | undefined): string =>
+  getNetworkProperty(chainId, "pendingActionExplorer");
 
 export const getChainByForkVersion = (forkVersion: string): number => {
   for (const [chainIdStr, config] of Object.entries(networks)) {

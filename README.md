@@ -122,6 +122,7 @@ const networks: Record<Network, NetworkConfig> = {
     addressExplorer: "https://...", // Block explorer for addresses
     transactionExplorer: "https://...", // Block explorer for transactions
     beaconExplorer: "https://...", // Beacon chain explorer
+    pendingActionExplorer: "http://...", // Explorer that shows pending deposits, withdrawals, etc...
   },
 };
 ```

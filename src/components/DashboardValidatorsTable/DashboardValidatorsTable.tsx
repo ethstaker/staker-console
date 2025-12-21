@@ -1,4 +1,4 @@
-import { Add, MoreHoriz, Remove } from "@mui/icons-material";
+import { Add, MoreHoriz } from "@mui/icons-material";
 import {
   Box,
   Table,
@@ -25,6 +25,7 @@ import {
 } from "@/components/CustomTable";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { FilterInput } from "@/components/FilterInput";
+import { PendingValidatorBalanceChange } from "@/components/PendingValidatorBalanceChange";
 import { ValidatorMenu } from "@/components/ValidatorMenu";
 import { ValidatorState } from "@/components/ValidatorState";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
@@ -202,20 +203,7 @@ export const DashboardValidatorsTable: React.FC = () => {
                     {validator.effectiveBalance.toFixed(4)}
                   </CustomTableCell>
                   <CustomTableCell>
-                    <Box className="flex flex-col">
-                      {validator.pendingDepositChange > 0 && (
-                        <Typography className="text-xs text-success flex items-center gap-1">
-                          <Add className="text-xs" />
-                          {validator.pendingDepositChange.toFixed(4)}
-                        </Typography>
-                      )}
-                      {validator.pendingWithdrawalChange > 0 && (
-                        <Typography className="text-xs text-error flex items-center gap-1">
-                          <Remove className="text-xs" />
-                          {validator.pendingWithdrawalChange.toFixed(4)}
-                        </Typography>
-                      )}
-                    </Box>
+                    <PendingValidatorBalanceChange validator={validator} />
                   </CustomTableCell>
                   <CustomTableCell>
                     {validator.credentials !== Credentials.bls &&

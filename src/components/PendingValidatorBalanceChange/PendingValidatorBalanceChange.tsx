@@ -1,4 +1,4 @@
-import { Add, Remove } from "@mui/icons-material";
+import { Add, OpenInNew, Remove } from "@mui/icons-material";
 import { Box, Link, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useChainId } from "wagmi";
@@ -63,12 +63,13 @@ export const PendingValidatorBalanceChange = ({
 
   return (
     <Link
-      className="no-underline"
+      className="no-underline flex items-center gap-1"
       href={explorerUrl}
       onClick={(e) => e.stopPropagation()}
       target="_blank"
     >
       {pendingChangeContent}
+      <OpenInNew className="ml-1 text-xs text-white/40" />
     </Link>
   );
 };

@@ -81,6 +81,7 @@ export type Validator = {
 };
 
 export type ValidatorsData = {
+  activeValidatorCount: number;
   validators: Validator[];
   validatorCount: number;
   totalBalance: number;

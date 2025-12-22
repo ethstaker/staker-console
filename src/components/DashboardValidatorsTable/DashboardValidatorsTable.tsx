@@ -25,6 +25,7 @@ import {
 } from "@/components/CustomTable";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { FilterInput } from "@/components/FilterInput";
+import { PendingValidatorBalanceChange } from "@/components/PendingValidatorBalanceChange";
 import { ValidatorMenu } from "@/components/ValidatorMenu";
 import { ValidatorState } from "@/components/ValidatorState";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
@@ -202,18 +203,7 @@ export const DashboardValidatorsTable: React.FC = () => {
                     {validator.effectiveBalance.toFixed(4)}
                   </CustomTableCell>
                   <CustomTableCell>
-                    <Box className="flex flex-col">
-                      {validator.pendingDepositChange > 0 && (
-                        <Typography className="text-xs text-success">
-                          + {validator.pendingDepositChange.toFixed(4)}
-                        </Typography>
-                      )}
-                      {validator.pendingWithdrawalChange > 0 && (
-                        <Typography className="text-xs text-error">
-                          - {validator.pendingWithdrawalChange.toFixed(4)}
-                        </Typography>
-                      )}
-                    </Box>
+                    <PendingValidatorBalanceChange validator={validator} />
                   </CustomTableCell>
                   <CustomTableCell>
                     {validator.credentials !== Credentials.bls &&

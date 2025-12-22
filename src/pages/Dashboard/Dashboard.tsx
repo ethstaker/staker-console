@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
             <Box className="flex-1">
               <MetricCard
                 title="Active Validators"
-                value={`${validatorData?.validatorCount || 0}`}
+                value={`${validatorData?.activeValidatorCount || 0}`}
                 subtitle="Currently performing duties"
               />
             </Box>

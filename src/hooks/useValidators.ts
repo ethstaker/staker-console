@@ -8,6 +8,7 @@ import {
   convertValidatorResponse,
   Validator,
   ValidatorsResponse,
+  ValidatorStatus,
 } from "@/types/validator";
 
 const apiFetch = async (address: string | undefined, chainId: number) => {
@@ -55,6 +56,14 @@ export const useValidators = () => {
       ),
     ) as Validator[];
 
+    const activeValidatorCount = validators.filter((v) =>
+      [
+        ValidatorStatus.active_ongoing,
+        ValidatorStatus.active_exiting,
+        ValidatorStatus.active_inactive,
+        ValidatorStatus.active_slashed,
+      ].includes(v.status),
+    ).length;
     const validatorCount = validators.length;
     const totalBalance = validators.reduce(
       (count, validator) => count + validator.totalBalance,
@@ -74,6 +83,7 @@ export const useValidators = () => {
     );
 
     return {
+      activeValidatorCount,
       validators,
       validatorCount,
       totalBalance,

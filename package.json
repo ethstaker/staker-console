@@ -28,7 +28,7 @@
     "@mui/material": "^7.3.6",
     "@reown/appkit": "^1.8.15",
     "@reown/appkit-adapter-wagmi": "^1.8.15",
-    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query": "^5.90.16",
     "bignumber.js": "^9.3.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

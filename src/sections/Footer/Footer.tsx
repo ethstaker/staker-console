@@ -34,6 +34,12 @@ const Footer: React.FC = () => {
         <FooterLink href="https://ethstaker.org/support" target="_blank">
           Support
         </FooterLink>
+        <FooterLink
+          href="https://github.com/ethstaker/staker-console/issues/"
+          target="_blank"
+        >
+          Report an Issue
+        </FooterLink>
       </Box>
 
       <Box className="flex items-center gap-8">

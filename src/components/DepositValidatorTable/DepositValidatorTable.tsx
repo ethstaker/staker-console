@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 import { CredentialsTag } from "@/components/CredentialsTag";
 import {
@@ -38,6 +39,7 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
   onBeginDeposit,
 }) => {
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
+  const { address } = useAccount();
   const currentWalletBalance = useConnectedBalance();
   const { data: validatorData } = useValidators();
 
@@ -100,12 +102,24 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
   );
   const canDeposit = hasValidDeposits && !hasInsufficientBalance;
 
-  const formatAmount = (amount: number) => {
+  const formatAmount = (amount: number): string => {
     return (amount / 1_000_000_000).toFixed(4);
   };
 
-  const formatPubkey = (pubkey: string) => {
+  const formatPubkey = (pubkey: string): `0x${string}` => {
     return `0x${pubkey.slice(0, 4)}...${pubkey.slice(-6)}`;
+  };
+
+  const matchingAddress = (credentials: string): boolean => {
+    if (!address || credentials.startsWith("00")) {
+      return false;
+    }
+
+    const withdrawalAddress: `0x${string}` = `0x${credentials
+      .slice(-40)
+      .toLowerCase()}`;
+
+    return withdrawalAddress === address.toLowerCase();
   };
 
   const withdrawalAddress = (validator: DepositData): React.ReactNode => {
@@ -119,7 +133,7 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
     return <ExplorerLink hash={address} type="address" />;
   };
 
-  const selectedValidatorData = useMemo(() => {
+  const selectedValidatorData: DepositData[] = useMemo(() => {
     return depositData.filter((d) => selectedValidators.includes(d.pubkey));
   }, [selectedValidators, depositData]);
 
@@ -226,9 +240,16 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
                       <CredentialsTag credentials={credentialsType} />
                     </CustomTableCell>
                     <CustomTableCell>
-                      <Typography className="font-mono text-sm">
-                        {withdrawalAddress(validator)}
-                      </Typography>
+                      <Box className="flex flex-row gap-2 items-center">
+                        <Typography className="font-mono text-sm">
+                          {withdrawalAddress(validator)}
+                        </Typography>
+                        {!matchingAddress(validator.withdrawal_credentials) && (
+                          <Tooltip title="This validators withdrawal address does not match the connected wallet. If you do not control this withdrawal address, depositing may result in loss of funds.">
+                            <Warning color="warning" />
+                          </Tooltip>
+                        )}
+                      </Box>
                     </CustomTableCell>
                     <CustomTableCell>
                       <Typography className="font-semibold">

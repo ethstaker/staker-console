@@ -37,7 +37,26 @@
       content="A web-based application for managing Ethereum validators, allowing users to deposit, top-up, upgrade, consolidate, withdraw, and exit validators through an intuitive interface"
       data-react-helmet="true"
     >
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied'
+      });
+
+      gtag('config', '%VITE_GA_MEASUREMENT_ID%', {
+        anonymize_ip: true,
+        allow_google_signals: false,
+        restricted_data_processing: true,
+        send_page_view: false
+      });
+    </script>
     <!-- https://web.dev/defer-non-critical-css/ -->
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   </head>

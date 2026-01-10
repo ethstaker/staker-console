@@ -24,16 +24,19 @@ import { useConnectedBalance } from "@/hooks/useConnectedBalance";
 import { useValidators } from "@/hooks/useValidators";
 import { Credentials, DepositData } from "@/types";
 
-interface DepositValidatorSelectionProps {
+interface DepositValidatorTableProps {
   depositData: DepositData[];
   fileName: string;
   onBack: () => void;
   onBeginDeposit: (validators: DepositData[]) => void;
 }
 
-export const DepositValidatorSelection: React.FC<
-  DepositValidatorSelectionProps
-> = ({ depositData, fileName, onBack, onBeginDeposit }) => {
+export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
+  depositData,
+  fileName,
+  onBack,
+  onBeginDeposit,
+}) => {
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
   const currentWalletBalance = useConnectedBalance();
   const { data: validatorData } = useValidators();

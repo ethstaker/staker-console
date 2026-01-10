@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 
 import { DepositUpload } from "@/components/DepositUpload";
-import { DepositValidatorSelection } from "@/components/DepositValidatorSelection";
+import { DepositValidatorTable } from "@/components/DepositValidatorTable";
 import { Meta } from "@/components/Meta";
 import {
   DepositConfirmModal,
@@ -94,7 +94,7 @@ const Deposit: React.FC = () => {
               download upon deposit completion.
             </Typography>
 
-            <DepositValidatorSelection
+            <DepositValidatorTable
               depositData={depositData}
               fileName={fileName}
               onBack={handleBack}

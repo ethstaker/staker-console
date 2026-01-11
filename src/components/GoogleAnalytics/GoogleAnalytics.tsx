@@ -60,8 +60,8 @@ export const GoogleAnalytics = () => {
   }
 
   return (
-    <Box className="fixed bottom-10 z-50 flex justify-center w-full">
-      <Box className="max-w-[700px] flex flex-col gap-4 items-center p-4 bg-secondaryBackground">
+    <Box className="fixed bottom-10 z-50 left-1/2 transform -translate-x-1/2 max-w-[700px]">
+      <Box className="flex flex-col gap-4 items-center p-4 bg-secondaryBackground">
         <Typography>
           This site uses Google Analytics to track interactions anonymously
         </Typography>

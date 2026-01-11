@@ -14,7 +14,7 @@ interface ImportMeta {
 
 interface Window {
   gtag?: (
-    command: "config" | "event" | "set" | "js" | "consent",
+    command: "config" | "consent" | "event" | "js" | "set",
     targetIdOrEventName: string,
     config?: Record<string, any>,
   ) => void;

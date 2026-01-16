@@ -22,7 +22,6 @@ export const ValidatorState = ({ status }: ValidatorStatusParams) => {
       case ValidatorStatus.withdrawal_done:
         return "bg-divider text-white";
       case ValidatorStatus.exited_slashed:
-      case ValidatorStatus.active_inactive:
       case ValidatorStatus.active_slashed:
         return "bg-error text-white";
     }

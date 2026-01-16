@@ -10,7 +10,6 @@ export enum ValidatorStatus {
   pending_initialized = "pending_initialized",
   pending_queued = "pending_queued",
   active_exiting = "active_exiting",
-  active_inactive = "active_inactive", // TODO: This is not an actual state. Can this be determined?
   active_ongoing = "active_ongoing",
   active_slashed = "active_slashed",
   exited_unslashed = "exited_unslashed",
@@ -21,7 +20,6 @@ export enum ValidatorStatus {
 
 export const ValidatorStatusDisplay: { [key in ValidatorStatus]: string } = {
   [ValidatorStatus.active_exiting]: "Exiting",
-  [ValidatorStatus.active_inactive]: "Inactive",
   [ValidatorStatus.active_ongoing]: "Active",
   [ValidatorStatus.active_slashed]: "Slashed",
   [ValidatorStatus.exited_slashed]: "Slashed",

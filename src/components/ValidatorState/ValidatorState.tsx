@@ -47,7 +47,7 @@ export const ValidatorState = ({ validator }: ValidatorStatusParams) => {
   }, [validator]);
 
   return (
-    <Tooltip title={tooltipText}>
+    <Tooltip arrow title={tooltipText}>
       <Chip
         className={clsx(statusColor)}
         label={

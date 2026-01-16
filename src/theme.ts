@@ -48,6 +48,15 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            color: alpha(tailwindColors.white, 0.1),
+          },
+        },
+      },
+    },
     MuiIconButton: {
       styleOverrides: {
         root: {
@@ -57,12 +66,20 @@ const theme = createTheme({
         },
       },
     },
-    MuiCheckbox: {
+    MuiTooltip: {
       styleOverrides: {
-        root: {
-          "&.Mui-disabled": {
-            color: alpha(tailwindColors.white, 0.1),
-          },
+        tooltip: {
+          backgroundColor: tailwindColors.divider,
+          border: "1px solid",
+          borderColor: tailwindColors.background,
+          color: tailwindColors.white,
+          fontSize: "0.875rem",
+          padding: "8px 12px",
+          borderRadius: "4px",
+          maxWidth: "500px",
+        },
+        arrow: {
+          color: tailwindColors.divider,
         },
       },
     },

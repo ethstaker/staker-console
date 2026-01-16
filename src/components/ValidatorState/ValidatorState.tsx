@@ -37,7 +37,7 @@ export const ValidatorState = ({ validator }: ValidatorStatusParams) => {
       // If a validator is withdrawable and the effective balance is more than 0, it was an exit request.
       // If the validator effective balance is 0 but there is a remaining balance, the validator was consolidated.
       if (validator.effectiveBalance > 0) {
-        return `This validator is safe to shutdown and the remaining balance of ${validator.totalBalance} ETH will be swept to the execution address ${validator.withdrawalAddress}`;
+        return `This validator has successfully exited and the remaining balance of ${validator.totalBalance} ETH will be swept to the execution address ${validator.withdrawalAddress}`;
       } else if (validator.totalBalance > 0) {
         return `This validator has successfully been consolidated and the remaining balance of ${validator.totalBalance} ETH will be swept to the execution address ${validator.withdrawalAddress}`;
       }

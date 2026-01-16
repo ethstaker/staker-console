@@ -1,16 +1,21 @@
-import { Chip } from "@mui/material";
+import { Info } from "@mui/icons-material";
+import { Box, Chip, Tooltip } from "@mui/material";
 import clsx from "clsx";
 import { useMemo } from "react";
 
-import { ValidatorStatus, ValidatorStatusDisplay } from "@/types/validator";
+import {
+  Validator,
+  ValidatorStatus,
+  ValidatorStatusDisplay,
+} from "@/types/validator";
 
 interface ValidatorStatusParams {
-  status: ValidatorStatus;
+  validator: Validator;
 }
 
-export const ValidatorState = ({ status }: ValidatorStatusParams) => {
+export const ValidatorState = ({ validator }: ValidatorStatusParams) => {
   const statusColor = useMemo(() => {
-    switch (status) {
+    switch (validator.status) {
       case ValidatorStatus.active_ongoing:
         return "bg-success text-black";
       case ValidatorStatus.active_exiting:
@@ -25,13 +30,36 @@ export const ValidatorState = ({ status }: ValidatorStatusParams) => {
       case ValidatorStatus.active_slashed:
         return "bg-error text-white";
     }
-  }, [status]);
+  }, [validator.status]);
+
+  const tooltipText = useMemo(() => {
+    if (validator.status === ValidatorStatus.withdrawal_possible) {
+      // If a validator is withdrawable and the effective balance is more than 0, it was an exit request.
+      // If the validator effective balance is 0 but there is a remaining balance, the validator was consolidated.
+      if (validator.effectiveBalance > 0) {
+        return `This validator is safe to shutdown and the remaining balance of ${validator.totalBalance} ETH will be swept to the execution address ${validator.withdrawalAddress}`;
+      } else if (validator.totalBalance > 0) {
+        return `This validator has successfully been consolidated and the remaining balance of ${validator.totalBalance} ETH will be swept to the execution address ${validator.withdrawalAddress}`;
+      }
+    }
+
+    return "";
+  }, [validator]);
 
   return (
-    <Chip
-      className={clsx(statusColor)}
-      label={ValidatorStatusDisplay[status]}
-      size="small"
-    />
+    <Tooltip title={tooltipText}>
+      <Chip
+        className={clsx(statusColor)}
+        label={
+          <Box className="flex flex-row gap-1 items-center">
+            <Box>{ValidatorStatusDisplay[validator.status]}</Box>
+            {validator.status === ValidatorStatus.withdrawal_possible && (
+              <Info className="text-primary text-base" />
+            )}
+          </Box>
+        }
+        size="small"
+      />
+    </Tooltip>
   );
 };

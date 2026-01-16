@@ -189,7 +189,7 @@ export const DashboardValidatorsTable: React.FC = () => {
                     {withdrawalAddress(validator)}
                   </CustomTableCell>
                   <CustomTableCell className="text-center">
-                    <ValidatorState status={validator.status} />
+                    <ValidatorState validator={validator} />
                   </CustomTableCell>
                   <CustomTableCell>
                     {validator.totalBalance.toFixed(4)}

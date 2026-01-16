@@ -73,12 +73,7 @@ export const DashboardValidatorsTable: React.FC = () => {
         .filter(
           (validator) =>
             (!hideExited ||
-              [
-                ValidatorStatus.active_ongoing,
-                ValidatorStatus.active_exiting,
-                ValidatorStatus.pending_initialized,
-                ValidatorStatus.pending_queued,
-              ].includes(validator.status)) &&
+              validator.status !== ValidatorStatus.withdrawal_done) &&
             (validator.pubkey
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
@@ -117,7 +112,7 @@ export const DashboardValidatorsTable: React.FC = () => {
           />
 
           <FormControlLabel
-            label="Hide Exited Validators"
+            label="Hide Withdrawn Validators"
             control={
               <Checkbox
                 className={clsx(hideExited ? "text-primary" : "text-white/50")}

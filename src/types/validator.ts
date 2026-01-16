@@ -26,8 +26,8 @@ export const ValidatorStatusDisplay: { [key in ValidatorStatus]: string } = {
   [ValidatorStatus.exited_unslashed]: "Exited",
   [ValidatorStatus.pending_initialized]: "Depositing",
   [ValidatorStatus.pending_queued]: "Depositing",
-  [ValidatorStatus.withdrawal_done]: "Exited",
-  [ValidatorStatus.withdrawal_possible]: "Exited",
+  [ValidatorStatus.withdrawal_done]: "Withdrawn",
+  [ValidatorStatus.withdrawal_possible]: "Withdrawable",
 };
 
 export type PendingDeposit = {

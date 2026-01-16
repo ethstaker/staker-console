@@ -21,6 +21,7 @@ export const ValidatorState = ({ validator }: ValidatorStatusParams) => {
       case ValidatorStatus.active_exiting:
       case ValidatorStatus.pending_queued:
       case ValidatorStatus.pending_initialized:
+      case ValidatorStatus.unknown:
         return "bg-warning text-black";
       case ValidatorStatus.exited_unslashed:
       case ValidatorStatus.withdrawal_possible:

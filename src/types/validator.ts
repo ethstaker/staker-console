@@ -7,6 +7,7 @@ export enum Credentials {
 }
 
 export enum ValidatorStatus {
+  unknown = "unknown",
   pending_initialized = "pending_initialized",
   pending_queued = "pending_queued",
   active_exiting = "active_exiting",
@@ -26,6 +27,7 @@ export const ValidatorStatusDisplay: { [key in ValidatorStatus]: string } = {
   [ValidatorStatus.exited_unslashed]: "Exited",
   [ValidatorStatus.pending_initialized]: "Depositing",
   [ValidatorStatus.pending_queued]: "Depositing",
+  [ValidatorStatus.unknown]: "Depositing",
   [ValidatorStatus.withdrawal_done]: "Withdrawn",
   [ValidatorStatus.withdrawal_possible]: "Withdrawable",
 };

@@ -60,7 +60,6 @@ export const useValidators = () => {
       [
         ValidatorStatus.active_ongoing,
         ValidatorStatus.active_exiting,
-        ValidatorStatus.active_inactive,
         ValidatorStatus.active_slashed,
       ].includes(v.status),
     ).length;

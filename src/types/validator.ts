@@ -7,10 +7,10 @@ export enum Credentials {
 }
 
 export enum ValidatorStatus {
+  unknown = "unknown",
   pending_initialized = "pending_initialized",
   pending_queued = "pending_queued",
   active_exiting = "active_exiting",
-  active_inactive = "active_inactive", // TODO: This is not an actual state. Can this be determined?
   active_ongoing = "active_ongoing",
   active_slashed = "active_slashed",
   exited_unslashed = "exited_unslashed",
@@ -21,15 +21,15 @@ export enum ValidatorStatus {
 
 export const ValidatorStatusDisplay: { [key in ValidatorStatus]: string } = {
   [ValidatorStatus.active_exiting]: "Exiting",
-  [ValidatorStatus.active_inactive]: "Inactive",
   [ValidatorStatus.active_ongoing]: "Active",
   [ValidatorStatus.active_slashed]: "Slashed",
   [ValidatorStatus.exited_slashed]: "Slashed",
   [ValidatorStatus.exited_unslashed]: "Exited",
   [ValidatorStatus.pending_initialized]: "Depositing",
   [ValidatorStatus.pending_queued]: "Depositing",
-  [ValidatorStatus.withdrawal_done]: "Exited",
-  [ValidatorStatus.withdrawal_possible]: "Exited",
+  [ValidatorStatus.unknown]: "Depositing",
+  [ValidatorStatus.withdrawal_done]: "Withdrawn",
+  [ValidatorStatus.withdrawal_possible]: "Withdrawable",
 };
 
 export type PendingDeposit = {

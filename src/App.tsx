@@ -65,9 +65,6 @@ function AppContent() {
     return null;
   }
 
-  const isDashboardNoWallet =
-    location.pathname === "/dashboard" && !isConnected;
-
   return (
     <Box id="root" className="flex h-dvh overflow-hidden">
       <Sidebar />
@@ -80,7 +77,8 @@ function AppContent() {
                 <Routes />
               </Box>
             </Box>
-            {!isDashboardNoWallet && <Footer />}
+
+            <Footer />
           </Box>
         </ScrollToTop>
       </Box>

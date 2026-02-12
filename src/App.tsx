@@ -26,9 +26,10 @@ const protectedRoutes = [
 ];
 
 function AppContent() {
+  const { isConnected, isConnecting, isDisconnected } = useAccount();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isConnected, isConnecting } = useAccount();
+  const [hasConnected, setHasConnected] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [redirectRoute, setRedirectRoute] = useState<string>("");
 
@@ -38,6 +39,15 @@ function AppContent() {
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (isConnected && !hasConnected) {
+      setHasConnected(true);
+    } else if (hasConnected && isDisconnected) {
+      setHasConnected(false);
+      window.sessionStorage.removeItem("offline-address");
+    }
+  }, [isConnected, hasConnected, isDisconnected]);
 
   useEffect(() => {
     if (isConnected && protectedRoutes.includes(redirectRoute)) {

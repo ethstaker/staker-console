@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
+import { useConnections } from "wagmi";
 
 import { ConsolidationSourceValidatorsTable } from "@/components/ConsolidationSourceValidatorsTable";
 import { FilterInput } from "@/components/FilterInput";
@@ -15,10 +16,13 @@ import {
   ConsolidateBatchProgressModal,
   ConsolidateProgressModal,
 } from "@/modals/Consolidate";
+import { OfflineMultiModal } from "@/modals/OfflineMulti";
 import { TargetValidatorSelectionModal } from "@/modals/TargetValidatorSelectionModal";
+import { ConsolidateEntry } from "@/types/consolidate";
 import { Credentials, Validator, ValidatorStatus } from "@/types/validator";
 
 const Consolidate: React.FC = () => {
+  const [currentConnection] = useConnections();
   const { selectedValidator, setSelectedValidator } = useSelectedValidator();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
@@ -144,6 +148,21 @@ const Consolidate: React.FC = () => {
   const handleCloseProgressModal = () => {
     setShowProgressModal(false);
   };
+
+  const consolidateEntries: ConsolidateEntry[] = useMemo(() => {
+    if (!targetValidator) {
+      return [];
+    }
+
+    return sourceValidators.map((s) => ({
+      sourceValidator: s,
+      targetValidator,
+    }));
+  }, [targetValidator, sourceValidators]);
+
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
 
   if (!targetValidator) {
     return (
@@ -314,12 +333,19 @@ const Consolidate: React.FC = () => {
               targetValidator={targetValidator}
               sourceValidators={sourceValidators}
             />
+          ) : isOffline ? (
+            <OfflineMultiModal
+              open={showProgressModal}
+              onClose={handleCloseProgressModal}
+              title="Offline Consolidate"
+              transactions={consolidateEntries}
+              type="consolidate"
+            />
           ) : (
             <ConsolidateProgressModal
               open={showProgressModal}
               onClose={handleCloseProgressModal}
-              targetValidator={targetValidator}
-              sourceValidators={sourceValidators}
+              consolidateEntries={consolidateEntries}
             />
           )}
         </>

@@ -66,6 +66,7 @@ export const OfflineConnectModal = ({
         </Box>
 
         <TextField
+          autoFocus
           fullWidth
           size="small"
           placeholder="Offline Address"

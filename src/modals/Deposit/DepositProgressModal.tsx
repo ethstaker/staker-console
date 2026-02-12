@@ -1,8 +1,10 @@
 import { Info } from "@mui/icons-material";
 import { Box, Link, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useConnections } from "wagmi";
 
+import { OfflineProgress } from "@/components/OfflineProgress";
 import { WarningAlert } from "@/components/WarningAlert";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
@@ -28,11 +30,13 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
   open,
   onClose,
 }) => {
+  const [currentConnection] = useConnections();
   const {
     writeDeposit,
     isConfirmed,
     isPendingSignature,
     confirmError,
+    offlineData,
     reset,
     sendError,
     txHash,
@@ -40,6 +44,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
   const navigate = useNavigate();
 
   const [downloadUrl, setDownloadUrl] = useState<string>("");
+  const [offlineSuccess, setOfflineSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (open && selectedDepositData.length > 0) {
@@ -74,72 +79,93 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     writeDeposit(selectedDepositData);
   };
 
+  const onOfflineConfirmation = () => {
+    setOfflineSuccess(true);
+  };
+
   const closeModal = () => {
-    if (isConfirmed) {
+    if (isConfirmed || offlineSuccess) {
       navigate("/dashboard");
     }
 
     onClose();
+    setDownloadUrl("");
+    setOfflineSuccess(false);
   };
+
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
 
   return (
     <ProgressModal
       open={open}
       onClose={closeModal}
-      success={isConfirmed}
-      title="Submitting Deposit Transaction"
+      success={isConfirmed || offlineSuccess}
+      title={
+        isOffline
+          ? "Offline Deposit Transaction"
+          : "Submitting Deposit Transaction"
+      }
     >
-      <Box className="px-6">
-        <Typography className="mb-6 text-secondaryText">
-          Once the transaction is submitted and confirmed your deposit request
-          will be processed by the Beacon Chain and then added to the activation
-          queue.
-        </Typography>
+      {isOffline ? (
+        <OfflineProgress
+          offlineData={offlineData}
+          onConfirmation={onOfflineConfirmation}
+        />
+      ) : (
+        <Box className="px-6">
+          <Typography className="mb-6 text-secondaryText">
+            Once the transaction is submitted and confirmed your deposit request
+            will be processed by the Beacon Chain and then added to the
+            activation queue.
+          </Typography>
 
-        <Box className="mb-4">
-          <ProgressModalSigning
-            isSigning={isPendingSignature}
-            onRetry={retryTransaction}
-            signingError={sendError}
-            signedMessage="Successfully signed and submitted the transaction"
-            signingMessage="Signing transaction with your wallet"
-          />
+          <Box className="mb-4">
+            <ProgressModalSigning
+              isSigning={isPendingSignature}
+              onRetry={retryTransaction}
+              signingError={sendError}
+              signedMessage="Successfully signed and submitted the transaction"
+              signingMessage="Signing transaction with your wallet"
+            />
 
-          <ProgressModalConfirming
-            confirmationError={confirmError}
-            confirmedMessage="Transaction confirmed"
-            confirmingMessage="Waiting for transaction confirmation"
-            isWaiting={isPendingSignature || !!sendError}
-            onRetry={retryTransaction}
-            success={isConfirmed}
-            waitingMessage="Waiting for signature"
-          />
+            <ProgressModalConfirming
+              confirmationError={confirmError}
+              confirmedMessage="Transaction confirmed"
+              confirmingMessage="Waiting for transaction confirmation"
+              isWaiting={isPendingSignature || !!sendError}
+              onRetry={retryTransaction}
+              success={isConfirmed}
+              waitingMessage="Waiting for signature"
+            />
 
-          {!!downloadUrl && (
-            <Box className="mb-6 flex items-start gap-2 rounded-sm border border-primary/50 bg-primary/15 p-3">
-              <Info color="primary" />
-              <Box className="flex flex-col gap-2">
-                <Typography className="text-sm text-white">
-                  You have not deposited all validators in the uploaded deposit
-                  JSON file.
-                </Typography>
-                <Link href={downloadUrl} download={fileName} underline="none">
-                  Click here to download the undeposited validators
-                </Link>
+            {!!downloadUrl && (
+              <Box className="mb-6 flex items-start gap-2 rounded-sm border border-primary/50 bg-primary/15 p-3">
+                <Info color="primary" />
+                <Box className="flex flex-col gap-2">
+                  <Typography className="text-sm text-white">
+                    You have not deposited all validators in the uploaded
+                    deposit JSON file.
+                  </Typography>
+                  <Link href={downloadUrl} download={fileName} underline="none">
+                    Click here to download the undeposited validators
+                  </Link>
+                </Box>
               </Box>
-            </Box>
-          )}
+            )}
 
-          {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
+            {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
 
-          {isConfirmed && (
-            <WarningAlert>
-              It will take a few minutes for the new deposits to reach the
-              Beacon Chain and be reflected in the dashboard.
-            </WarningAlert>
-          )}
+            {isConfirmed && (
+              <WarningAlert>
+                It will take a few minutes for the new deposits to reach the
+                Beacon Chain and be reflected in the dashboard.
+              </WarningAlert>
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </ProgressModal>
   );
 };

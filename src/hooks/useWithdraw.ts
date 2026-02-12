@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import {
   useChainId,
+  useConnections,
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
 
+import { OfflineTransactionDetails } from "@/types";
+import { getUnsignedTxPromise } from "@/utils/offline";
 import {
   generateWithdrawalCalldata,
   getContractAddress,
@@ -13,6 +16,10 @@ import {
 
 export const useWithdraw = () => {
   const chainId = useChainId();
+  const [currentConnection] = useConnections();
+  const [offlineData, setOfflineData] = useState<
+    OfflineTransactionDetails | undefined
+  >();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
@@ -34,6 +41,7 @@ export const useWithdraw = () => {
   });
 
   const sendWithdraw = async (pubkey: `0x${string}`, amount: string) => {
+    setOfflineData(undefined);
     setTxHash(undefined);
     const queue = await getWithdrawalQueue(chainId);
 
@@ -51,16 +59,27 @@ export const useWithdraw = () => {
       },
       {
         onSuccess: (hash) => {
-          setTxHash(hash);
+          // Avoid setting the hash when using the offline connect to prevent polling for transaction confirmation
+          if (currentConnection?.connector?.id !== "offline") {
+            setTxHash(hash);
+          }
         },
         onError: (e) => {
           console.log(e);
         },
       },
     );
+
+    if (currentConnection?.connector?.id === "offline") {
+      const data = await getUnsignedTxPromise();
+      if (data) {
+        setOfflineData(data);
+      }
+    }
   };
 
   const reset = () => {
+    setOfflineData(undefined);
     setTxHash(undefined);
     resetSendTransaction();
   };
@@ -73,6 +92,7 @@ export const useWithdraw = () => {
     isPendingConfirmation: isPendingConfirmation && !!txHash,
     isPendingSignature: isPendingSignature || !txHash,
     isSendSuccess,
+    offlineData,
     reset,
     sendWithdraw,
     txHash,

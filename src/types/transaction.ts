@@ -24,7 +24,7 @@ export interface Transaction {
 }
 
 export interface OfflineTransactionDetails {
-  hash: `0x${string}`;
+  signingHash: `0x${string}`;
   transaction: TransactionSerializable;
   unsignedSerialized: `0x${string}`;
 }

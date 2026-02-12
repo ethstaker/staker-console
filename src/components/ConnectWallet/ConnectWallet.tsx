@@ -1,6 +1,7 @@
 import { AccountBalanceWallet as WalletIcon } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isAddress } from "viem";
 import { useChainId, useConnect } from "wagmi";
 
 import { OfflineConnector } from "@/config/OfflineConnector";
@@ -12,6 +13,20 @@ export const ConnectWallet = () => {
 
   const [showOfflineConnect, setShowOfflineConnect] = useState(false);
 
+  useEffect(() => {
+    const previousAddress = window.sessionStorage.getItem("offline-address");
+
+    if (!previousAddress) {
+      return;
+    }
+
+    if (isAddress(previousAddress)) {
+      onOfflineConnectModalClose(previousAddress as `0x${string}`);
+    } else {
+      window.sessionStorage.removeItem("offline-address");
+    }
+  }, []);
+
   const onOfflineConnectModalClose = (address: `0x${string}` | undefined) => {
     if (address) {
       connect({
@@ -20,6 +35,8 @@ export const ConnectWallet = () => {
           defaultChainId: chainId,
         }),
       });
+
+      window.sessionStorage.setItem("offline-address", address);
     }
 
     setShowOfflineConnect(false);

@@ -1,3 +1,4 @@
+export * from "./consolidate";
 export * from "./deposit";
 export * from "./multicall";
 export * from "./sendMany";

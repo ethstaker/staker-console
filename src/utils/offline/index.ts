@@ -25,6 +25,6 @@ export const resetUnsignedTx = (): void => {
 export const resolveUnsignedTx = (data: OfflineTransactionDetails): void => {
   if (resolveCurrentUnsignedTxPromise) {
     resolveCurrentUnsignedTxPromise(data);
-    resolveCurrentUnsignedTxPromise = null; // One-time use
+    resetUnsignedTx();
   }
 };

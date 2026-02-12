@@ -1,8 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
-import React, { useEffect } from "react";
+import { Buffer } from "buffer";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useConnections } from "wagmi";
 
+import { OfflineProgress } from "@/components/OfflineProgress";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
   ProgressModal,
@@ -24,16 +27,20 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
   open,
   onClose,
 }) => {
+  const [currentConnection] = useConnections();
   const {
     writeDeposit,
     isConfirmed,
     isPendingSignature,
     confirmError,
+    offlineData,
     reset,
     sendError,
     txHash,
   } = useDeposit();
   const navigate = useNavigate();
+
+  const [offlineSuccess, setOfflineSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (open && entries.length > 0) {
@@ -68,53 +75,69 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
     executeTransaction();
   };
 
+  const onOfflineConfirmation = () => {
+    setOfflineSuccess(true);
+  };
+
   const onCloseModal = () => {
-    if (isConfirmed) {
+    if (isConfirmed || offlineSuccess) {
       navigate("/dashboard");
     }
 
     onClose();
   };
 
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
+
   return (
     <ProgressModal
       open={open}
       onClose={onCloseModal}
-      success={isConfirmed}
-      title="Submitting Deposit Transaction"
+      success={isConfirmed || offlineSuccess}
+      title={
+        isOffline ? "Offline TopUp Transaction" : "Submitting TopUp Transaction"
+      }
     >
-      <Box className="px-6">
-        <Typography
-          className="mb-6 text-secondaryText"
-          sx={{ lineHeight: 1.6 }}
-        >
-          Once the transaction is submitted and confirmed your deposit request
-          will be processed by the Beacon Chain and then added to the activation
-          queue.
-        </Typography>
+      {isOffline ? (
+        <OfflineProgress
+          offlineData={offlineData}
+          onConfirmation={onOfflineConfirmation}
+        />
+      ) : (
+        <Box className="px-6">
+          <Typography
+            className="mb-6 text-secondaryText"
+            sx={{ lineHeight: 1.6 }}
+          >
+            Once the transaction is submitted and confirmed your TopUp request
+            will be processed by the Beacon Chain and then added to the
+            activation queue.
+          </Typography>
+          <Box className="mb-4">
+            <ProgressModalSigning
+              isSigning={isPendingSignature}
+              onRetry={retryTransaction}
+              signingError={sendError}
+              signedMessage="Successfully signed and submitted the transaction"
+              signingMessage="Signing transaction with your wallet"
+            />
 
-        <Box className="mb-4">
-          <ProgressModalSigning
-            isSigning={isPendingSignature}
-            onRetry={retryTransaction}
-            signingError={sendError}
-            signedMessage="Successfully signed and submitted the transaction"
-            signingMessage="Signing transaction with your wallet"
-          />
+            <ProgressModalConfirming
+              confirmationError={confirmError}
+              confirmedMessage="Transaction confirmed"
+              confirmingMessage="Waiting for transaction confirmation"
+              isWaiting={isPendingSignature || !!sendError}
+              onRetry={retryTransaction}
+              success={isConfirmed}
+              waitingMessage="Waiting for signature"
+            />
 
-          <ProgressModalConfirming
-            confirmationError={confirmError}
-            confirmedMessage="Transaction confirmed"
-            confirmingMessage="Waiting for transaction confirmation"
-            isWaiting={isPendingSignature || !!sendError}
-            onRetry={retryTransaction}
-            success={isConfirmed}
-            waitingMessage="Waiting for signature"
-          />
-
-          {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
+            {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
+          </Box>
         </Box>
-      </Box>
+      )}
     </ProgressModal>
   );
 };

@@ -53,10 +53,10 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
             });
 
             const serialized = serializeTransaction(preparedTx);
-            const hash = keccak256(serialized as Hex);
+            const signingHash = keccak256(serialized as Hex);
 
             const offlineData: OfflineTransactionDetails = {
-              hash,
+              signingHash,
               transaction: preparedTx,
               unsignedSerialized: serialized,
             };
@@ -75,10 +75,10 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
               chainId,
             } as TransactionSerializable & { chainId: number };
             const serialized = serializeTransaction(tx);
-            const hash = keccak256(serialized as Hex);
+            const signingHash = keccak256(serialized as Hex);
 
             const offlineData: OfflineTransactionDetails = {
-              hash,
+              signingHash,
               transaction: tx,
               unsignedSerialized: serialized,
             };

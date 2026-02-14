@@ -1,18 +1,25 @@
 import { useMemo, useState } from "react";
 import {
   useChainId,
+  useConnections,
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
 
+import { OfflineTransactionDetails } from "@/types";
 import {
   getContractAddress,
   getConsolidationQueue,
   generateConsolidateCalldata,
 } from "@/utils/consolidate";
+import { getUnsignedTxPromise } from "@/utils/offline";
 
 export const useConsolidate = () => {
   const chainId = useChainId();
+  const [currentConnection] = useConnections();
+  const [offlineData, setOfflineData] = useState<
+    OfflineTransactionDetails | undefined
+  >();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
@@ -37,6 +44,7 @@ export const useConsolidate = () => {
     source: `0x${string}`,
     target: `0x${string}`,
   ) => {
+    setOfflineData(undefined);
     setTxHash(undefined);
     const queue = await getConsolidationQueue(chainId);
 
@@ -54,16 +62,27 @@ export const useConsolidate = () => {
       },
       {
         onSuccess: (hash) => {
-          setTxHash(hash);
+          // Avoid setting the hash when using the offline connect to prevent polling for transaction confirmation
+          if (currentConnection?.connector?.id !== "offline") {
+            setTxHash(hash);
+          }
         },
         onError: (e) => {
           console.log(e);
         },
       },
     );
+
+    if (currentConnection?.connector?.id === "offline") {
+      const data = await getUnsignedTxPromise();
+      if (data) {
+        setOfflineData(data);
+      }
+    }
   };
 
   const reset = () => {
+    setOfflineData(undefined);
     setTxHash(undefined);
     resetSendTransaction();
   };
@@ -76,6 +95,7 @@ export const useConsolidate = () => {
     isPendingConfirmation: isPendingConfirmation && !!txHash,
     isPendingSignature: isPendingSignature || !txHash,
     isSendSuccess,
+    offlineData,
     sendConsolidate,
     txHash,
     reset,

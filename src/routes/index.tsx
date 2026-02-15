@@ -8,6 +8,7 @@ import Exit from "@/pages/Exit";
 import PartialWithdraw from "@/pages/PartialWithdraw";
 import TopUp from "@/pages/TopUp";
 import Upgrade from "@/pages/Upgrade";
+import Version from "@/pages/Version";
 
 function Pages() {
   const { isConnected } = useAccount();
@@ -25,6 +26,7 @@ function Pages() {
           <Route path="/exit" element={<Exit />} />
         </>
       )}
+      <Route path="version" element={<Version />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );

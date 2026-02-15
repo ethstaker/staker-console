@@ -4,6 +4,25 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { execSync } from 'child_process'
+
+let commitHash = 'unknown'
+let lastUpdate = 'unknown'
+
+try {
+  commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+  lastUpdate = execSync('git log -1 --format=%cd --date=iso-local').toString().trim();
+  lastUpdate = new Date(lastUpdate).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+} catch (e) {
+  console.warn('Unable to determine git info');
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -24,6 +43,8 @@ export default defineConfig(({ command, mode }) => {
     define: {
       global: 'globalThis',
       'process.env': env,
+      __COMMIT_HASH__: JSON.stringify(commitHash),
+      __LAST_UPDATE__: JSON.stringify(lastUpdate),
     },
     resolve: {
       alias: {

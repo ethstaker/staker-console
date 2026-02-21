@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useConnections } from "wagmi";
 
 import { ConsolidationSourceValidatorsTable } from "@/components/ConsolidationSourceValidatorsTable";
-import { FilterInput } from "@/components/FilterInput";
+import { FilterInput } from "@/components/Input";
 import { Meta } from "@/components/Meta";
 import { TargetValidatorDetails } from "@/components/TargetValidatorDetails";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";

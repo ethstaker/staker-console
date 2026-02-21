@@ -1,9 +1,10 @@
 import { Close } from "@mui/icons-material";
-import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { isAddress } from "viem";
 
-import { BaseDialog } from "../BaseDialog";
+import { Input } from "@/components/Input";
+import { BaseDialog } from "@/modals/BaseDialog";
 
 interface OfflineConnectModalProps {
   open: boolean;
@@ -65,36 +66,10 @@ export const OfflineConnectModal = ({
           </Typography>
         </Box>
 
-        <TextField
-          autoFocus
-          fullWidth
-          size="small"
+        <Input
           placeholder="Offline Address"
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              color: "#ffffff",
-              backgroundColor: "#333743",
-              "& fieldset": {
-                borderColor: "#404040",
-              },
-              "&:hover fieldset": {
-                borderColor: "#606060",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#627EEA",
-              },
-            },
-            "& .MuiInputBase-input": {
-              color: "#ffffff",
-              padding: "8px 12px",
-            },
-            "& .MuiInputBase-input::placeholder": {
-              color: "#b3b3b3",
-              opacity: 1,
-            },
-          }}
+          setValue={setAddress}
         />
 
         <Box className="flex flex-row items-center justify-end mt-4 gap-4">

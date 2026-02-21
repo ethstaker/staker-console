@@ -1,13 +1,8 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 import { CopyToClipboard } from "@/components/CopyToClipboard";
+import { Input } from "@/components/Input";
 import { useOfflineTransaction } from "@/hooks/useOfflineTransaction";
 import {
   ProgressModalConfirming,
@@ -123,35 +118,10 @@ export const OfflineProgress = ({
                 <Typography className="text-xs text-secondaryText">
                   Signed Transaction
                 </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
+                <Input
                   placeholder="Signed Transaction"
                   value={signedTx}
-                  onChange={(e) => setSignedTx(e.target.value as `0x${string}`)}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      color: "#ffffff",
-                      backgroundColor: "#333743",
-                      "& fieldset": {
-                        borderColor: "#404040",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#606060",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#627EEA",
-                      },
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "#ffffff",
-                      padding: "8px 12px",
-                    },
-                    "& .MuiInputBase-input::placeholder": {
-                      color: "#b3b3b3",
-                      opacity: 1,
-                    },
-                  }}
+                  setValue={setSignedTx}
                 />
 
                 {!!txError && (

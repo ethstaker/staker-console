@@ -110,7 +110,7 @@ export const OfflineProgress = ({
                 waitingMessage="Waiting for signature"
               />
 
-              {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
+              {isConfirmed && <ProgressModalSuccess hash={txHash} />}
             </>
           ) : (
             <>

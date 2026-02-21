@@ -28,17 +28,7 @@ export const OfflineConnectModal = ({
 
   return (
     <BaseDialog open={open} onClose={() => onClose(undefined)}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          px: 3,
-          py: 2,
-          borderBottom: "1px solid #404040",
-          mb: 2,
-        }}
-      >
+      <Box className="flex justify-between items-center px-6 py-4 mb-4 border-b border-b-[#404040]">
         <Box className="flex-1" />
         <Typography variant="h5" className="font-semibold text-white">
           Connect to Offline Wallet

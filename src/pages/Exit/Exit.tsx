@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useConnections } from "wagmi";
 
 import { ExitValidatorTable } from "@/components/ExitValidatorTable";
 import { Meta } from "@/components/Meta";
@@ -12,9 +12,11 @@ import {
   ExitBatchProgressModal,
   ExitProgressModal,
 } from "@/modals/Exit";
+import { OfflineMultiModal } from "@/modals/OfflineMulti";
 
 const Exit: React.FC = () => {
   const { address } = useAccount();
+  const [currentConnection] = useConnections();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
@@ -62,6 +64,17 @@ const Exit: React.FC = () => {
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);
   };
+
+  const withdrawalEntries = useMemo(() => {
+    return selectedValidatorData.map((validator) => ({
+      validator,
+      withdrawalAmount: "0",
+    }));
+  }, [selectedValidatorData]);
+
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
 
   return (
     <>
@@ -132,11 +145,19 @@ const Exit: React.FC = () => {
           onClose={handleCloseProgressModal}
           validators={selectedValidatorData}
         />
+      ) : isOffline ? (
+        <OfflineMultiModal
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          title="Offline Exit"
+          transactions={withdrawalEntries}
+          type="withdraw"
+        />
       ) : (
         <ExitProgressModal
           open={showProgressModal}
           onClose={handleCloseProgressModal}
-          validators={selectedValidatorData}
+          withdrawals={withdrawalEntries}
         />
       )}
 

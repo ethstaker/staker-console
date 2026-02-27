@@ -20,3 +20,7 @@ interface Window {
   ) => void;
   dataLayer?: any[];
 }
+
+interface BigInt {
+  toJSON(): Number;
+}

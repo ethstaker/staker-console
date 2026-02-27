@@ -9,7 +9,7 @@ import {
   TableBody,
   TableSortLabel,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
   CustomTableCell,
@@ -17,7 +17,7 @@ import {
   CustomTableRow,
 } from "@/components/CustomTable";
 import { ExplorerLink } from "@/components/ExplorerLink";
-import { FilterInput } from "@/components/FilterInput";
+import { FilterInput } from "@/components/Input";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
 import { useSelectedValidator } from "@/context/SelectedValidatorContext";
 import { useValidators } from "@/hooks/useValidators";

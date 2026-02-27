@@ -2,6 +2,7 @@ import {
   WaitForTransactionReceiptErrorType,
   SendTransactionErrorType,
 } from "@wagmi/core";
+import { TransactionSerializable } from "viem";
 
 import { Validator } from "./validator";
 
@@ -20,4 +21,10 @@ export interface Transaction {
   txHash?: `0x${string}`;
   signingError?: SendTransactionErrorType | null;
   confirmationError?: WaitForTransactionReceiptErrorType | null;
+}
+
+export interface OfflineTransactionDetails {
+  signingHash: `0x${string}`;
+  transaction: TransactionSerializable;
+  unsignedSerialized: `0x${string}`;
 }

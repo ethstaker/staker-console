@@ -9,18 +9,18 @@ import { useTransactions } from "@/hooks/useTransactions";
 import { useValidators } from "@/hooks/useValidators";
 import { useWithdraw } from "@/hooks/useWithdraw";
 import { ProgressModal } from "@/modals/ProgressModal";
-import { Transaction, TransactionState, Validator } from "@/types";
+import { Transaction, TransactionState, WithdrawalEntry } from "@/types";
 
 interface ExitProgressModalProps {
   open: boolean;
   onClose: () => void;
-  validators: Validator[];
+  withdrawals: WithdrawalEntry[];
 }
 
 export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
   open,
   onClose,
-  validators,
+  withdrawals,
 }) => {
   const { refetch: refetchValidators } = useValidators();
   const { contractAddress, sendWithdraw, reset, ...withdrawProps } =
@@ -56,10 +56,10 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
 
   // Initialize transactions when validators change
   useEffect(() => {
-    if (validators.length > 0 && open) {
-      const initialTransactions: Transaction[] = validators.map(
-        (validator) => ({
-          validator,
+    if (withdrawals.length > 0 && open) {
+      const initialTransactions: Transaction[] = withdrawals.map(
+        (withdrawal) => ({
+          validator: withdrawal.validator,
           state: TransactionState.pending,
         }),
       );
@@ -67,7 +67,7 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
     } else {
       setTransactions([]);
     }
-  }, [open, validators]);
+  }, [open, withdrawals]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

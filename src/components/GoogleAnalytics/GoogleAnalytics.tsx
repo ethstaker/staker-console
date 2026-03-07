@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useAccount } from "wagmi";
+import { useAccount, useConnections } from "wagmi";
 
 import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useValidators } from "@/hooks/useValidators";
@@ -11,6 +11,7 @@ const GA_CONSENT_STORAGE = "ethstaker_gaConsent";
 
 export const GoogleAnalytics = () => {
   const { address, isConnected } = useAccount();
+  const [currentConnection] = useConnections();
   const {
     analyticsStartAction,
     setAnalyticsStartAction,
@@ -44,6 +45,10 @@ export const GoogleAnalytics = () => {
       (addresses ? addresses.split(",") : []) as `0x${string}`[],
     );
   }, []);
+
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
 
   useEffect(() => {
     if (!consentGiven || !analyticsStartAction) {
@@ -85,6 +90,7 @@ export const GoogleAnalytics = () => {
     }
 
     window.gtag("event", "page_view", {
+      is_offline: isOffline,
       page_path: location.pathname,
       page_title: document.title,
     });
@@ -97,6 +103,7 @@ export const GoogleAnalytics = () => {
 
     window.gtag("event", event, {
       flow_name: flow,
+      is_offline: isOffline,
     });
   };
 
@@ -107,6 +114,7 @@ export const GoogleAnalytics = () => {
 
     window.gtag("event", "validator_count", {
       count,
+      is_offline: isOffline,
     });
 
     const newAddresses = [...(storedAddresses || []), newAddress];

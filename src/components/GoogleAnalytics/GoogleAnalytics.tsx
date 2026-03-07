@@ -1,17 +1,35 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useAccount } from "wagmi";
 
-const GA_LOCAL_STORAGE = "ethstaker_gaConsent";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
+import { useValidators } from "@/hooks/useValidators";
+
+const GA_ADDRESS_STORAGE = "ethstaker_storedAddress";
+const GA_CONSENT_STORAGE = "ethstaker_gaConsent";
 
 export const GoogleAnalytics = () => {
+  const { address, isConnected } = useAccount();
+  const {
+    analyticsStartAction,
+    setAnalyticsStartAction,
+    analyticsCompleteAction,
+    setAnalyticsCompleteAction,
+  } = useGoogleAnalytics();
   const location = useLocation();
+  const {
+    data: { validatorCount },
+  } = useValidators();
   // default to false to prevent component flash if it
   // takes a moment to retrieve response from local storage
   const [consentGiven, setConsentGiven] = useState<boolean | undefined>(false);
+  const [storedAddresses, setStoredAddresses] = useState<
+    `0x${string}`[] | undefined
+  >(undefined);
 
   useEffect(() => {
-    const storedConsent = localStorage.getItem(GA_LOCAL_STORAGE);
+    const storedConsent = localStorage.getItem(GA_CONSENT_STORAGE);
     if (storedConsent === "true") {
       setConsentGiven(true);
     } else if (storedConsent === "false") {
@@ -19,7 +37,47 @@ export const GoogleAnalytics = () => {
     } else {
       setConsentGiven(undefined);
     }
+
+    // Will be stored as a comma delimited string
+    const addresses = localStorage.getItem(GA_ADDRESS_STORAGE);
+    setStoredAddresses(
+      (addresses ? addresses.split(",") : []) as `0x${string}`[],
+    );
   }, []);
+
+  useEffect(() => {
+    if (!consentGiven || !analyticsStartAction) {
+      return;
+    }
+
+    sendEvent("flow_start", analyticsStartAction);
+    setAnalyticsStartAction(null);
+  }, [analyticsStartAction, consentGiven]);
+
+  useEffect(() => {
+    if (
+      !consentGiven ||
+      !address ||
+      !isConnected ||
+      !validatorCount ||
+      !storedAddresses
+    ) {
+      return;
+    }
+
+    if (!storedAddresses.includes(address)) {
+      sendValidatorCount(address, validatorCount);
+    }
+  }, [address, consentGiven, isConnected, validatorCount]);
+
+  useEffect(() => {
+    if (!consentGiven || !analyticsCompleteAction) {
+      return;
+    }
+
+    sendEvent("flow_complete", analyticsCompleteAction);
+    setAnalyticsCompleteAction(null);
+  }, [analyticsCompleteAction, consentGiven]);
 
   const sendPageView = () => {
     if (typeof window.gtag !== "function") {
@@ -30,6 +88,30 @@ export const GoogleAnalytics = () => {
       page_path: location.pathname,
       page_title: document.title,
     });
+  };
+
+  const sendEvent = (event: string, flow: string) => {
+    if (typeof window.gtag !== "function") {
+      return;
+    }
+
+    window.gtag("event", event, {
+      flow_name: flow,
+    });
+  };
+
+  const sendValidatorCount = (newAddress: `0x${string}`, count: number) => {
+    if (typeof window.gtag !== "function") {
+      return;
+    }
+
+    window.gtag("event", "validator_count", {
+      count,
+    });
+
+    const newAddresses = [...(storedAddresses || []), newAddress];
+    setStoredAddresses(newAddresses);
+    localStorage.setItem(GA_ADDRESS_STORAGE, newAddresses.join(","));
   };
 
   useEffect(() => {
@@ -51,7 +133,7 @@ export const GoogleAnalytics = () => {
   }, [location]);
 
   const onUserConsent = (consent: string) => {
-    localStorage.setItem(GA_LOCAL_STORAGE, consent);
+    localStorage.setItem(GA_CONSENT_STORAGE, consent);
     setConsentGiven(consent === "true");
   };
 

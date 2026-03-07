@@ -8,6 +8,7 @@ import { cookieToInitialState, WagmiProvider, type Config } from "wagmi";
 
 import { wagmiAdapter, projectId, networks } from "@/config/appkit";
 
+import { GoogleAnalyticsProvider } from "./GoogleAnalyticsContext";
 import { SelectedValidatorProvider } from "./SelectedValidatorContext";
 
 const queryClient = new QueryClient();
@@ -50,7 +51,9 @@ function ContextProvider({
       initialState={initialState}
     >
       <QueryClientProvider client={queryClient}>
-        <SelectedValidatorProvider>{children}</SelectedValidatorProvider>
+        <GoogleAnalyticsProvider>
+          <SelectedValidatorProvider>{children}</SelectedValidatorProvider>
+        </GoogleAnalyticsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

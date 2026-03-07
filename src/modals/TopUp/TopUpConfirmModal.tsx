@@ -20,10 +20,11 @@ import {
   CustomModalTableCell,
 } from "@/components/CustomTable";
 import { WarningAlert } from "@/components/WarningAlert";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConnectedBalance } from "@/hooks/useConnectedBalance";
 import { useValidators } from "@/hooks/useValidators";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { TopUpEntry } from "@/types";
+import { AnalyticsFlow, TopUpEntry } from "@/types";
 
 interface TopUpConfirmModalProps {
   open: boolean;
@@ -41,12 +42,15 @@ export const TopUpConfirmModal: React.FC<TopUpConfirmModalProps> = ({
   onConfirm,
 }) => {
   const currentWalletBalance = useConnectedBalance();
+  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const { data: validatorData } = useValidators();
   const [acknowledged, setAcknowledged] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setAcknowledged(false);
+    } else {
+      setAnalyticsStartAction(AnalyticsFlow.topUp);
     }
   }, [open]);
 

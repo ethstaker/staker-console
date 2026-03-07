@@ -20,9 +20,10 @@ import {
   CustomModalTableCell,
 } from "@/components/CustomTable";
 import { WarningAlert } from "@/components/WarningAlert";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConnectedBalance } from "@/hooks/useConnectedBalance";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { DepositData } from "@/types";
+import { AnalyticsFlow, DepositData } from "@/types";
 
 interface DepositConfirmModalProps {
   open: boolean;
@@ -39,9 +40,14 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
 }) => {
   const { address } = useAccount();
   const currentWalletBalance = useConnectedBalance();
+  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
 
   useEffect(() => {
+    if (open) {
+      setAnalyticsStartAction(AnalyticsFlow.deposit);
+    }
+
     setAcknowledged(false);
   }, [open]);
 

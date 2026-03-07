@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useConnections } from "wagmi";
 
 import { OfflineProgress } from "@/components/OfflineProgress";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
   ProgressModal,
@@ -13,7 +14,7 @@ import {
   ProgressModalConfirming,
   ProgressModalSuccess,
 } from "@/modals/ProgressModal";
-import { DepositData, TopUpEntry } from "@/types";
+import { AnalyticsFlow, DepositData, TopUpEntry } from "@/types";
 import { constructDataRoot } from "@/utils/deposit";
 
 interface TopUpProgressModalProps {
@@ -38,6 +39,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
     sendError,
     txHash,
   } = useDeposit();
+  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const navigate = useNavigate();
 
   const [offlineSuccess, setOfflineSuccess] = useState<boolean>(false);
@@ -81,6 +83,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
 
   const onCloseModal = () => {
     if (isConfirmed || offlineSuccess) {
+      setAnalyticsCompleteAction(AnalyticsFlow.topUp);
       navigate("/dashboard");
     }
 

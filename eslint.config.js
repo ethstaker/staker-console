@@ -15,6 +15,8 @@ export default [
       ecmaVersion: 2022,
       globals: {
         ...globals.browser,
+        __COMMIT_HASH__: 'readonly',
+        __LAST_UPDATE__: 'readonly',
       },
       parser: parser,
       parserOptions: {

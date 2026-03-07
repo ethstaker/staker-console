@@ -1,5 +1,8 @@
 /// <reference types="vite/client" />
 /// <reference types="vite/types/importMeta.d.ts" />
+declare const __COMMIT_HASH__: string;
+declare const __LAST_UPDATE__: string;
+
 interface ImportMetaEnv {
   readonly VITE_HOODI_APP_URL?: string;
   readonly VITE_HOODI_API_URL?: string;

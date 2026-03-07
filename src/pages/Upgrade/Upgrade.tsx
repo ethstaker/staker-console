@@ -13,7 +13,7 @@ import {
   UpgradeInfoModal,
   UpgradeProgressModal,
 } from "@/modals/Upgrade";
-import { ConsolidateEntry } from "@/types";
+import { AnalyticsFlow, ConsolidateEntry } from "@/types";
 import { Credentials, ValidatorStatus } from "@/types/validator";
 
 const Upgrade: React.FC = () => {
@@ -131,6 +131,7 @@ const Upgrade: React.FC = () => {
         />
       ) : isOffline ? (
         <OfflineMultiModal
+          flow={AnalyticsFlow.upgrade}
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Upgrade"

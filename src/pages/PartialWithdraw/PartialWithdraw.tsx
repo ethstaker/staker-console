@@ -14,7 +14,7 @@ import {
   PartialWithdrawInfoModal,
   PartialWithdrawProgressModal,
 } from "@/modals/PartialWithdraw";
-import { WithdrawalEntry } from "@/types";
+import { AnalyticsFlow, WithdrawalEntry } from "@/types";
 
 const PartialWithdraw: React.FC = () => {
   const { address } = useAccount();
@@ -139,6 +139,7 @@ const PartialWithdraw: React.FC = () => {
         />
       ) : isOffline ? (
         <OfflineMultiModal
+          flow={AnalyticsFlow.partialWithdraw}
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Partial Withdraw"

@@ -13,6 +13,7 @@ import {
   ExitProgressModal,
 } from "@/modals/Exit";
 import { OfflineMultiModal } from "@/modals/OfflineMulti";
+import { AnalyticsFlow } from "@/types";
 
 const Exit: React.FC = () => {
   const { address } = useAccount();
@@ -147,6 +148,7 @@ const Exit: React.FC = () => {
         />
       ) : isOffline ? (
         <OfflineMultiModal
+          flow={AnalyticsFlow.exit}
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Exit"

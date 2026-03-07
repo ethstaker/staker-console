@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any).Buffer = Buffer;
+// Required to stringify transaction objects
+BigInt.prototype.toJSON = function () {
+  return Number(this);
+};

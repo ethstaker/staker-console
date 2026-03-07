@@ -6,8 +6,8 @@ interface ConfirmingProps {
   confirmationError: WaitForTransactionReceiptErrorType | null;
   confirmedMessage: string;
   confirmingMessage: string;
-  isWaiting: boolean;
-  onRetry: () => void;
+  isWaiting?: boolean;
+  onRetry?: () => void;
   success: boolean;
   waitingMessage: string;
 }
@@ -16,7 +16,7 @@ export const ProgressModalConfirming = ({
   confirmationError,
   confirmedMessage,
   confirmingMessage,
-  isWaiting,
+  isWaiting = false,
   onRetry,
   success,
   waitingMessage,
@@ -54,14 +54,16 @@ export const ProgressModalConfirming = ({
                 There was an error confirming the transaction
               </Typography>
             </Box>
-            <Button
-              color="primary"
-              size="small"
-              variant="contained"
-              onClick={() => onRetry()}
-            >
-              Retry
-            </Button>
+            {!!onRetry && (
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                onClick={() => onRetry()}
+              >
+                Retry
+              </Button>
+            )}
           </Box>
           <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
             {confirmationError.message}

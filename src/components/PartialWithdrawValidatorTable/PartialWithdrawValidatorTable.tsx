@@ -20,11 +20,16 @@ import {
 } from "@/components/CustomTable";
 import { CustomTextField } from "@/components/CustomTextField";
 import { ExplorerLink } from "@/components/ExplorerLink";
-import { FilterInput } from "@/components/FilterInput";
+import { FilterInput } from "@/components/Input";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
 import { useSelectedValidator } from "@/context/SelectedValidatorContext";
 import { useValidators } from "@/hooks/useValidators";
-import { Validator, ValidatorStatus, WithdrawalEntry } from "@/types";
+import {
+  Credentials,
+  Validator,
+  ValidatorStatus,
+  WithdrawalEntry,
+} from "@/types";
 import { enforceGweiPrecision } from "@/utils/number";
 
 interface PartialWithdrawValidatorTableParams {
@@ -74,6 +79,7 @@ export const PartialWithdrawValidatorTable = ({
     return validators
       .filter(
         (validator) =>
+          validator.credentials === Credentials.compounding &&
           validator.status === ValidatorStatus.active_ongoing &&
           (validator.pubkey.toLowerCase().includes(searchQuery.toLowerCase()) ||
             validator.index.toString().includes(searchQuery)),

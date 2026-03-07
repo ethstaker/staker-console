@@ -8,18 +8,18 @@ import { TransactionStatus } from "@/components/TransactionState";
 import { useConsolidate } from "@/hooks/useConsolidate";
 import { useTransactions } from "@/hooks/useTransactions";
 import { ProgressModal } from "@/modals/ProgressModal";
-import { Transaction, TransactionState, Validator } from "@/types";
+import { ConsolidateEntry, Transaction, TransactionState } from "@/types";
 
 interface UpgradeProgressModalProps {
   open: boolean;
   onClose: () => void;
-  validators: Validator[];
+  consolidateEntries: ConsolidateEntry[];
 }
 
 export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
   open,
   onClose,
-  validators = [],
+  consolidateEntries,
 }) => {
   const { contractAddress, sendConsolidate, reset, ...consolidateProps } =
     useConsolidate();
@@ -55,10 +55,10 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
 
   // Initialize transactions when validators change
   useEffect(() => {
-    if (validators.length > 0) {
-      const initialTransactions: Transaction[] = validators.map(
-        (validator) => ({
-          validator,
+    if (consolidateEntries.length > 0) {
+      const initialTransactions: Transaction[] = consolidateEntries.map(
+        (entry) => ({
+          validator: entry.sourceValidator,
           state: TransactionState.pending,
         }),
       );
@@ -66,7 +66,7 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
     } else {
       setTransactions([]);
     }
-  }, [validators]);
+  }, [consolidateEntries]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

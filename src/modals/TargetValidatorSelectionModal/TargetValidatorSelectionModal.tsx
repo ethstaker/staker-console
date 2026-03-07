@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Button,
-  TextField,
   IconButton,
   Tooltip,
 } from "@mui/material";
@@ -12,6 +11,7 @@ import clsx from "clsx";
 import React, { useState, useMemo } from "react";
 
 import { ExplorerLink } from "@/components/ExplorerLink";
+import { Input } from "@/components/Input";
 import { useValidator } from "@/hooks/useValidator";
 import { BaseDialog } from "@/modals/BaseDialog";
 import { Validator, Credentials, ValidatorStatus } from "@/types/validator";
@@ -215,36 +215,10 @@ export const TargetValidatorSelectionModal: React.FC<
               Search Validators
             </Typography>
 
-            <TextField
-              fullWidth
+            <Input
               placeholder="Search by index, public key, or withdrawal address..."
-              variant="outlined"
-              size="small"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              sx={{
-                mb: 3,
-                "& .MuiOutlinedInput-root": {
-                  color: "#ffffff",
-                  backgroundColor: "#333743",
-                  "& fieldset": {
-                    borderColor: "#404040",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#606060",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#627EEA",
-                  },
-                },
-                "& .MuiInputBase-input": {
-                  color: "#ffffff",
-                },
-                "& .MuiInputBase-input::placeholder": {
-                  color: "#b3b3b3",
-                  opacity: 1,
-                },
-              }}
+              setValue={setSearchQuery}
             />
 
             <Box>

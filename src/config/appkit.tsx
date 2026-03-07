@@ -21,6 +21,12 @@ if (
   definedNetworks.push(mainnet);
 }
 
+if (definedNetworks.length === 0) {
+  throw new Error(
+    "No networks defined. Please verify your environment variables set at least one network",
+  );
+}
+
 export const networks: AppKitNetwork[] = definedNetworks;
 
 export const wagmiAdapter = new WagmiAdapter({

@@ -5,11 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionDetail } from "@/components/TransactionDetail";
 import { TransactionStatus } from "@/components/TransactionState";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useValidators } from "@/hooks/useValidators";
 import { useWithdraw } from "@/hooks/useWithdraw";
 import { ProgressModal } from "@/modals/ProgressModal";
-import { Transaction, TransactionState, WithdrawalEntry } from "@/types";
+import {
+  AnalyticsFlow,
+  Transaction,
+  TransactionState,
+  WithdrawalEntry,
+} from "@/types";
 
 interface ExitProgressModalProps {
   open: boolean;
@@ -22,6 +28,7 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
   onClose,
   withdrawals,
 }) => {
+  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const { refetch: refetchValidators } = useValidators();
   const { contractAddress, sendWithdraw, reset, ...withdrawProps } =
     useWithdraw();
@@ -84,6 +91,7 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
 
   const handleModalClose = () => {
     if (allCompleted) {
+      setAnalyticsCompleteAction(AnalyticsFlow.exit);
       refetchValidators();
       navigate("/dashboard");
     } else {

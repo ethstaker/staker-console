@@ -7,7 +7,6 @@ import {
   Table,
   TableBody,
   TableRow,
-  TextField,
   IconButton,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
@@ -18,10 +17,12 @@ import {
   CustomModalTable,
   CustomModalTableCell,
 } from "@/components/CustomTable";
+import { Input } from "@/components/Input";
 import { QueueWarning } from "@/components/QueueWarning";
 import { WarningAlert } from "@/components/WarningAlert";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { Validator } from "@/types/validator";
+import { AnalyticsFlow, Validator } from "@/types";
 
 interface ExitConfirmModalProps {
   open: boolean;
@@ -42,11 +43,14 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
 }) => {
   const { address } = useAccount();
   const { data: walletBalanceResponse } = useBalance({ address });
+  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [confirmationText, setConfirmationText] = useState("");
 
   useEffect(() => {
     if (!open) {
       setConfirmationText("");
+    } else {
+      setAnalyticsStartAction(AnalyticsFlow.exit);
     }
   }, [open]);
 
@@ -200,35 +204,10 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
               >
                 Type &apos;Unstake Funds&apos; to confirm.
               </Typography>
-              <TextField
-                fullWidth
-                size="small"
+              <Input
                 placeholder="Unstake Funds"
                 value={confirmationText}
-                onChange={(e) => setConfirmationText(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    color: "#ffffff",
-                    backgroundColor: "#333743",
-                    "& fieldset": {
-                      borderColor: "#404040",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#606060",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#627EEA",
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#ffffff",
-                    padding: "8px 12px",
-                  },
-                  "& .MuiInputBase-input::placeholder": {
-                    color: "#b3b3b3",
-                    opacity: 1,
-                  },
-                }}
+                setValue={setConfirmationText}
               />
             </WarningAlert>
           </Box>

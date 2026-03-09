@@ -24,7 +24,7 @@ import {
   CustomTableRow,
 } from "@/components/CustomTable";
 import { ExplorerLink } from "@/components/ExplorerLink";
-import { FilterInput } from "@/components/FilterInput";
+import { FilterInput } from "@/components/Input";
 import { PendingValidatorBalanceChange } from "@/components/PendingValidatorBalanceChange";
 import { ValidatorMenu } from "@/components/ValidatorMenu";
 import { ValidatorState } from "@/components/ValidatorState";

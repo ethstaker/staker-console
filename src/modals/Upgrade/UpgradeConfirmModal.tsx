@@ -19,8 +19,9 @@ import {
 } from "@/components/CustomTable";
 import { QueueWarning } from "@/components/QueueWarning";
 import { WarningAlert } from "@/components/WarningAlert";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { Validator } from "@/types/validator";
+import { AnalyticsFlow, Validator } from "@/types";
 
 interface UpgradeConfirmModalProps {
   open: boolean;
@@ -35,11 +36,14 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
   validators,
   onConfirm,
 }) => {
+  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setAcknowledged(false);
+    } else {
+      setAnalyticsStartAction(AnalyticsFlow.upgrade);
     }
   }, [open]);
 

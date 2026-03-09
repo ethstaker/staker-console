@@ -1,22 +1,24 @@
 import { Box, Typography, Button } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useState, useMemo } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useConnections } from "wagmi";
 
 import { Meta } from "@/components/Meta";
 import { PartialWithdrawValidatorTable } from "@/components/PartialWithdrawValidatorTable";
 import { useSendMany } from "@/hooks/useSendMany";
 import { useValidators } from "@/hooks/useValidators";
+import { OfflineMultiModal } from "@/modals/OfflineMulti";
 import {
   PartialWithdrawBatchProgressModal,
   PartialWithdrawConfirmModal,
   PartialWithdrawInfoModal,
   PartialWithdrawProgressModal,
 } from "@/modals/PartialWithdraw";
-import { WithdrawalEntry } from "@/types";
+import { AnalyticsFlow, WithdrawalEntry } from "@/types";
 
 const PartialWithdraw: React.FC = () => {
   const { address } = useAccount();
+  const [currentConnection] = useConnections();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
   const [entries, setEntries] = useState<WithdrawalEntry[]>([]);
@@ -63,6 +65,10 @@ const PartialWithdraw: React.FC = () => {
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);
   };
+
+  const isOffline = useMemo(() => {
+    return currentConnection?.connector?.id === "offline";
+  }, [currentConnection]);
 
   return (
     <>
@@ -130,6 +136,15 @@ const PartialWithdraw: React.FC = () => {
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           withdrawals={entries}
+        />
+      ) : isOffline ? (
+        <OfflineMultiModal
+          flow={AnalyticsFlow.partialWithdraw}
+          open={showProgressModal}
+          onClose={handleCloseProgressModal}
+          title="Offline Partial Withdraw"
+          transactions={entries}
+          type="withdraw"
         />
       ) : (
         <PartialWithdrawProgressModal

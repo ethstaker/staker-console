@@ -5,28 +5,29 @@ import { useNavigate } from "react-router-dom";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionDetail } from "@/components/TransactionDetail";
 import { TransactionStatus } from "@/components/TransactionState";
+import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConsolidate } from "@/hooks/useConsolidate";
 import { useTransactions } from "@/hooks/useTransactions";
 import { ProgressModal } from "@/modals/ProgressModal";
-import { Transaction, TransactionState, Validator } from "@/types";
-
-interface ConsolidateTransaction extends Transaction {
-  targetValidator: Validator;
-  sourceValidator: Validator;
-}
+import {
+  AnalyticsFlow,
+  ConsolidateEntry,
+  ConsolidateTransaction,
+  TransactionState,
+} from "@/types";
 
 interface ConsolidateProgressModalProps {
   open: boolean;
   onClose: () => void;
-  targetValidator: Validator;
-  sourceValidators: Validator[];
+  consolidateEntries: ConsolidateEntry[];
 }
 
 export const ConsolidateProgressModal: React.FC<
   ConsolidateProgressModalProps
-> = ({ open, onClose, targetValidator, sourceValidators }) => {
+> = ({ open, onClose, consolidateEntries }) => {
   const { contractAddress, sendConsolidate, reset, ...consolidateProps } =
     useConsolidate();
+  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
 
   const navigate = useNavigate();
 
@@ -58,21 +59,16 @@ export const ConsolidateProgressModal: React.FC<
     ...consolidateProps,
   });
 
-  // Initialize transactions when validators change
   useEffect(() => {
-    if (sourceValidators.length > 0 && !!targetValidator) {
-      const initialTransactions: ConsolidateTransaction[] =
-        sourceValidators.map((validator) => ({
-          validator,
-          sourceValidator: validator,
-          state: TransactionState.pending,
-          targetValidator,
-        }));
-      setTransactions(initialTransactions);
-    } else {
-      setTransactions([]);
-    }
-  }, [targetValidator, sourceValidators]);
+    const txs = consolidateEntries.map((entry) => ({
+      validator: entry.sourceValidator,
+      sourceValidator: entry.sourceValidator,
+      state: TransactionState.pending,
+      targetValidator: entry.targetValidator,
+    }));
+
+    setTransactions(txs);
+  }, [consolidateEntries]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states
@@ -89,6 +85,7 @@ export const ConsolidateProgressModal: React.FC<
 
   const handleModalClose = () => {
     if (allCompleted) {
+      setAnalyticsCompleteAction(AnalyticsFlow.consolidate);
       navigate("/dashboard");
     } else {
       onClose();

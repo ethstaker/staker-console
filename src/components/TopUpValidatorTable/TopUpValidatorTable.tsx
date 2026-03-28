@@ -146,7 +146,7 @@ export const TopUpValidatorTable = ({
     }
 
     setEntries((prev) => {
-      const depositAmount = new BigNumber(newEntry.depositAmount);
+      const depositAmount = new BigNumber(newEntry.depositAmount || "-1");
       const prevEntry = prev.find((e) => e.validatorPubkey === pubkey);
       if (!prevEntry && depositAmount.gte(MIN_DEPOSIT_AMOUNT)) {
         return [...prev, newEntry];

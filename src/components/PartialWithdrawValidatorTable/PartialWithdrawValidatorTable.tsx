@@ -137,10 +137,13 @@ export const PartialWithdrawValidatorTable = ({
 
     setEntries((prev) => {
       const prevEntry = prev.find((e) => e.validator.pubkey === pubkey);
-      const withdrawalAmount = new BigNumber(newEntry.withdrawalAmount);
+      const withdrawalAmount = new BigNumber(newEntry.withdrawalAmount || "-1");
       if (!prevEntry && withdrawalAmount.gte(MIN_WITHDRAWAL_AMOUNT)) {
         return [...prev, newEntry];
-      } else if (withdrawalAmount.isNaN()) {
+      } else if (
+        withdrawalAmount.isNaN() ||
+        withdrawalAmount.lt(MIN_WITHDRAWAL_AMOUNT)
+      ) {
         return prev.filter((entry) => entry.validator.pubkey !== pubkey);
       } else {
         return prev.map((entry) => ({

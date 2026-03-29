@@ -68,6 +68,8 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
     { id: "cli-option", title: "2. Command Line Interface" },
     { id: "source-option", title: "3. Build from Source" },
     { id: "saving-keys", title: "Saving Your Key Files" },
+    { id: "submitting-deposit-file", title: "Submitting Deposit File" },
+    { id: "validator-activation", title: "Validator Activation" },
   ];
 
   const handleClose = () => {
@@ -1405,6 +1407,40 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                     deposit flow to complete the deposit for each validator.
                   </Typography>
                 </Box>
+              </Box>
+
+              {/* Submitting Deposit File Section */}
+              <Box id="submitting-deposit-file" className="mb-12">
+                <Typography variant="h4" className="mb-6 font-bold text-white">
+                  Submitting Deposit File
+                </Typography>
+                <Typography className="mb-4 text-secondaryText">
+                  Use the ETHStaker Staker Console deposit flow to upload your
+                  generated deposit file, select which validators you wish to
+                  deposit, and finally execute the deposit transaction. Please
+                  note that the depositing address does not need to match the
+                  withdrawal address of your validators. Ensure you have enough
+                  funds for the deposit amount.
+                </Typography>
+              </Box>
+
+              {/* Validator Activation Section */}
+              <Box id="validator-activation" className="mb-12">
+                <Typography variant="h4" className="mb-6 font-bold text-white">
+                  Validator Activation
+                </Typography>
+                <Typography className="mb-4 text-secondaryText">
+                  When you submit a new validator deposit, it enters the
+                  activation queue along with all other deposit and top-up
+                  entries. Depending on network conditions, it may take some
+                  time for your deposit to become active and begin earning
+                  rewards. You can track the current queue times at{" "}
+                  <Link href="https://www.validatorqueue.com/" target="_blank">
+                    validatorqueue.com
+                  </Link>
+                  . Please ensure your validator is running prior to activation.
+                  Instructions will vary based on your setup.
+                </Typography>
               </Box>
             </Box>
           </Box>

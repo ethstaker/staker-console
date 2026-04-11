@@ -97,8 +97,8 @@ export const TopUpConfirmModal: React.FC<TopUpConfirmModalProps> = ({
 
   return (
     <BaseDialog open={open} onClose={handleClose}>
-      <DialogContent sx={{ p: 0 }}>
-        <Box sx={{ p: 0 }}>
+      <DialogContent className="flex flex-col max-h-[85vh] p-0">
+        <Box className="flex flex-col h-full p-0">
           <Box
             sx={{
               display: "flex",
@@ -121,7 +121,7 @@ export const TopUpConfirmModal: React.FC<TopUpConfirmModalProps> = ({
             </Box>
           </Box>
 
-          <Box sx={{ px: 3 }}>
+          <Box className="flex flex-col flex-1 px-6">
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Connected Wallet
             </Typography>

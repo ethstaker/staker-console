@@ -102,8 +102,8 @@ export const PartialWithdrawConfirmModal: React.FC<
 
   return (
     <BaseDialog open={open} onClose={handleClose}>
-      <DialogContent sx={{ p: 0 }}>
-        <Box sx={{ p: 0 }}>
+      <DialogContent className="flex flex-col max-h-[85vh] p-0">
+        <Box className="flex flex-col h-full p-0">
           <Box
             sx={{
               display: "flex",
@@ -126,7 +126,7 @@ export const PartialWithdrawConfirmModal: React.FC<
             </Box>
           </Box>
 
-          <Box className="px-6">
+          <Box className="flex flex-col flex-1 px-6">
             <QueueWarning type="withdrawal" />
 
             <Typography variant="h6" className="mb-3 font-semibold text-white">

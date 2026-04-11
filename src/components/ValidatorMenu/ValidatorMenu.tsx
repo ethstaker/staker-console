@@ -46,11 +46,13 @@ export const ValidatorMenu = ({
       anchorEl={anchorEl}
       open={!!anchorEl && !!validator}
       onClose={onClose}
-      PaperProps={{
-        sx: {
-          backgroundColor: "#333333",
-          color: "#ffffff",
-          border: "1px solid #404040",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: "#333333",
+            color: "#ffffff",
+            border: "1px solid #404040",
+          },
         },
       }}
     >

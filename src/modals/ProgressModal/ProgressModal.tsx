@@ -27,8 +27,8 @@ export const ProgressModal: React.FC<ProgressModalProps> = ({
 }) => {
   return (
     <BaseDialog open={open} onClose={onClose}>
-      <DialogContent className="p-0">
-        <Box className="p-0">
+      <DialogContent className="flex flex-col max-h-[85vh] p-0">
+        <Box className="flex flex-col h-full p-0">
           <Box className="mb-4 flex items-center justify-between border-b border-b-[#404040] px-6 py-4">
             <Box className="flex-1" />
             <Typography variant="h5" className="font-semibold text-white">

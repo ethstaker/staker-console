@@ -1,4 +1,5 @@
 import { Dialog, DialogProps, Paper, styled } from "@mui/material";
+import React from "react";
 
 interface StyledPaperProps {
   wide?: boolean;
@@ -41,8 +42,13 @@ export const BaseDialog = ({
       maxWidth={false}
       fullWidth={false}
       fullScreen={isFullscreen}
-      PaperComponent={StyledPaper}
-      PaperProps={{ wide, isFullscreen }}
+      slots={{ paper: StyledPaper }}
+      slotProps={{
+        paper: {
+          wide,
+          isFullscreen,
+        } as React.ComponentProps<typeof StyledPaper>,
+      }}
     >
       {children}
     </Dialog>

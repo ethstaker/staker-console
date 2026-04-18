@@ -293,19 +293,21 @@ export const TopUpValidatorTable = ({
                             )
                           }
                           disabled={!canTopUp}
-                          InputProps={{
-                            inputProps: {
-                              min: 1,
-                              onWheel: (e) => e.currentTarget.blur(),
-                              onKeyDown: (e) => {
-                                if (
-                                  e.key === "+" ||
-                                  e.key === "-" ||
-                                  e.key === "e" ||
-                                  e.key === "E"
-                                ) {
-                                  e.preventDefault();
-                                }
+                          slotProps={{
+                            input: {
+                              inputProps: {
+                                min: 1,
+                                onWheel: (e) => e.currentTarget.blur(),
+                                onKeyDown: (e) => {
+                                  if (
+                                    e.key === "+" ||
+                                    e.key === "-" ||
+                                    e.key === "e" ||
+                                    e.key === "E"
+                                  ) {
+                                    e.preventDefault();
+                                  }
+                                },
                               },
                             },
                           }}

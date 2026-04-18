@@ -26,12 +26,14 @@ export const FilterInput = ({
       size="small"
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Search className="text-secondaryText" />
-          </InputAdornment>
-        ),
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search className="text-secondaryText" />
+            </InputAdornment>
+          ),
+        },
       }}
     />
   );

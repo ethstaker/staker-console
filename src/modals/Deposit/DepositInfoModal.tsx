@@ -88,13 +88,15 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
       maxWidth={false}
       fullWidth={false}
       fullScreen={isFullscreen}
-      PaperProps={{
-        sx: {
-          backgroundColor: "#1E2128",
-          borderRadius: isFullscreen ? 0 : 2,
-          maxHeight: isFullscreen ? "100vh" : "85vh",
-          width: isFullscreen ? "100vw" : "1000px",
-          height: isFullscreen ? "100vh" : "auto",
+      slotProps={{
+        paper: {
+          sx: {
+            backgroundColor: "#1E2128",
+            borderRadius: isFullscreen ? 0 : 2,
+            maxHeight: isFullscreen ? "100vh" : "85vh",
+            width: isFullscreen ? "100vw" : "1000px",
+            height: isFullscreen ? "100vh" : "auto",
+          },
         },
       }}
     >
@@ -705,7 +707,13 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                           Math.max(1, parseInt(e.target.value) || 1),
                         )
                       }
-                      inputProps={{ min: 1 }}
+                      slotProps={{
+                        input: {
+                          inputProps: {
+                            min: 1,
+                          },
+                        },
+                      }}
                       sx={{
                         width: "200px",
                         "& .MuiOutlinedInput-root": {
@@ -739,7 +747,14 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                           ),
                         )
                       }
-                      inputProps={{ min: 32, max: 2048 }}
+                      slotProps={{
+                        input: {
+                          inputProps: {
+                            min: 32,
+                            max: 2048,
+                          },
+                        },
+                      }}
                       sx={{
                         width: "200px",
                         "& .MuiOutlinedInput-root": {
@@ -1259,7 +1274,13 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                           Math.max(1, parseInt(e.target.value) || 1),
                         )
                       }
-                      inputProps={{ min: 1 }}
+                      slotProps={{
+                        input: {
+                          inputProps: {
+                            min: 1,
+                          },
+                        },
+                      }}
                       sx={{
                         width: "200px",
                         "& .MuiOutlinedInput-root": {
@@ -1293,7 +1314,14 @@ export const DepositInfoModal: React.FC<DepositInfoModalProps> = ({
                           ),
                         )
                       }
-                      inputProps={{ min: 32, max: 2048 }}
+                      slotProps={{
+                        input: {
+                          inputProps: {
+                            min: 32,
+                            max: 2048,
+                          },
+                        },
+                      }}
                       sx={{
                         width: "200px",
                         "& .MuiOutlinedInput-root": {

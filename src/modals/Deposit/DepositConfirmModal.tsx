@@ -93,8 +93,8 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
 
   return (
     <BaseDialog open={open} onClose={handleClose}>
-      <DialogContent className="p-0">
-        <Box className="p-0">
+      <DialogContent className="flex flex-col max-h-[85vh] p-0">
+        <Box className="flex flex-col h-full p-0">
           <Box className="flex justify-between items-center px-6 py-4 mb-4 border-b border-b-[#404040]">
             <Box className="flex-1" />
             <Typography variant="h5" className="font-semibold text-white">
@@ -107,7 +107,7 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
             </Box>
           </Box>
 
-          <Box className="px-6">
+          <Box className="flex flex-col flex-1 px-6">
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Connected Wallet
             </Typography>

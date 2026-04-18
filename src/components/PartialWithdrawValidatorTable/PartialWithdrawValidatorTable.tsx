@@ -295,20 +295,22 @@ export const PartialWithdrawValidatorTable = ({
                             )
                           }
                           disabled={!canWithdraw}
-                          InputProps={{
-                            inputProps: {
-                              min: 0,
-                              max: maxWithdrawal,
-                              onWheel: (e) => e.currentTarget.blur(),
-                              onKeyDown: (e) => {
-                                if (
-                                  e.key === "+" ||
-                                  e.key === "-" ||
-                                  e.key === "e" ||
-                                  e.key === "E"
-                                ) {
-                                  e.preventDefault();
-                                }
+                          slotProps={{
+                            input: {
+                              inputProps: {
+                                min: 0,
+                                max: maxWithdrawal,
+                                onWheel: (e) => e.currentTarget.blur(),
+                                onKeyDown: (e) => {
+                                  if (
+                                    e.key === "+" ||
+                                    e.key === "-" ||
+                                    e.key === "e" ||
+                                    e.key === "E"
+                                  ) {
+                                    e.preventDefault();
+                                  }
+                                },
                               },
                             },
                           }}

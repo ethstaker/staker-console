@@ -1,6 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
+    cooldown:
+      default-days: "7"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -33,3 +35,13 @@ updates:
         patterns:
           - "typescript*"
           - "@typescript*"
+  - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: "7"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions-deps:
+        patterns:
+          - "*"

@@ -1,3 +1,4 @@
+export * from "./beaconchain";
 export * from "./consolidate";
 export * from "./deposit";
 export * from "./googleAnalytics";

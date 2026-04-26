@@ -1,4 +1,4 @@
-import { DoDisturb as DoDisturbIcon } from "@mui/icons-material";
+import { DoDisturb as DoDisturbIcon, Warning } from "@mui/icons-material";
 import {
   Box,
   Typography,
@@ -9,6 +9,7 @@ import {
   TableBody,
   TableSortLabel,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useState, useMemo, useEffect } from "react";
@@ -23,6 +24,7 @@ import { ExplorerLink } from "@/components/ExplorerLink";
 import { FilterInput } from "@/components/Input";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
 import { useSelectedValidator } from "@/context/SelectedValidatorContext";
+import { useCurrentEpoch } from "@/hooks/useCurrentEpoch";
 import { useValidators } from "@/hooks/useValidators";
 import {
   Credentials,
@@ -30,6 +32,7 @@ import {
   ValidatorStatus,
   WithdrawalEntry,
 } from "@/types";
+import { hasMetShardCommitteePeriod } from "@/utils/epoch";
 import { enforceGweiPrecision } from "@/utils/number";
 
 interface PartialWithdrawValidatorTableParams {
@@ -46,9 +49,17 @@ export const PartialWithdrawValidatorTable = ({
 }: PartialWithdrawValidatorTableParams) => {
   const { selectedValidator, setSelectedValidator } = useSelectedValidator();
   const { data: validatorData } = useValidators();
+  const currentEpoch = useCurrentEpoch();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortAscending, setSortAscending] = useState<boolean>(true);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  const isEligibleForWithdrawal = (validator: Validator): boolean => {
+    if (currentEpoch === undefined) {
+      return true;
+    }
+    return hasMetShardCommitteePeriod(validator.activationEpoch, currentEpoch);
+  };
 
   useEffect(() => {
     if (selectedValidator) {
@@ -221,9 +232,11 @@ export const PartialWithdrawValidatorTable = ({
                   0,
                   validator.totalBalance - MINIMUM_BALANCE,
                 );
-                const canWithdraw =
+                const eligible = isEligibleForWithdrawal(validator);
+                const hasEnoughBalance =
                   validator.totalBalance >
                   MINIMUM_BALANCE + MIN_WITHDRAWAL_AMOUNT;
+                const canWithdraw = eligible && hasEnoughBalance;
                 const hasWithdrawal = new BigNumber(
                   entry?.withdrawalAmount || 0,
                 ).gt(0);
@@ -283,7 +296,9 @@ export const PartialWithdrawValidatorTable = ({
                           className="w-[200px]"
                           size="small"
                           placeholder={
-                            canWithdraw ? "Enter amount" : "Not enough balance"
+                            hasEnoughBalance
+                              ? "Enter amount"
+                              : "Not enough balance"
                           }
                           type="number"
                           value={entry?.withdrawalAmount.toString() || ""}
@@ -315,7 +330,8 @@ export const PartialWithdrawValidatorTable = ({
                             },
                           }}
                         />
-                        {entry?.withdrawalAmount &&
+                        {eligible &&
+                          entry?.withdrawalAmount &&
                           hoveredRow === validator.pubkey && (
                             <IconButton
                               size="small"
@@ -339,6 +355,16 @@ export const PartialWithdrawValidatorTable = ({
                               <DoDisturbIcon sx={{ fontSize: 16 }} />
                             </IconButton>
                           )}
+                        {!eligible && (
+                          <Tooltip
+                            title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before a withdrawal request will be processed."
+                            arrow
+                          >
+                            <Box className="absolute left-full top-1/2 ml-1 -translate-y-1/2">
+                              <Warning color="warning" />
+                            </Box>
+                          </Tooltip>
+                        )}
                       </Box>
                     </CustomTableCell>
                   </CustomTableRow>

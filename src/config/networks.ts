@@ -49,10 +49,10 @@ const networks: Record<Network, NetworkConfig> = {
   },
 };
 
-const getNetworkProperty = (
+const getNetworkProperty = <K extends keyof NetworkConfig>(
   chainId: number | undefined,
-  property: keyof NetworkConfig,
-): string | `0x${string}` => {
+  property: K,
+): NetworkConfig[K] => {
   if (!chainId || !(chainId in networks)) {
     throw new Error(`Unsupported chain ID: ${chainId}`);
   }

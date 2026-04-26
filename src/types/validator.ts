@@ -75,6 +75,7 @@ export type Validator = {
   withdrawalAddress: `0x${string}`;
   totalBalance: number;
   effectiveBalance: number;
+  activationEpoch: number;
   pendingDepositChange: number;
   pendingWithdrawalChange: number;
   status: ValidatorStatus;
@@ -139,6 +140,7 @@ export const convertValidatorResponse = (
         : `0x${validator.validator.withdrawal_credentials.slice(-40)}`,
     totalBalance: Number(totalBalance),
     effectiveBalance: Number(effectiveBalance),
+    activationEpoch: Number(validator.validator.activation_epoch),
     pendingDepositChange: depositChange,
     pendingWithdrawalChange: partialWithdrawalChange,
     status: validator.status,

@@ -145,12 +145,14 @@ export const ExitValidatorTable = ({
                       {eligible ? (
                         <Checkbox checked={isSelected} />
                       ) : (
-                        <Tooltip
-                          title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before an exit request will be accepted."
-                          arrow
-                        >
-                          <Warning color="warning" />
-                        </Tooltip>
+                        <Box className="text-center">
+                          <Tooltip
+                            title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before an exit request will be accepted."
+                            arrow
+                          >
+                            <Warning color="warning" />
+                          </Tooltip>
+                        </Box>
                       )}
                     </CustomTableCell>
 

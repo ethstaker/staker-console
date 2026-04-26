@@ -156,12 +156,14 @@ export const ConsolidationSourceValidatorsTable: React.FC<
                     {eligible ? (
                       <Checkbox checked={isSelected} />
                     ) : (
-                      <Tooltip
-                        title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before it can be used as a consolidation source."
-                        arrow
-                      >
-                        <Warning color="warning" />
-                      </Tooltip>
+                      <Box className="text-center">
+                        <Tooltip
+                          title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before it can be used as a consolidation source."
+                          arrow
+                        >
+                          <Warning color="warning" />
+                        </Tooltip>
+                      </Box>
                     )}
                   </CustomTableCell>
 

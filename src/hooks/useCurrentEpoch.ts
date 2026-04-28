@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useChainId } from "wagmi";
 
-import { getApiBaseURL } from "@/config/networks";
+import { getApiBaseURL, getSlotsPerEpoch } from "@/config/networks";
 import { HeadResponse } from "@/types";
 
 const fetchHead = async (apiBaseUrl: string): Promise<HeadResponse> => {
@@ -15,6 +15,7 @@ const fetchHead = async (apiBaseUrl: string): Promise<HeadResponse> => {
 export const useCurrentEpoch = (): number | undefined => {
   const chainId = useChainId();
   const apiBaseUrl = getApiBaseURL(chainId);
+  const slotsPerEpoch = getSlotsPerEpoch(chainId);
 
   const { data } = useQuery<HeadResponse, Error>({
     queryKey: ["head", chainId],
@@ -27,5 +28,5 @@ export const useCurrentEpoch = (): number | undefined => {
     return undefined;
   }
 
-  return Number(data.epoch);
+  return Math.floor(Number(data.slot) / slotsPerEpoch);
 };

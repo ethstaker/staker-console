@@ -8,6 +8,7 @@ type NetworkConfig = {
   chainId: string;
   apiBaseURL: string;
   forkVersion: string;
+  slotsPerEpoch?: number;
   depositContractAddress: `0x${string}`;
   withdrawContractAddress: `0x${string}`;
   multicallContractAddress: `0x${string}`;
@@ -99,6 +100,9 @@ export const getBeaconExplorer = (chainId: number | undefined): string =>
 
 export const getPendingActionExplorer = (chainId: number | undefined): string =>
   getNetworkProperty(chainId, "pendingActionExplorer");
+
+export const getSlotsPerEpoch = (chainId: number | undefined): number =>
+  (getNetworkProperty(chainId, "slotsPerEpoch") as number | undefined) ?? 32;
 
 export const getChainByForkVersion = (forkVersion: string): number => {
   for (const [chainIdStr, config] of Object.entries(networks)) {

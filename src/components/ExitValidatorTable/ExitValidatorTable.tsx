@@ -1,3 +1,4 @@
+import { Warning } from "@mui/icons-material";
 import {
   Box,
   Typography,
@@ -8,6 +9,7 @@ import {
   TableRow,
   TableBody,
   TableSortLabel,
+  Tooltip,
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -20,8 +22,10 @@ import { ExplorerLink } from "@/components/ExplorerLink";
 import { FilterInput } from "@/components/Input";
 import { ValidatorsWrapper } from "@/components/ValidatorsWrapper";
 import { useSelectedValidator } from "@/context/SelectedValidatorContext";
+import { useCurrentEpoch } from "@/hooks/useCurrentEpoch";
 import { useValidators } from "@/hooks/useValidators";
 import { Validator, ValidatorStatus } from "@/types";
+import { hasMetShardCommitteePeriod } from "@/utils/epoch";
 
 interface ExitValidatorTableParams {
   selectedValidators: string[];
@@ -34,6 +38,7 @@ export const ExitValidatorTable = ({
 }: ExitValidatorTableParams) => {
   const { selectedValidator, setSelectedValidator } = useSelectedValidator();
   const { data: validatorData } = useValidators();
+  const currentEpoch = useCurrentEpoch();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortAscending, setSortAscending] = useState<boolean>(true);
 
@@ -49,7 +54,19 @@ export const ExitValidatorTable = ({
     return validatorData?.validators || [];
   }, [validatorData]);
 
+  const isEligibleForExit = (validator: Validator): boolean => {
+    if (currentEpoch === undefined) {
+      return true;
+    }
+    return hasMetShardCommitteePeriod(validator.activationEpoch, currentEpoch);
+  };
+
   const handleValidatorToggle = (pubkey: string) => {
+    const validator = validators.find((v) => v.pubkey === pubkey);
+    if (validator && !isEligibleForExit(validator)) {
+      return;
+    }
+
     const selectedIndex = selectedValidators.indexOf(pubkey);
     if (selectedIndex === -1) {
       setSelectedValidators((prev) => [...prev, pubkey]);
@@ -115,6 +132,8 @@ export const ExitValidatorTable = ({
                   validator.pubkey,
                 );
 
+                const eligible = isEligibleForExit(validator);
+
                 return (
                   <CustomTableRow
                     key={validator.pubkey}
@@ -123,7 +142,18 @@ export const ExitValidatorTable = ({
                     onClick={() => handleValidatorToggle(validator.pubkey)}
                   >
                     <CustomTableCell>
-                      <Checkbox checked={isSelected} />
+                      {eligible ? (
+                        <Checkbox checked={isSelected} />
+                      ) : (
+                        <Box className="text-center">
+                          <Tooltip
+                            title="This validator activated too recently. The beacon chain requires at least 256 epochs (~27 hours) of active participation before an exit request will be accepted."
+                            arrow
+                          >
+                            <Warning color="warning" />
+                          </Tooltip>
+                        </Box>
+                      )}
                     </CustomTableCell>
 
                     <CustomTableCell>

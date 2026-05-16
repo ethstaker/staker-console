@@ -60,9 +60,9 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
     ...consolidateProps,
   });
 
-  // Initialize transactions when validators change
+  // Initialize transactions when the modal opens
   useEffect(() => {
-    if (consolidateEntries.length > 0) {
+    if (open && consolidateEntries.length > 0) {
       const initialTransactions: Transaction[] = consolidateEntries.map(
         (entry) => ({
           validator: entry.sourceValidator,
@@ -73,7 +73,7 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
     } else {
       setTransactions([]);
     }
-  }, [consolidateEntries]);
+  }, [open]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

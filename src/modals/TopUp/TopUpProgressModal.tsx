@@ -48,7 +48,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
     if (open && entries.length > 0) {
       executeTransaction();
     }
-  }, [open, entries]);
+  }, [open]);
 
   const executeTransaction = () => {
     const deposits: DepositData[] = entries

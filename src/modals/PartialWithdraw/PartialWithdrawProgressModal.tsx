@@ -79,7 +79,7 @@ export const PartialWithdrawProgressModal: React.FC<
     } else {
       setTransactions([]);
     }
-  }, [open, withdrawals]);
+  }, [open]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

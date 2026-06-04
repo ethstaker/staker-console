@@ -74,7 +74,7 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
     } else {
       setTransactions([]);
     }
-  }, [open, withdrawals]);
+  }, [open]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

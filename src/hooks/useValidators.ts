@@ -42,7 +42,7 @@ export const useValidators = () => {
     queryFn: () => apiFetch(currentAddress, chainId),
     enabled: !!currentAddress && !!chainId,
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    refetchInterval: 24 * 1000,
   });
 
   const validatorData: ValidatorsData = useMemo(() => {

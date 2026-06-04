@@ -60,15 +60,18 @@ export const ConsolidateProgressModal: React.FC<
   });
 
   useEffect(() => {
-    const txs = consolidateEntries.map((entry) => ({
-      validator: entry.sourceValidator,
-      sourceValidator: entry.sourceValidator,
-      state: TransactionState.pending,
-      targetValidator: entry.targetValidator,
-    }));
-
-    setTransactions(txs);
-  }, [consolidateEntries]);
+    if (open && consolidateEntries.length > 0) {
+      const txs = consolidateEntries.map((entry) => ({
+        validator: entry.sourceValidator,
+        sourceValidator: entry.sourceValidator,
+        state: TransactionState.pending,
+        targetValidator: entry.targetValidator,
+      }));
+      setTransactions(txs);
+    } else {
+      setTransactions([]);
+    }
+  }, [open]);
 
   const handleRowClick = (index: number, state: TransactionState) => {
     // Only allow clicking on completed, error, or skip states

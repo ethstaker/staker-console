@@ -214,6 +214,72 @@ describe("verifyDepositFile", () => {
     });
   });
 
+  describe("validates withdrawal_credentials prefix", () => {
+    it("throws error for unsupported prefix", () => {
+      const deposit = {
+        ...validDepositData,
+        withdrawal_credentials:
+          "030000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      };
+      // Roots are computed to be valid so this test isolates the prefix
+      // check from the root-mismatch check, regardless of check ordering.
+      const data = [
+        {
+          ...deposit,
+          deposit_message_root: constructMessageRoot(deposit),
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `Unsupported withdrawal_credentials prefix 0x03 for ${validDepositData.pubkey}. Expected one of 0x00, 0x01, 0x02`,
+      );
+    });
+
+    it("accepts bls prefix (0x00)", () => {
+      const deposit = {
+        ...validDepositData,
+        withdrawal_credentials:
+          "000000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      };
+      const data = [
+        {
+          ...deposit,
+          deposit_message_root: constructMessageRoot(deposit),
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
+    });
+
+    it("accepts execution prefix (0x01)", () => {
+      const deposit = { ...validDepositData };
+      const data = [
+        {
+          ...deposit,
+          deposit_message_root: constructMessageRoot(deposit),
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
+    });
+
+    it("accepts compounding prefix (0x02)", () => {
+      const deposit = {
+        ...validDepositData,
+        withdrawal_credentials:
+          "020000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      };
+      const data = [
+        {
+          ...deposit,
+          deposit_message_root: constructMessageRoot(deposit),
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
+    });
+  });
+
   describe("validates amount", () => {
     it("throws error for amount less than 1 gwei", () => {
       const data = [{ ...validDepositData, amount: 10 ** 9 - 1 }];

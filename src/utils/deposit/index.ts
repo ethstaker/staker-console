@@ -167,6 +167,19 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
       );
     }
 
+    // Verify credential prefix
+    const withdrawalPrefix = deposit.withdrawal_credentials.slice(0, 2);
+    const validPrefixes = Object.values(Credentials).map((prefix) =>
+      prefix.replace("0x", ""),
+    );
+    if (!validPrefixes.includes(withdrawalPrefix)) {
+      throw new Error(
+        `Unsupported withdrawal_credentials prefix 0x${withdrawalPrefix} for ${deposit.pubkey}. Expected one of ${validPrefixes
+          .map((prefix) => `0x${prefix}`)
+          .join(", ")}`,
+      );
+    }
+
     // Verify amount
     if (deposit.amount < 1 * 10 ** 9) {
       throw new Error(

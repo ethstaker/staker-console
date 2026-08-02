@@ -280,6 +280,46 @@ describe("verifyDepositFile", () => {
     });
   });
 
+  describe("validates unique pubkeys", () => {
+    const validEntry = {
+      ...validDepositData,
+      deposit_message_root: constructMessageRoot(validDepositData),
+      deposit_data_root: constructDataRoot(validDepositData),
+    };
+
+    it("throws error for duplicate pubkey", () => {
+      const data = [validEntry, validEntry];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `Duplicate pubkey detected: ${validEntry.pubkey}`,
+      );
+    });
+
+    it("throws error for duplicate pubkey with different casing", () => {
+      const data = [
+        validEntry,
+        { ...validEntry, pubkey: validEntry.pubkey.toUpperCase() },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `Duplicate pubkey detected: ${validEntry.pubkey.toUpperCase()}`,
+      );
+    });
+
+    it("accepts distinct pubkeys", () => {
+      const secondPubkey =
+        "b1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c";
+      const secondDeposit = { ...validDepositData, pubkey: secondPubkey };
+      const data = [
+        validEntry,
+        {
+          ...secondDeposit,
+          deposit_message_root: constructMessageRoot(secondDeposit),
+          deposit_data_root: constructDataRoot(secondDeposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
+    });
+  });
+
   describe("validates amount", () => {
     it("throws error for amount less than 1 gwei", () => {
       const data = [{ ...validDepositData, amount: 10 ** 9 - 1 }];
@@ -335,7 +375,12 @@ describe("verifyDepositFile", () => {
 
       const data = [
         { ...deposit1, deposit_message_root: messageRoot1, deposit_data_root: dataRoot1, fork_version: "00000000" },
-        { ...validDepositData, fork_version: "01017000" },
+        {
+          ...validDepositData,
+          pubkey:
+            "b1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c",
+          fork_version: "01017000",
+        },
       ];
       expect(() => verifyDepositFile(data, 1)).toThrow(
         /Inconsistent fork_version detected|deposit_message_root is not valid|deposit_data_root is not valid/,

@@ -71,6 +71,7 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
   }
 
   const firstForkVersion = data[0].fork_version;
+  const seenPubkeys = new Set<string>();
 
   for (let i = 0; i < data.length; i++) {
     const deposit = data[i];
@@ -166,6 +167,15 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
         `deposit_data_root length mismatch. Expected 64 but got ${deposit.deposit_data_root.length}`,
       );
     }
+
+    // Reject duplicate pubkeys (case-insensitive hex)
+    const normalizedPubkey = deposit.pubkey.toLowerCase();
+    if (seenPubkeys.has(normalizedPubkey)) {
+      throw new Error(
+        `Duplicate pubkey detected: ${deposit.pubkey}. Each validator pubkey must appear only once in the deposit file`,
+      );
+    }
+    seenPubkeys.add(normalizedPubkey);
 
     // Verify credential prefix
     const withdrawalPrefix = deposit.withdrawal_credentials.slice(0, 2);

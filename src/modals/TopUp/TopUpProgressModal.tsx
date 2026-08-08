@@ -3,9 +3,10 @@ import BigNumber from "bignumber.js";
 import { Buffer } from "buffer";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useConnections } from "wagmi";
+import { useChainId, useConnections } from "wagmi";
 
 import { OfflineProgress } from "@/components/OfflineProgress";
+import { getForkVersion } from "@/config/networks";
 import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
@@ -29,6 +30,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
   onClose,
 }) => {
   const [currentConnection] = useConnections();
+  const chainId = useChainId();
   const {
     writeDeposit,
     isConfirmed,
@@ -59,6 +61,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
           withdrawal_credentials: Buffer.alloc(32).toString("hex"),
           amount: new BigNumber(entry.depositAmount).times(10 ** 9).toNumber(),
           signature: Buffer.alloc(96).toString("hex"),
+          fork_version: getForkVersion(chainId),
         };
 
         const reconstructedDepositDataRoot = constructDataRoot(depositData);

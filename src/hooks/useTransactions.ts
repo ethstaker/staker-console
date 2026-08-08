@@ -142,19 +142,19 @@ export const useTransactions = <T extends Transaction>({
     setHasStartedTransaction(false);
     reset();
 
-    if (nextIndex >= 0) {
-      // Delay next validator signing slightly
-      setTimeout(() => {
+    // Delay next validator signing slightly
+    const timeoutId = setTimeout(() => {
+      if (nextIndex >= 0) {
         setHasStartedTransaction(true);
         processTransaction(transactions[nextIndex]);
-      }, 500);
-    } else {
-      // All transactions completed
-      setTimeout(() => {
+      } else {
+        // All transactions completed
         setIsProcessing(false);
         setExpandedValidator(null);
-      }, 500);
-    }
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [processingIndex, reset, processTransaction, transactions]);
 
   useEffect(() => {

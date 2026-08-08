@@ -10,7 +10,7 @@ import {
 import { createPublicClient, http } from "viem"; // For provider
 
 import { OfflineTransactionDetails } from "@/types";
-import { resolveUnsignedTx } from "@/utils/offline";
+import { getCurrentUnsignedTxToken, resolveUnsignedTx } from "@/utils/offline";
 
 type OfflineConnectorOptions = {
   address?: `0x${string}`;
@@ -46,6 +46,8 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
             if (!address) throw new Error("Not connected");
             if (!params?.[0]) throw new Error("No transaction provided");
 
+            const requestToken = getCurrentUnsignedTxToken();
+
             let preparedTx = await publicClient.prepareTransactionRequest({
               account: address,
               ...(params[0] as any),
@@ -61,13 +63,15 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
               unsignedSerialized: serialized,
             };
 
-            resolveUnsignedTx(offlineData);
+            resolveUnsignedTx(requestToken, offlineData);
 
             return "0x01" as T;
           }
           case "eth_signTransaction": {
             if (!address) throw new Error("Not connected");
             if (!params?.[0]) throw new Error("No transaction provided");
+
+            const requestToken = getCurrentUnsignedTxToken();
 
             const tx = {
               ...params[0],
@@ -83,7 +87,7 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
               unsignedSerialized: serialized,
             };
 
-            resolveUnsignedTx(offlineData);
+            resolveUnsignedTx(requestToken, offlineData);
 
             return "0x01" as T;
           }

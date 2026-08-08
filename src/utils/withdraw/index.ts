@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import { config } from "@/config/appkit";
 import { getWithdrawContractAddress } from "@/config/networks";
 import { Queue } from "@/types";
+import { isValidPubkey } from "@/utils/hex";
 import { getQueue } from "@/utils/queue";
 
 const WITHDRAWAL_FEE_ADDITION = 6;
@@ -31,7 +32,7 @@ export const generateWithdrawalCalldata = (
   pubkey: `0x${string}`,
   amountInEther: string,
 ): `0x${string}` => {
-  if (!/^0x[0-9a-fA-F]{96}$/.test(pubkey)) {
+  if (!isValidPubkey(pubkey)) {
     throw new Error(
       `Invalid validator pubkey: expected a 48-byte hex value but got ${pubkey}`,
     );

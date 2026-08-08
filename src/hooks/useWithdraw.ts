@@ -7,7 +7,12 @@ import {
 } from "wagmi";
 
 import { OfflineTransactionDetails } from "@/types";
-import { getUnsignedTxPromise } from "@/utils/offline";
+import {
+  beginUnsignedTxRequest,
+  rejectUnsignedTx,
+  resetUnsignedTx,
+  UnsignedTxRequest,
+} from "@/utils/offline";
 import {
   generateWithdrawalCalldata,
   getContractAddress,
@@ -20,6 +25,7 @@ export const useWithdraw = () => {
   const [offlineData, setOfflineData] = useState<
     OfflineTransactionDetails | undefined
   >();
+  const [offlineError, setOfflineError] = useState<Error | undefined>();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
@@ -42,12 +48,24 @@ export const useWithdraw = () => {
 
   const sendWithdraw = async (pubkey: `0x${string}`, amount: string) => {
     setOfflineData(undefined);
+    setOfflineError(undefined);
     setTxHash(undefined);
     const queue = await getWithdrawalQueue(chainId);
 
     if (!queue) {
       console.error("Failed to get queue");
       return;
+    }
+
+    const isOffline = currentConnection?.connector?.id === "offline";
+    let unsignedTxRequest: UnsignedTxRequest | undefined;
+    if (isOffline) {
+      try {
+        unsignedTxRequest = beginUnsignedTxRequest();
+      } catch (e) {
+        console.error(e);
+        return;
+      }
     }
 
     sendTransaction(
@@ -60,28 +78,38 @@ export const useWithdraw = () => {
       {
         onSuccess: (hash) => {
           // Avoid setting the hash when using the offline connect to prevent polling for transaction confirmation
-          if (currentConnection?.connector?.id !== "offline") {
+          if (!isOffline) {
             setTxHash(hash);
           }
         },
         onError: (e) => {
           console.log(e);
+          if (unsignedTxRequest) {
+            rejectUnsignedTx(unsignedTxRequest.token, e);
+          }
         },
       },
     );
 
-    if (currentConnection?.connector?.id === "offline") {
-      const data = await getUnsignedTxPromise();
-      if (data) {
-        setOfflineData(data);
+    if (unsignedTxRequest) {
+      try {
+        const data = await unsignedTxRequest.promise;
+        if (data) {
+          setOfflineData(data);
+        }
+      } catch (e) {
+        console.error(e);
+        setOfflineError(e as Error);
       }
     }
   };
 
   const reset = () => {
     setOfflineData(undefined);
+    setOfflineError(undefined);
     setTxHash(undefined);
     resetSendTransaction();
+    resetUnsignedTx();
   };
 
   return {
@@ -93,6 +121,7 @@ export const useWithdraw = () => {
     isPendingSignature: isPendingSignature || !txHash,
     isSendSuccess,
     offlineData,
+    offlineError,
     reset,
     sendWithdraw,
     txHash,

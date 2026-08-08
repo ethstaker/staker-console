@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { parseValidatorsResponse } from "./validator";
+import { parseValidatorResponse, parseValidatorsResponse } from "./validator";
 
 const validPubkey =
   "0xa1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c";
@@ -92,6 +92,34 @@ describe("parseValidatorsResponse", () => {
 
     expect(() => parseValidatorsResponse(data)).toThrow(
       /invalid pending_partial_withdrawals/,
+    );
+  });
+});
+
+describe("parseValidatorResponse", () => {
+  const buildValidSingleResponse = () => buildValidResponse()[0].validator;
+
+  it("accepts a well-formed response", () => {
+    const data = buildValidSingleResponse();
+    expect(parseValidatorResponse(data)).toEqual(data);
+  });
+
+  it("passes through null for a 404 (validator not found)", () => {
+    expect(parseValidatorResponse(null)).toBeNull();
+  });
+
+  it("throws for a pubkey of the wrong length", () => {
+    const data = buildValidSingleResponse();
+    data.validator.pubkey = "0xabcd";
+
+    expect(() => parseValidatorResponse(data)).toThrow(
+      /invalid validator payload/,
+    );
+  });
+
+  it("throws for a response that is not an object", () => {
+    expect(() => parseValidatorResponse("not-an-object")).toThrow(
+      /invalid validator payload/,
     );
   });
 });

@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+import { isHexOfByteLength, isValidPubkey } from "@/utils/hex";
+
 export enum Credentials {
   bls = "0x00",
   execution = "0x01",
@@ -94,13 +96,6 @@ export type ValidatorsData = {
 const isIntegerString = (value: unknown): value is string =>
   typeof value === "string" && /^\d+$/.test(value);
 
-const isHexOfByteLength = (
-  value: unknown,
-  byteLength: number,
-): value is string =>
-  typeof value === "string" &&
-  new RegExp(`^0x[0-9a-fA-F]{${byteLength * 2}}$`).test(value);
-
 const isValidatorStatus = (value: unknown): value is ValidatorStatus =>
   typeof value === "string" &&
   (Object.values(ValidatorStatus) as string[]).includes(value);
@@ -113,7 +108,7 @@ const isPendingDeposit = (value: unknown): value is PendingDeposit => {
 
   return (
     isIntegerString(d.amount) &&
-    isHexOfByteLength(d.pubkey, 48) &&
+    isValidPubkey(d.pubkey) &&
     isHexOfByteLength(d.signature, 96) &&
     isIntegerString(d.slot) &&
     isHexOfByteLength(d.withdrawal_credentials, 32)
@@ -153,7 +148,7 @@ const isValidatorResponse = (value: unknown): value is ValidatorResponse => {
     isIntegerString(v.activation_epoch) &&
     isIntegerString(v.effective_balance) &&
     isIntegerString(v.exit_epoch) &&
-    isHexOfByteLength(v.pubkey, 48) &&
+    isValidPubkey(v.pubkey) &&
     typeof v.slashed === "boolean" &&
     isIntegerString(v.withdrawable_epoch) &&
     isHexOfByteLength(v.withdrawal_credentials, 32)
@@ -206,6 +201,22 @@ export const parseValidatorsResponse = (
       pending_partial_withdrawals: pendingPartialWithdrawals,
     };
   });
+};
+
+// Same trust boundary as parseValidatorsResponse, for the single-validator
+// endpoint used by useValidator().
+export const parseValidatorResponse = (
+  data: unknown,
+): ValidatorResponse | null => {
+  if (data === null) {
+    return null;
+  }
+
+  if (!isValidatorResponse(data)) {
+    throw new Error("Malformed validator response: invalid validator payload");
+  }
+
+  return data;
 };
 
 export const convertValidatorResponse = (

@@ -39,11 +39,13 @@ export const OfflineMultiModal = <T,>({
   const navigate = useNavigate();
   const {
     offlineData: offlineConsolidate,
+    offlineError: offlineErrorConsolidate,
     reset: resetConsolidate,
     sendConsolidate,
   } = useConsolidate();
   const {
     offlineData: offlineWithdraw,
+    offlineError: offlineErrorWithdraw,
     reset: resetWithdraw,
     sendWithdraw,
   } = useWithdraw();
@@ -69,11 +71,26 @@ export const OfflineMultiModal = <T,>({
     }
   };
 
+  const currentTransactionKey = useMemo(() => {
+    const transaction = transactions[currentIndex];
+    if (!transaction) {
+      return undefined;
+    }
+
+    if (type === "consolidate") {
+      const t = transaction as unknown as ConsolidateEntry;
+      return `${t.sourceValidator.pubkey}-${t.targetValidator.pubkey}`;
+    }
+
+    const t = transaction as unknown as WithdrawalEntry;
+    return `${t.validator.pubkey}-${t.withdrawalAmount}`;
+  }, [transactions, currentIndex, type]);
+
   useEffect(() => {
     if (transactions[currentIndex]) {
       generateTransaction(transactions[currentIndex]);
     }
-  }, [currentIndex, transactions]);
+  }, [currentIndex, currentTransactionKey]);
 
   const currentOfflineData = useMemo(() => {
     if (type === "consolidate") {
@@ -83,8 +100,22 @@ export const OfflineMultiModal = <T,>({
     }
   }, [offlineConsolidate, offlineWithdraw, type]);
 
+  const currentOfflineError = useMemo(() => {
+    if (type === "consolidate") {
+      return offlineErrorConsolidate;
+    } else if (type === "withdraw") {
+      return offlineErrorWithdraw;
+    }
+  }, [offlineErrorConsolidate, offlineErrorWithdraw, type]);
+
   const onConfirmation = () => {
     setTransactionComplete(true);
+  };
+
+  const onRetry = () => {
+    if (transactions[currentIndex]) {
+      generateTransaction(transactions[currentIndex]);
+    }
   };
 
   const onNextTransaction = () => {
@@ -95,6 +126,8 @@ export const OfflineMultiModal = <T,>({
   };
 
   const handleClose = () => {
+    resetConsolidate();
+    resetWithdraw();
     onClose();
     setCurrentIndex(0);
     setTransactionComplete(false);
@@ -135,6 +168,8 @@ export const OfflineMultiModal = <T,>({
                 <OfflineProgress
                   onConfirmation={onConfirmation}
                   offlineData={currentOfflineData}
+                  offlineError={currentOfflineError}
+                  onRetry={onRetry}
                 />
               </Box>
               <Box className="mt-4 flex justify-center border-t border-t-[#404040] px-6 py-4">

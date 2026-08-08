@@ -35,6 +35,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
     isPendingSignature,
     confirmError,
     offlineData,
+    offlineError,
     reset,
     sendError,
     txHash,
@@ -87,6 +88,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
       navigate("/dashboard");
     }
 
+    reset();
     onClose();
   };
 
@@ -106,7 +108,9 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
       {isOffline ? (
         <OfflineProgress
           offlineData={offlineData}
+          offlineError={offlineError}
           onConfirmation={onOfflineConfirmation}
+          onRetry={retryTransaction}
         />
       ) : (
         <Box className="px-6">

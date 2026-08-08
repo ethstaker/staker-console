@@ -38,6 +38,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     isPendingSignature,
     confirmError,
     offlineData,
+    offlineError,
     reset,
     sendError,
     txHash,
@@ -91,6 +92,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
       navigate("/dashboard");
     }
 
+    reset();
     onClose();
     setDownloadUrl("");
     setOfflineSuccess(false);
@@ -114,7 +116,9 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
       {isOffline ? (
         <OfflineProgress
           offlineData={offlineData}
+          offlineError={offlineError}
           onConfirmation={onOfflineConfirmation}
+          onRetry={retryTransaction}
         />
       ) : (
         <Box className="px-6">

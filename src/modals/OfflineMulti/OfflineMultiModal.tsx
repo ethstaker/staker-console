@@ -40,12 +40,14 @@ export const OfflineMultiModal = <T,>({
   const {
     offlineData: offlineConsolidate,
     offlineError: offlineErrorConsolidate,
+    queueError: queueErrorConsolidate,
     reset: resetConsolidate,
     sendConsolidate,
   } = useConsolidate();
   const {
     offlineData: offlineWithdraw,
     offlineError: offlineErrorWithdraw,
+    queueError: queueErrorWithdraw,
     reset: resetWithdraw,
     sendWithdraw,
   } = useWithdraw();
@@ -107,6 +109,14 @@ export const OfflineMultiModal = <T,>({
       return offlineErrorWithdraw;
     }
   }, [offlineErrorConsolidate, offlineErrorWithdraw, type]);
+  
+  const currentQueueError = useMemo(() => {
+    if (type === "consolidate") {
+      return queueErrorConsolidate;
+    } else if (type === "withdraw") {
+      return queueErrorWithdraw;
+    }
+  }, [queueErrorConsolidate, queueErrorWithdraw, type]);
 
   const onConfirmation = () => {
     setTransactionComplete(true);
@@ -167,9 +177,10 @@ export const OfflineMultiModal = <T,>({
               <Box>
                 <OfflineProgress
                   onConfirmation={onConfirmation}
+                  onRetry={onRetry}
                   offlineData={currentOfflineData}
                   offlineError={currentOfflineError}
-                  onRetry={onRetry}
+                  queueError={currentQueueError}
                 />
               </Box>
               <Box className="mt-4 flex justify-center border-t border-t-[#404040] px-6 py-4">

@@ -16,6 +16,7 @@ interface OfflineProgressProps {
   offlineError?: Error;
   onConfirmation: () => void;
   onRetry?: () => void;
+  queueError?: Error;
 }
 
 export const OfflineProgress = ({
@@ -23,6 +24,7 @@ export const OfflineProgress = ({
   offlineError,
   onConfirmation,
   onRetry,
+  queueError,
 }: OfflineProgressProps) => {
   const [signedTx, setSignedTx] = useState<`0x${string}` | undefined>();
   const [txDetails, setTxDetails] = useState<string>("");
@@ -170,6 +172,24 @@ export const OfflineProgress = ({
           <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
             {offlineError.message}
           </Typography>
+        </Box>
+      ) : queueError ? (
+        <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
+          <Box className="text-error text-sm p-0 m-0 break-all">
+            {queueError.message}
+          </Box>
+          {!!onRetry && (
+            <Box>
+              <Button                 
+                color="primary"
+                size="small"
+                variant="contained" 
+                onClick={() => onRetry()}
+              >
+                Retry
+              </Button>
+            </Box>
+          )}
         </Box>
       ) : (
         <Box className="flex gap-2">

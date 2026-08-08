@@ -1,16 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { useChainId } from "wagmi";
 
 import { depositAbi } from "@/abi";
+import { getChainName, getForkVersion } from "@/config/networks";
 import { DepositData } from "@/types";
-import { getContractAddress } from "@/utils/deposit";
+import { ChainMismatchError, getContractAddress } from "@/utils/deposit";
 
 import { useMulticall } from "./useMulticall";
 
 export const useDeposit = () => {
   const chainId = useChainId();
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
+  const [chainMismatchError, setChainMismatchError] =
+    useState<ChainMismatchError | null>(null);
 
   const {
     confirmError,
@@ -27,6 +30,25 @@ export const useDeposit = () => {
   } = useMulticall();
 
   const writeDeposit = (depositData: DepositData[]) => {
+    setChainMismatchError(null);
+
+    const expectedForkVersion = getForkVersion(chainId);
+    const mismatched = depositData.find(
+      (data) => data.fork_version !== expectedForkVersion,
+    );
+
+    if (mismatched) {
+      setChainMismatchError(
+        new ChainMismatchError(
+          `Chain mismatch. This deposit was generated for a different network than the currently connected ${getChainName(
+            chainId,
+          )} wallet. Reconnect to the correct network before signing.`,
+          chainId,
+        ),
+      );
+      return;
+    }
+
     const calls = depositData.map((data) => ({
       target: contractAddress,
       allowFailure: false,
@@ -49,12 +71,13 @@ export const useDeposit = () => {
   };
 
   const reset = () => {
+    setChainMismatchError(null);
     resetMulticall();
   };
 
   return {
     confirmError,
-    sendError,
+    sendError: sendError ?? (chainMismatchError as unknown as typeof sendError),
     isConfirmed,
     isPendingConfirmation,
     isPendingSignature,

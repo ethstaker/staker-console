@@ -31,6 +31,12 @@ export const generateWithdrawalCalldata = (
   pubkey: `0x${string}`,
   amountInEther: string,
 ): `0x${string}` => {
+  if (!/^0x[0-9a-fA-F]{96}$/.test(pubkey)) {
+    throw new Error(
+      `Invalid validator pubkey: expected a 48-byte hex value but got ${pubkey}`,
+    );
+  }
+
   const truncatedPubkey = pubkey.substring(2);
   const gweiAmount = new BigNumber(amountInEther)
     .times(10 ** 9)

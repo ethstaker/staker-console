@@ -91,6 +91,123 @@ export type ValidatorsData = {
   totalWithdrawalAmount: number;
 };
 
+const isIntegerString = (value: unknown): value is string =>
+  typeof value === "string" && /^\d+$/.test(value);
+
+const isHexOfByteLength = (
+  value: unknown,
+  byteLength: number,
+): value is string =>
+  typeof value === "string" &&
+  new RegExp(`^0x[0-9a-fA-F]{${byteLength * 2}}$`).test(value);
+
+const isValidatorStatus = (value: unknown): value is ValidatorStatus =>
+  typeof value === "string" &&
+  (Object.values(ValidatorStatus) as string[]).includes(value);
+
+const isPendingDeposit = (value: unknown): value is PendingDeposit => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const d = value as Record<string, unknown>;
+
+  return (
+    isIntegerString(d.amount) &&
+    isHexOfByteLength(d.pubkey, 48) &&
+    isHexOfByteLength(d.signature, 96) &&
+    isIntegerString(d.slot) &&
+    isHexOfByteLength(d.withdrawal_credentials, 32)
+  );
+};
+
+const isPendingPartialWithdrawal = (
+  value: unknown,
+): value is PendingPartialWithdrawal => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const w = value as Record<string, unknown>;
+
+  return (
+    isIntegerString(w.amount) &&
+    isIntegerString(w.validator_index) &&
+    isIntegerString(w.withdrawable_epoch)
+  );
+};
+
+const isValidatorResponse = (value: unknown): value is ValidatorResponse => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const r = value as Record<string, unknown>;
+  if (!r.validator || typeof r.validator !== "object") {
+    return false;
+  }
+  const v = r.validator as Record<string, unknown>;
+
+  return (
+    isIntegerString(r.balance) &&
+    isIntegerString(r.index) &&
+    isValidatorStatus(r.status) &&
+    isIntegerString(v.activation_eligibility_epoch) &&
+    isIntegerString(v.activation_epoch) &&
+    isIntegerString(v.effective_balance) &&
+    isIntegerString(v.exit_epoch) &&
+    isHexOfByteLength(v.pubkey, 48) &&
+    typeof v.slashed === "boolean" &&
+    isIntegerString(v.withdrawable_epoch) &&
+    isHexOfByteLength(v.withdrawal_credentials, 32)
+  );
+};
+
+export const parseValidatorsResponse = (
+  data: unknown,
+): ValidatorsResponse[] => {
+  if (!Array.isArray(data)) {
+    throw new Error("Malformed validators response: expected an array");
+  }
+
+  return data.map((item, index) => {
+    if (!item || typeof item !== "object") {
+      throw new Error(`Malformed validators response at index ${index}`);
+    }
+    const entry = item as Record<string, unknown>;
+
+    if (!isValidatorResponse(entry.validator)) {
+      throw new Error(
+        `Malformed validators response at index ${index}: invalid validator payload`,
+      );
+    }
+
+    const pendingDeposits = entry.pending_deposits ?? [];
+    const pendingPartialWithdrawals = entry.pending_partial_withdrawals ?? [];
+
+    if (
+      !Array.isArray(pendingDeposits) ||
+      !pendingDeposits.every(isPendingDeposit)
+    ) {
+      throw new Error(
+        `Malformed validators response at index ${index}: invalid pending_deposits`,
+      );
+    }
+
+    if (
+      !Array.isArray(pendingPartialWithdrawals) ||
+      !pendingPartialWithdrawals.every(isPendingPartialWithdrawal)
+    ) {
+      throw new Error(
+        `Malformed validators response at index ${index}: invalid pending_partial_withdrawals`,
+      );
+    }
+
+    return {
+      validator: entry.validator,
+      pending_deposits: pendingDeposits,
+      pending_partial_withdrawals: pendingPartialWithdrawals,
+    };
+  });
+};
+
 export const convertValidatorResponse = (
   validator: ValidatorResponse | null,
   pendingDeposits: PendingDeposit[] = [],

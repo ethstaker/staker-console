@@ -32,7 +32,7 @@ const Exit: React.FC = () => {
       );
       return total + (validator?.totalBalance || 0);
     }, 0);
-  }, [selectedValidators]);
+  }, [selectedValidators, validatorData]);
 
   const selectedValidatorData = useMemo(() => {
     return selectedValidators

@@ -1,3 +1,4 @@
+import { PriorityHigh } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
@@ -12,12 +13,16 @@ import { OfflineTransactionDetails } from "@/types";
 
 interface OfflineProgressProps {
   offlineData?: OfflineTransactionDetails;
+  offlineError?: Error;
   onConfirmation: () => void;
+  onRetry?: () => void;
 }
 
 export const OfflineProgress = ({
   offlineData,
+  offlineError,
   onConfirmation,
+  onRetry,
 }: OfflineProgressProps) => {
   const [signedTx, setSignedTx] = useState<`0x${string}` | undefined>();
   const [txDetails, setTxDetails] = useState<string>("");
@@ -141,6 +146,30 @@ export const OfflineProgress = ({
               </Box>
             </>
           )}
+        </Box>
+      ) : offlineError ? (
+        <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
+          <Box className="flex items-center justify-between">
+            <Box className="flex gap-4">
+              <PriorityHigh className="text-error" />
+              <Typography className="font-medium text-white">
+                There was an error generating the offline transaction
+              </Typography>
+            </Box>
+            {!!onRetry && (
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                onClick={() => onRetry()}
+              >
+                Retry
+              </Button>
+            )}
+          </Box>
+          <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
+            {offlineError.message}
+          </Typography>
         </Box>
       ) : (
         <Box className="flex gap-2">

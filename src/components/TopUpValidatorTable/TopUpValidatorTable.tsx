@@ -56,6 +56,14 @@ export const TopUpValidatorTable = ({
 
   const { data: searchedValidator, clearData } = useValidator(searchedPubkey);
 
+  const dedupeTopUpEntries = (entries: TopUpEntry[]): TopUpEntry[] => {
+    const byPubkey = new Map<string, TopUpEntry>();
+    for (const entry of entries) {
+      byPubkey.set(entry.validatorPubkey, entry);
+    }
+    return Array.from(byPubkey.values());
+  };
+
   useEffect(() => {
     return () => {
       clearData();
@@ -75,8 +83,10 @@ export const TopUpValidatorTable = ({
       : validatorData?.validators || [];
     setValidators(newValidators);
     setEntries(
-      entries.filter(
-        (e) => !!newValidators.find((v) => v.pubkey === e.validatorPubkey),
+      dedupeTopUpEntries(
+        entries.filter(
+          (e) => !!newValidators.find((v) => v.pubkey === e.validatorPubkey),
+        ),
       ),
     );
   }, [searchedValidator, validatorData]);
@@ -149,7 +159,7 @@ export const TopUpValidatorTable = ({
       const depositAmount = new BigNumber(newEntry.depositAmount || "-1");
       const prevEntry = prev.find((e) => e.validatorPubkey === pubkey);
       if (!prevEntry && depositAmount.gte(MIN_DEPOSIT_AMOUNT)) {
-        return [...prev, newEntry];
+        return dedupeTopUpEntries([...prev, newEntry]);
       } else if (
         depositAmount.isNaN() ||
         depositAmount.isLessThan(MIN_DEPOSIT_AMOUNT)

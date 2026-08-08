@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import React, { useState, useMemo, useEffect } from "react";
-import { useConnections } from "wagmi";
+import { useAccount, useConnections } from "wagmi";
 
 import { ConsolidationSourceValidatorsTable } from "@/components/ConsolidationSourceValidatorsTable";
 import { FilterInput } from "@/components/Input";
@@ -24,6 +24,7 @@ import { Credentials, Validator, ValidatorStatus } from "@/types/validator";
 
 const Consolidate: React.FC = () => {
   const [currentConnection] = useConnections();
+  const { address } = useAccount();
   const { selectedValidator, setSelectedValidator } = useSelectedValidator();
   const { allowSendMany } = useSendMany();
   const { data: validatorData } = useValidators();
@@ -40,10 +41,17 @@ const Consolidate: React.FC = () => {
 
   useEffect(() => {
     if (selectedValidator) {
-      setTargetValidator(selectedValidator);
+      if (
+        selectedValidator.credentials === Credentials.compounding &&
+        selectedValidator.status === ValidatorStatus.active_ongoing &&
+        selectedValidator.withdrawalAddress.toLowerCase() ===
+          address?.toLowerCase()
+      ) {
+        setTargetValidator(selectedValidator);
+      }
       setSelectedValidator(null);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, address]);
 
   const validators = useMemo(() => {
     return validatorData?.validators || [];

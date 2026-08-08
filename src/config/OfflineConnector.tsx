@@ -157,7 +157,7 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
         chainId: requestedChainId,
       }: { chainId?: number } = {}) {
         const chain = config.chains.find(
-          (c) => c.id === requestedChainId || chainId,
+          (c) => c.id === (requestedChainId || chainId),
         );
         if (!chain) {
           throw new Error(

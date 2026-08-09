@@ -58,11 +58,16 @@ export const useOfflineTransaction = () => {
       );
     }
 
-    // offlineData.transaction.value claims to be bigint but it is returned as a hex
-    if (
-      `0x${tx.value?.toString(16)}` !==
-      (offlineData.transaction.value as any as string)
-    ) {
+    if (offlineData.transaction.value === undefined) {
+      throw new Error(
+        "Value mismatch: The requested transaction has no value to compare against",
+      );
+    }
+
+    const expectedValue = BigInt(offlineData.transaction.value);
+    const signedValue = tx.value ?? 0n;
+
+    if (signedValue !== expectedValue) {
       throw new Error(
         "Value mismatch: The provided signed value does not match the transaction requested",
       );

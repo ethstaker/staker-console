@@ -10,7 +10,7 @@ describe("getQueue", () => {
   });
 
   describe("successful queue retrieval", () => {
-    it("returns queue with length 0 and minimal fee when queue is empty", async () => {
+    it("returns queue with length 0 and the exact fee when queue is empty", async () => {
       const mockPublicClient = {
         getStorageAt: vi.fn().mockResolvedValue("0x0"),
       };
@@ -19,10 +19,10 @@ describe("getQueue", () => {
 
       expect(result).toBeDefined();
       expect(result?.length).toBe(0n);
-      expect(result?.fee).toBeGreaterThanOrEqual(0n);
+      expect(result?.fee).toBe(1n);
     });
 
-    it("calculates fee for non-empty queue with addition", async () => {
+    it("calculates the exact fee for non-empty queue with addition", async () => {
       const mockPublicClient = {
         getStorageAt: vi.fn().mockResolvedValue("0x5"),
       };
@@ -31,9 +31,8 @@ describe("getQueue", () => {
 
       expect(result).toBeDefined();
       expect(result?.length).toBe(5n);
-      expect(result?.fee).toBeDefined();
       expect(typeof result?.fee).toBe("bigint");
-      expect(result?.fee).toBeGreaterThan(0n);
+      expect(result?.fee).toBe(1n);
     });
 
     it("adds the addition parameter to queue length before fee calculation", async () => {
@@ -44,10 +43,12 @@ describe("getQueue", () => {
       const resultWithAddition3 = await getQueue(mockAddress, mockPublicClient as any, 3);
       const resultWithAddition10 = await getQueue(mockAddress, mockPublicClient as any, 10);
 
+      expect(resultWithAddition3?.fee).toBe(2n);
+      expect(resultWithAddition10?.fee).toBe(3n);
       expect(resultWithAddition10?.fee).toBeGreaterThan(resultWithAddition3?.fee!);
     });
 
-    it("handles large queue lengths", async () => {
+    it("handles large queue lengths with the exact fee", async () => {
       const mockPublicClient = {
         getStorageAt: vi.fn().mockResolvedValue("0x64"),
       };
@@ -56,7 +57,7 @@ describe("getQueue", () => {
 
       expect(result).toBeDefined();
       expect(result?.length).toBe(100n);
-      expect(result?.fee).toBeGreaterThan(0n);
+      expect(result?.fee).toBe(427n);
     });
   });
 

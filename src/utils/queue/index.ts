@@ -1,23 +1,23 @@
 import { GetPublicClientReturnType } from "@wagmi/core";
-import BigNumber from "bignumber.js";
 
 import { Queue } from "@/types";
 
 const EXCESS_INHIBITOR =
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
+// https://eips.ethereum.org/EIPS/eip-7002#fee-calculation
 const getRequiredFee = (queueLength: bigint): bigint => {
-  let i = new BigNumber(1);
-  let output = new BigNumber(0);
-  let numeratorAccum = new BigNumber(1).times(17); // factor * denominator
+  let i = 1n;
+  let output = 0n;
+  let numeratorAccum = 17n; // factor * denominator
 
-  while (numeratorAccum.gt(0)) {
-    output = output.plus(numeratorAccum);
-    numeratorAccum = numeratorAccum.times(queueLength).div(i.times(17));
-    i = i.plus(1);
+  while (numeratorAccum > 0n) {
+    output += numeratorAccum;
+    numeratorAccum = (numeratorAccum * queueLength) / (i * 17n);
+    i += 1n;
   }
 
-  return BigInt(output.dividedToIntegerBy(17).toString());
+  return output / 17n;
 };
 
 export const getQueue = async (

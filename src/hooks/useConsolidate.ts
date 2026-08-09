@@ -86,7 +86,6 @@ export const useConsolidate = () => {
         to: contractAddress,
         value: queue.fee,
         data: generateConsolidateCalldata(source, target),
-        gas: BigInt(200000),
       },
       {
         onSuccess: (hash) => {

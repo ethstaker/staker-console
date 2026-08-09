@@ -83,7 +83,6 @@ export const useWithdraw = () => {
         to: contractAddress,
         value: queue.fee,
         data: generateWithdrawalCalldata(pubkey, amount),
-        gas: BigInt(200000),
       },
       {
         onSuccess: (hash) => {

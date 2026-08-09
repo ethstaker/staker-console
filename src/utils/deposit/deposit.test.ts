@@ -1,10 +1,12 @@
 import { describe, it, expect } from "vitest";
+
+import { DepositData } from "@/types";
+
 import {
   constructMessageRoot,
   constructDataRoot,
   verifyDepositFile,
 } from "./index";
-import { DepositData } from "@/types";
 
 describe("constructMessageRoot", () => {
   it("constructs message root from deposit data", () => {
@@ -210,6 +212,78 @@ describe("verifyDepositFile", () => {
       const data = [{ ...validDepositData, deposit_data_root: "abc" }];
       expect(() => verifyDepositFile(data, 1)).toThrow(
         "deposit_data_root length mismatch. Expected 64 but got 3",
+      );
+    });
+  });
+
+  describe("validates hexadecimal character set", () => {
+    it("throws error for pubkey with a non-hex character at the correct length", () => {
+      const data = [
+        {
+          ...validDepositData,
+          pubkey: "g" + validDepositData.pubkey.slice(1),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "pubkey must be a 96 character hexadecimal string",
+      );
+    });
+
+    it("throws error for withdrawal_credentials with a non-hex character at the correct length", () => {
+      const data = [
+        {
+          ...validDepositData,
+          withdrawal_credentials:
+            "g" + validDepositData.withdrawal_credentials.slice(1),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "withdrawal_credentials must be a 64 character hexadecimal string",
+      );
+    });
+
+    it("throws error for signature with a non-hex character at the correct length", () => {
+      const data = [
+        {
+          ...validDepositData,
+          signature: "g" + validDepositData.signature.slice(1),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "signature must be a 192 character hexadecimal string",
+      );
+    });
+
+    it("throws error for fork_version with a non-hex character at the correct length", () => {
+      const data = [{ ...validDepositData, fork_version: "g0000000" }];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "fork_version must be an 8 character hexadecimal string",
+      );
+    });
+
+    it("throws error for deposit_message_root with a non-hex character at the correct length", () => {
+      const data = [
+        {
+          ...validDepositData,
+          deposit_message_root:
+            "g" + validDepositData.deposit_message_root!.slice(1),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "deposit_message_root must be a 64 character hexadecimal string",
+      );
+    });
+
+    it("throws error for deposit_data_root with a non-hex character at the correct length", () => {
+      const data = [
+        {
+          ...validDepositData,
+          deposit_data_root:
+            "g" + validDepositData.deposit_data_root!.slice(1),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        "deposit_data_root must be a 64 character hexadecimal string",
       );
     });
   });

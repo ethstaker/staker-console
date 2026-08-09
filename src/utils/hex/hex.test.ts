@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 
-import { isHexOfByteLength, isValidPubkey } from "./index";
+import {
+  isHexOfByteLength,
+  isValidPubkey,
+  isUnprefixedHexOfLength,
+} from "./index";
 
 describe("isHexOfByteLength", () => {
   it("accepts a correctly sized 0x-prefixed hex string", () => {
@@ -51,5 +55,37 @@ describe("isValidPubkey", () => {
 
   it("rejects a pubkey that is too long", () => {
     expect(isValidPubkey(validPubkey + "0")).toBe(false);
+  });
+});
+
+describe("isUnprefixedHexOfLength", () => {
+  it("accepts a correctly sized hex string with no 0x prefix", () => {
+    expect(isUnprefixedHexOfLength("ab".repeat(32), 64)).toBe(true);
+  });
+
+  it("rejects a string that is too short", () => {
+    expect(isUnprefixedHexOfLength("ab", 64)).toBe(false);
+  });
+
+  it("rejects a string that is too long", () => {
+    expect(isUnprefixedHexOfLength("ab".repeat(33), 64)).toBe(false);
+  });
+
+  it("rejects a string with a 0x prefix", () => {
+    expect(isUnprefixedHexOfLength("0x" + "ab".repeat(31), 64)).toBe(false);
+  });
+
+  it("rejects non-hex characters at the correct length", () => {
+    expect(isUnprefixedHexOfLength("zz".repeat(32), 64)).toBe(false);
+  });
+
+  it("rejects a single non-hex character among otherwise valid hex", () => {
+    expect(isUnprefixedHexOfLength("g" + "a".repeat(63), 64)).toBe(false);
+  });
+
+  it("rejects non-string values", () => {
+    expect(isUnprefixedHexOfLength(12345, 64)).toBe(false);
+    expect(isUnprefixedHexOfLength(undefined, 64)).toBe(false);
+    expect(isUnprefixedHexOfLength(null, 64)).toBe(false);
   });
 });

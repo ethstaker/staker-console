@@ -6,9 +6,13 @@ import {
   Validator,
   ValidatorResponse,
   convertValidatorResponse,
+  parseValidatorResponse,
 } from "@/types/validator";
 
-const apiFetch = async (pubkey: string, chainId: number) => {
+const apiFetch = async (
+  pubkey: string,
+  chainId: number,
+): Promise<ValidatorResponse | null> => {
   try {
     const baseUrl = getApiBaseURL(chainId);
     const endpoint = `/v1/validator/${pubkey}`;
@@ -19,7 +23,7 @@ const apiFetch = async (pubkey: string, chainId: number) => {
     if (response.status === 404) {
       return null;
     } else if (response.status === 200) {
-      return response.json();
+      return parseValidatorResponse(await response.json());
     } else {
       throw new Error(`Failed to retrieve validator ${pubkey}`);
     }

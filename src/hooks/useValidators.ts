@@ -4,14 +4,19 @@ import { useAccount, useChainId } from "wagmi";
 
 import { getApiBaseURL } from "@/config/networks";
 import {
+  Credentials,
   ValidatorsData,
   convertValidatorResponse,
+  parseValidatorsResponse,
   Validator,
   ValidatorsResponse,
   ValidatorStatus,
 } from "@/types/validator";
 
-const apiFetch = async (address: string | undefined, chainId: number) => {
+const apiFetch = async (
+  address: string | undefined,
+  chainId: number,
+): Promise<ValidatorsResponse[]> => {
   try {
     const baseUrl = getApiBaseURL(chainId);
     const endpoint = `/v1/validators/${address}`;
@@ -22,7 +27,7 @@ const apiFetch = async (address: string | undefined, chainId: number) => {
     if (response.status === 404) {
       return [];
     } else if (response.status === 200) {
-      return response.json();
+      return parseValidatorsResponse(await response.json());
     } else {
       throw new Error("Failed to retrieve validators");
     }
@@ -48,13 +53,23 @@ export const useValidators = () => {
   const validatorData: ValidatorsData = useMemo(() => {
     const rawData = response.isError || !response.data ? [] : response.data;
 
-    const validators = rawData.map((item) =>
-      convertValidatorResponse(
-        item.validator,
-        item.pending_deposits || [],
-        item.pending_partial_withdrawals || [],
-      ),
-    ) as Validator[];
+    const validators = rawData
+      .map((item) =>
+        convertValidatorResponse(
+          item.validator,
+          item.pending_deposits || [],
+          item.pending_partial_withdrawals || [],
+        ),
+      )
+      .filter((v): v is Validator => !!v)
+      .filter((v) => {
+        if (v.credentials === Credentials.bls || !currentAddress) {
+          return true;
+        }
+        return (
+          v.withdrawalAddress.toLowerCase() === currentAddress.toLowerCase()
+        );
+      });
 
     const activeValidatorCount = validators.filter((v) =>
       [
@@ -90,7 +105,7 @@ export const useValidators = () => {
       totalEffective,
       totalWithdrawalAmount,
     };
-  }, [response.data]);
+  }, [response.data, response.isError, currentAddress]);
 
   return {
     ...response,

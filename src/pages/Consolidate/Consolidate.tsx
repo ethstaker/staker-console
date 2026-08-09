@@ -80,21 +80,17 @@ const Consolidate: React.FC = () => {
 
   const addedBalance = useMemo(() => {
     return sourcePubkeys.reduce((total, pubkey) => {
-      const validator = (validatorData?.validators || []).find(
-        (v) => v.pubkey === pubkey,
-      );
+      const validator = validators.find((v) => v.pubkey === pubkey);
       const consolidatedBalance = validator
         ? Math.min(validator.effectiveBalance, validator.totalBalance)
         : 0;
       return total + consolidatedBalance;
     }, 0);
-  }, [sourcePubkeys]);
+  }, [sourcePubkeys, validators]);
 
   const sweptBalance = useMemo(() => {
     return sourcePubkeys.reduce((total, pubkey) => {
-      const validator = (validatorData?.validators || []).find(
-        (v) => v.pubkey === pubkey,
-      );
+      const validator = validators.find((v) => v.pubkey === pubkey);
       const consolidatedBalance = validator
         ? Math.min(validator.effectiveBalance, validator.totalBalance)
         : 0;
@@ -103,7 +99,7 @@ const Consolidate: React.FC = () => {
         : 0;
       return total + swept;
     }, 0);
-  }, [sourcePubkeys]);
+  }, [sourcePubkeys, validators]);
 
   const newValidatorBalance = useMemo(() => {
     if (!targetValidator) return 0;

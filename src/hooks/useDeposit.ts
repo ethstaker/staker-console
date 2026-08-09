@@ -14,6 +14,7 @@ export const useDeposit = () => {
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
   const [chainMismatchError, setChainMismatchError] =
     useState<ChainMismatchError | null>(null);
+  const [calldataError, setCalldataError] = useState<Error | null>(null);
 
   const {
     confirmError,
@@ -31,6 +32,7 @@ export const useDeposit = () => {
 
   const writeDeposit = (depositData: DepositData[]) => {
     setChainMismatchError(null);
+    setCalldataError(null);
 
     const expectedForkVersion = getForkVersion(chainId);
     const mismatched = depositData.find(
@@ -49,35 +51,46 @@ export const useDeposit = () => {
       return;
     }
 
-    const calls = depositData.map((data) => ({
-      target: contractAddress,
-      allowFailure: false,
-      value: BigInt(data.amount) * BigInt(10 ** 9),
-      callData: encodeFunctionData({
-        abi: depositAbi,
-        functionName: "deposit",
-        args: [
-          `0x${data.pubkey}`,
-          `0x${data.withdrawal_credentials}`,
-          `0x${data.signature}`,
-          `0x${data.deposit_data_root}`,
-        ],
-      }),
-    }));
+    try {
+      const calls = depositData.map((data) => ({
+        target: contractAddress,
+        allowFailure: false,
+        value: BigInt(data.amount) * BigInt(10 ** 9),
+        callData: encodeFunctionData({
+          abi: depositAbi,
+          functionName: "deposit",
+          args: [
+            `0x${data.pubkey}`,
+            `0x${data.withdrawal_credentials}`,
+            `0x${data.signature}`,
+            `0x${data.deposit_data_root}`,
+          ],
+        }),
+      }));
 
-    const totalValue = calls.reduce((sum, call) => sum + call.value, 0n);
+      const totalValue = calls.reduce((sum, call) => sum + call.value, 0n);
 
-    sendMulticall(calls, totalValue);
+      sendMulticall(calls, totalValue);
+    } catch (err) {
+      setCalldataError(
+        err instanceof Error
+          ? err
+          : new Error("Failed to construct deposit transaction"),
+      );
+    }
   };
 
   const reset = () => {
     setChainMismatchError(null);
+    setCalldataError(null);
     resetMulticall();
   };
 
   return {
     confirmError,
-    sendError: sendError ?? (chainMismatchError as unknown as typeof sendError),
+    sendError:
+      sendError ??
+      ((chainMismatchError ?? calldataError) as unknown as typeof sendError),
     isConfirmed,
     isPendingConfirmation,
     isPendingSignature,

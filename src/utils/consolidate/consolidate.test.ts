@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+
 import { generateConsolidateCalldata } from "./index";
 
 vi.mock("@/config/appkit", () => ({

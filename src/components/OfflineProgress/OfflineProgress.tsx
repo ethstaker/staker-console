@@ -1,4 +1,3 @@
-import { PriorityHigh } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
@@ -16,6 +15,7 @@ interface OfflineProgressProps {
   offlineError?: Error;
   onConfirmation: () => void;
   onRetry?: () => void;
+  queueError?: Error;
 }
 
 export const OfflineProgress = ({
@@ -23,6 +23,7 @@ export const OfflineProgress = ({
   offlineError,
   onConfirmation,
   onRetry,
+  queueError,
 }: OfflineProgressProps) => {
   const [signedTx, setSignedTx] = useState<`0x${string}` | undefined>();
   const [txDetails, setTxDetails] = useState<string>("");
@@ -151,7 +152,6 @@ export const OfflineProgress = ({
         <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
           <Box className="flex items-center justify-between">
             <Box className="flex gap-4">
-              <PriorityHigh className="text-error" />
               <Typography className="font-medium text-white">
                 There was an error generating the offline transaction
               </Typography>
@@ -169,6 +169,29 @@ export const OfflineProgress = ({
           </Box>
           <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
             {offlineError.message}
+          </Typography>
+        </Box>
+      ) : queueError ? (
+        <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
+          <Box className="flex items-center justify-between">
+            <Box className="flex gap-4">
+              <Typography className="font-medium text-white">
+                There was an error retrieving the queue
+              </Typography>
+            </Box>
+            {!!onRetry && (
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                onClick={() => onRetry()}
+              >
+                Retry
+              </Button>
+            )}
+          </Box>
+          <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
+            {queueError.message}
           </Typography>
         </Box>
       ) : (

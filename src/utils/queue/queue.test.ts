@@ -73,29 +73,27 @@ describe("getQueue", () => {
       expect(result).toBeUndefined();
     });
 
-    it("defaults to 0x0 when getStorageAt throws error", async () => {
+    it("returns undefined when getStorageAt throws error", async () => {
       const mockPublicClient = {
         getStorageAt: vi.fn().mockRejectedValue(new Error("RPC error")),
       };
 
       const result = await getQueue(mockAddress, mockPublicClient as any, 3);
 
-      expect(result).toBeDefined();
-      expect(result?.length).toBe(0n);
+      expect(result).toBeUndefined();
     });
 
-    it("defaults to 0x0 when getStorageAt returns undefined", async () => {
+    it("returns undefined when getStorageAt returns undefined", async () => {
       const mockPublicClient = {
         getStorageAt: vi.fn().mockResolvedValue(undefined),
       };
 
       const result = await getQueue(mockAddress, mockPublicClient as any, 3);
 
-      expect(result).toBeDefined();
-      expect(result?.length).toBe(0n);
+      expect(result).toBeUndefined();
     });
 
-    it("defaults to 0x0 when queue is disabled (EXCESS_INHIBITOR)", async () => {
+    it("returns undefined when queue is disabled (EXCESS_INHIBITOR)", async () => {
       const mockPublicClient = {
         getStorageAt: vi
           .fn()
@@ -106,8 +104,7 @@ describe("getQueue", () => {
 
       const result = await getQueue(mockAddress, mockPublicClient as any, 3);
 
-      expect(result).toBeDefined();
-      expect(result?.length).toBe(0n);
+      expect(result).toBeUndefined();
     });
   });
 

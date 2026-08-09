@@ -10,6 +10,8 @@ interface useTransactionsParams<T extends Transaction> {
   open: boolean;
   processTransaction: (tx: T) => void;
   isConfirmed: boolean;
+  isReverted?: boolean;
+  queueError?: Error;
   confirmError: WaitForTransactionReceiptErrorType | null;
   sendError: SendTransactionErrorType | null;
   txHash?: `0x${string}`;
@@ -24,6 +26,8 @@ export const useTransactions = <T extends Transaction>({
   open,
   processTransaction,
   isConfirmed,
+  isReverted,
+  queueError,
   confirmError,
   sendError,
   txHash,
@@ -84,7 +88,7 @@ export const useTransactions = <T extends Transaction>({
 
           let newState: TransactionState;
 
-          if (sendError || confirmError) {
+          if (sendError || confirmError || isReverted || queueError) {
             newState = TransactionState.error;
             setHasStartedTransaction(false);
           } else if (isConfirmed) {
@@ -97,12 +101,22 @@ export const useTransactions = <T extends Transaction>({
             newState = tx.state;
           }
 
+          const revertedError = isReverted
+            ? (new Error(
+                "Transaction reverted on-chain",
+              ) as unknown as WaitForTransactionReceiptErrorType)
+            : undefined;
+
           return {
             ...tx,
             state: newState,
             txHash: isConfirmed ? txHash : tx.txHash,
-            signingError: sendError || tx.signingError,
-            confirmationError: confirmError || tx.confirmationError,
+            signingError:
+              sendError ||
+              (queueError as unknown as SendTransactionErrorType) ||
+              tx.signingError,
+            confirmationError:
+              confirmError || revertedError || tx.confirmationError,
           };
         }
         return tx;
@@ -110,6 +124,8 @@ export const useTransactions = <T extends Transaction>({
     );
   }, [
     isConfirmed,
+    isReverted,
+    queueError,
     sendError,
     confirmError,
     txHash,

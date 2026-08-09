@@ -2,7 +2,7 @@ import {
   WaitForTransactionReceiptErrorType,
   SendTransactionErrorType,
 } from "@wagmi/core";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Transaction, TransactionState } from "@/types";
 
@@ -38,6 +38,9 @@ export const useTransactions = <T extends Transaction>({
   const [processingIndex, setProcessingIndex] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [transactions, setTransactions] = useState<T[]>([]);
+  const nextTransactionTimeoutRef = useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   useEffect(() => {
     setHasStartedTransaction(false);
@@ -159,7 +162,10 @@ export const useTransactions = <T extends Transaction>({
     reset();
 
     // Delay next validator signing slightly
-    const timeoutId = setTimeout(() => {
+    if (nextTransactionTimeoutRef.current) {
+      clearTimeout(nextTransactionTimeoutRef.current);
+    }
+    nextTransactionTimeoutRef.current = setTimeout(() => {
       if (nextIndex >= 0) {
         setHasStartedTransaction(true);
         processTransaction(transactions[nextIndex]);
@@ -169,9 +175,17 @@ export const useTransactions = <T extends Transaction>({
         setExpandedValidator(null);
       }
     }, 500);
-
-    return () => clearTimeout(timeoutId);
   }, [processingIndex, reset, processTransaction, transactions]);
+
+  // Clear the timeout when the modal closes to prevent processing transactions
+  useEffect(() => {
+    return () => {
+      if (nextTransactionTimeoutRef.current) {
+        clearTimeout(nextTransactionTimeoutRef.current);
+        nextTransactionTimeoutRef.current = null;
+      }
+    };
+  }, [open]);
 
   useEffect(() => {
     if (

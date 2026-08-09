@@ -46,7 +46,7 @@ export const getQueue = async (
     }
   } catch (error) {
     console.error(error);
-    queueLengthHex = "0x0";
+    return;
   }
 
   const length = BigInt(queueLengthHex);

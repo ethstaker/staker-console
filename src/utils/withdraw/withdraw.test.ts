@@ -34,4 +34,12 @@ describe("generateWithdrawalCalldata", () => {
       "0xa1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c000000000754d4c0",
     );
   });
+
+  it("throws for a pubkey that is not 48 bytes", () => {
+    const shortPubkey = "0xa1d1ad07" as `0x${string}`;
+
+    expect(() => generateWithdrawalCalldata(shortPubkey, "16")).toThrow(
+      /Invalid validator pubkey/,
+    );
+  });
 });

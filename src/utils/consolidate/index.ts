@@ -3,6 +3,7 @@ import { getPublicClient } from "@wagmi/core";
 import { config } from "@/config/appkit";
 import { getConsolidateContractAddress } from "@/config/networks";
 import { Queue } from "@/types";
+import { isValidPubkey } from "@/utils/hex";
 
 import { getQueue } from "../queue";
 
@@ -31,6 +32,17 @@ export const generateConsolidateCalldata = (
   sourcePubkey: `0x${string}`,
   targetPubkey: `0x${string}`,
 ): `0x${string}` => {
+  if (!isValidPubkey(sourcePubkey)) {
+    throw new Error(
+      `Invalid source validator pubkey: expected a 48-byte hex value but got ${sourcePubkey}`,
+    );
+  }
+  if (!isValidPubkey(targetPubkey)) {
+    throw new Error(
+      `Invalid target validator pubkey: expected a 48-byte hex value but got ${targetPubkey}`,
+    );
+  }
+
   const truncatedSourcePubkey = sourcePubkey.substring(2);
   const truncatedTargetPubkey = targetPubkey.substring(2);
   return `0x${truncatedSourcePubkey}${truncatedTargetPubkey}`;

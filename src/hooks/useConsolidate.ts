@@ -27,6 +27,7 @@ export const useConsolidate = () => {
   >();
   const [offlineError, setOfflineError] = useState<Error | undefined>();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+  const [queueError, setQueueError] = useState<Error | undefined>();
 
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
 
@@ -39,12 +40,16 @@ export const useConsolidate = () => {
   } = useSendTransaction();
 
   const {
+    data: receipt,
     isPending: isPendingConfirmation,
-    isSuccess: isConfirmed,
+    isSuccess: isReceiptReceived,
     error: confirmError,
   } = useWaitForTransactionReceipt({
     hash: txHash,
   });
+
+  const isConfirmed = isReceiptReceived && receipt.status === "success";
+  const isReverted = isReceiptReceived && receipt.status === "reverted";
 
   const sendConsolidate = async (
     source: `0x${string}`,
@@ -53,10 +58,15 @@ export const useConsolidate = () => {
     setOfflineData(undefined);
     setOfflineError(undefined);
     setTxHash(undefined);
+    setQueueError(undefined);
     const queue = await getConsolidationQueue(chainId);
 
     if (!queue) {
-      console.error("Failed to get queue");
+      const error = new Error(
+        "Unable to retrieve the consolidation queue fee. Please try again.",
+      );
+      console.error(error);
+      setQueueError(error);
       return;
     }
 
@@ -111,6 +121,7 @@ export const useConsolidate = () => {
     setOfflineData(undefined);
     setOfflineError(undefined);
     setTxHash(undefined);
+    setQueueError(undefined);
     resetSendTransaction();
     resetUnsignedTx();
   };
@@ -120,11 +131,13 @@ export const useConsolidate = () => {
     contractAddress,
     sendError,
     isConfirmed,
+    isReverted,
     isPendingConfirmation: isPendingConfirmation && !!txHash,
-    isPendingSignature: isPendingSignature || !txHash,
+    isPendingSignature: (isPendingSignature || !txHash) && !queueError,
     isSendSuccess,
     offlineData,
     offlineError,
+    queueError,
     sendConsolidate,
     txHash,
     reset,

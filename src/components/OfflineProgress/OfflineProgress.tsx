@@ -1,4 +1,3 @@
-import { PriorityHigh } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
@@ -153,7 +152,6 @@ export const OfflineProgress = ({
         <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
           <Box className="flex items-center justify-between">
             <Box className="flex gap-4">
-              <PriorityHigh className="text-error" />
               <Typography className="font-medium text-white">
                 There was an error generating the offline transaction
               </Typography>
@@ -175,21 +173,26 @@ export const OfflineProgress = ({
         </Box>
       ) : queueError ? (
         <Box className="mb-4 flex flex-col gap-4 border border-error/30 bg-error/30 p-3">
-          <Box className="text-error text-sm p-0 m-0 break-all">
-            {queueError.message}
-          </Box>
-          {!!onRetry && (
-            <Box>
-              <Button                 
+          <Box className="flex items-center justify-between">
+            <Box className="flex gap-4">
+              <Typography className="font-medium text-white">
+                There was an error retrieving the queue
+              </Typography>
+            </Box>
+            {!!onRetry && (
+              <Button
                 color="primary"
                 size="small"
-                variant="contained" 
+                variant="contained"
                 onClick={() => onRetry()}
               >
                 Retry
               </Button>
-            </Box>
-          )}
+            )}
+          </Box>
+          <Typography className="mb-3 whitespace-pre-wrap break-all text-xs text-white">
+            {queueError.message}
+          </Typography>
         </Box>
       ) : (
         <Box className="flex gap-2">

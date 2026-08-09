@@ -89,10 +89,10 @@ export const OfflineMultiModal = <T,>({
   }, [transactions, currentIndex, type]);
 
   useEffect(() => {
-    if (transactions[currentIndex]) {
+    if (open && transactions[currentIndex]) {
       generateTransaction(transactions[currentIndex]);
     }
-  }, [currentIndex, currentTransactionKey]);
+  }, [currentIndex, currentTransactionKey, open]);
 
   const currentOfflineData = useMemo(() => {
     if (type === "consolidate") {
@@ -109,7 +109,7 @@ export const OfflineMultiModal = <T,>({
       return offlineErrorWithdraw;
     }
   }, [offlineErrorConsolidate, offlineErrorWithdraw, type]);
-  
+
   const currentQueueError = useMemo(() => {
     if (type === "consolidate") {
       return queueErrorConsolidate;

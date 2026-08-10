@@ -28,5 +28,6 @@ export const useCurrentEpoch = (): number | undefined => {
     return undefined;
   }
 
-  return Math.floor(Number(data.slot) / slotsPerEpoch);
+  const slot = Number(data.slot);
+  return Number.isFinite(slot) ? Math.floor(slot / slotsPerEpoch) : undefined;
 };

@@ -33,7 +33,10 @@ createAppKit({
 
 function ContextProvider({ children }: { children: ReactNode }) {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig as Config}>
+    <WagmiProvider
+      config={wagmiAdapter.wagmiConfig as Config}
+      reconnectOnMount={false}
+    >
       <QueryClientProvider client={queryClient}>
         <GoogleAnalyticsProvider>
           <SelectedValidatorProvider>{children}</SelectedValidatorProvider>

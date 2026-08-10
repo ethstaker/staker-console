@@ -1,10 +1,8 @@
-"use client";
-
 import { createAppKit } from "@reown/appkit";
 import { AppKitNetwork } from "@reown/appkit/networks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode } from "react";
-import { cookieToInitialState, WagmiProvider, type Config } from "wagmi";
+import { WagmiProvider, type Config } from "wagmi";
 
 import { wagmiAdapter, projectId, networks } from "@/config/appkit";
 
@@ -33,23 +31,9 @@ createAppKit({
   themeMode: "dark",
 });
 
-function ContextProvider({
-  children,
-  cookies,
-}: {
-  children: ReactNode;
-  cookies: string | null;
-}) {
-  const initialState = cookieToInitialState(
-    wagmiAdapter.wagmiConfig as Config,
-    cookies,
-  );
-
+function ContextProvider({ children }: { children: ReactNode }) {
   return (
-    <WagmiProvider
-      config={wagmiAdapter.wagmiConfig as Config}
-      initialState={initialState}
-    >
+    <WagmiProvider config={wagmiAdapter.wagmiConfig as Config}>
       <QueryClientProvider client={queryClient}>
         <GoogleAnalyticsProvider>
           <SelectedValidatorProvider>{children}</SelectedValidatorProvider>

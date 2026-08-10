@@ -44,7 +44,11 @@ export const PartialWithdrawConfirmModal: React.FC<
   walletAddress,
   onConfirm,
 }) => {
-  const currentWalletBalance = useConnectedBalance();
+  const {
+    balance: currentWalletBalance,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useConnectedBalance();
   const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
 
@@ -146,7 +150,11 @@ export const PartialWithdrawConfirmModal: React.FC<
                   Current Balance
                 </Typography>
                 <Typography className="font-semibold text-white">
-                  {formatBalance(currentWalletBalance.toNumber())} ETH
+                  {isBalanceLoading
+                    ? "Loading..."
+                    : isBalanceError
+                      ? "Unavailable"
+                      : `${formatBalance(currentWalletBalance.toNumber())} ETH`}
                 </Typography>
               </Box>
 
@@ -155,7 +163,11 @@ export const PartialWithdrawConfirmModal: React.FC<
                   New Balance
                 </Typography>
                 <Typography className="font-semibold text-white">
-                  {formatBalance(newWalletBalance)} ETH
+                  {isBalanceLoading
+                    ? "Loading..."
+                    : isBalanceError
+                      ? "Unavailable"
+                      : `${formatBalance(newWalletBalance)} ETH`}
                 </Typography>
               </Box>
             </Box>

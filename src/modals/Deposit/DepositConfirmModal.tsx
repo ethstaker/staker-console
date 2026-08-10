@@ -39,7 +39,11 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
   onConfirm,
 }) => {
   const { address } = useAccount();
-  const currentWalletBalance = useConnectedBalance();
+  const {
+    balance: currentWalletBalance,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useConnectedBalance();
   const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
 
@@ -125,7 +129,11 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
                   Current Balance
                 </Typography>
                 <Typography className="font-semibold text-white">
-                  {formatBalance(currentWalletBalance.toNumber())} ETH
+                  {isBalanceLoading
+                    ? "Loading..."
+                    : isBalanceError
+                      ? "Unavailable"
+                      : `${formatBalance(currentWalletBalance.toNumber())} ETH`}
                 </Typography>
               </Box>
 
@@ -134,7 +142,11 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
                   New Balance
                 </Typography>
                 <Typography className="font-semibold text-white">
-                  {formatBalance(newWalletBalance)} ETH
+                  {isBalanceLoading
+                    ? "Loading..."
+                    : isBalanceError
+                      ? "Unavailable"
+                      : `${formatBalance(newWalletBalance)} ETH`}
                 </Typography>
               </Box>
             </Box>

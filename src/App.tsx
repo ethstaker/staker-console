@@ -100,7 +100,7 @@ function App() {
   return (
     <Fragment>
       <CssBaseline />
-      <ContextProvider cookies={null}>
+      <ContextProvider>
         <BrowserRouter>
           <GoogleAnalytics />
           <AppContent />

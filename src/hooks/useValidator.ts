@@ -44,7 +44,7 @@ export const useValidator = (pubkey: string) => {
     queryKey: [pubkey, chainId],
     queryFn: () => apiFetch(pubkey, chainId),
     enabled: !!pubkey && !!chainId,
-    gcTime: 0,
+    gcTime: 5 * 60 * 1000,
     staleTime: 5 * 60 * 1000,
     select: convertValidatorResponse,
   });

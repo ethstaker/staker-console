@@ -15,7 +15,11 @@ import { TopUpEntry } from "@/types";
 
 const TopUp: React.FC = () => {
   const { address } = useAccount();
-  const currentWalletBalance = useConnectedBalance();
+  const {
+    balance: currentWalletBalance,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useConnectedBalance();
   const [entries, setEntries] = useState<TopUpEntry[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
@@ -31,8 +35,11 @@ const TopUp: React.FC = () => {
 
   const hasValidTopUps = entries.length > 0;
   const hasInsufficientBalance =
+    !isBalanceLoading &&
+    !isBalanceError &&
     currentWalletBalance.isLessThan(totalTopUpAmount);
-  const canTopUp = hasValidTopUps && !hasInsufficientBalance;
+  const canTopUp =
+    hasValidTopUps && !isBalanceLoading && !hasInsufficientBalance;
 
   const handleTopUp = () => {
     if (!canTopUp) {
@@ -94,6 +101,22 @@ const TopUp: React.FC = () => {
           </Typography>
         </Typography>
       </Box>
+
+      {hasValidTopUps && isBalanceLoading && (
+        <Box className="mt-4 flex justify-end">
+          <Typography variant="body2" className="text-secondaryText">
+            Checking wallet balance...
+          </Typography>
+        </Box>
+      )}
+
+      {hasValidTopUps && isBalanceError && (
+        <Box className="mt-4 flex justify-end">
+          <Typography variant="body2" className="text-error">
+            Unable to verify wallet balance. Please try again.
+          </Typography>
+        </Box>
+      )}
 
       {hasValidTopUps && hasInsufficientBalance && (
         <Box className="mt-4 flex justify-end">

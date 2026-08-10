@@ -52,6 +52,7 @@ export const ConsolidateConfirmModal: React.FC<
   const { data: validatorData } = useValidators();
   const [acknowledged, setAcknowledged] = useState<boolean>(false);
   const [ackExternal, setAckExternal] = useState<boolean>(false);
+  const [feeAcknowledged, setFeeAcknowledged] = useState<boolean>(true);
 
   useEffect(() => {
     if (!open) {
@@ -73,7 +74,7 @@ export const ConsolidateConfirmModal: React.FC<
   };
 
   const handleConfirm = () => {
-    if (acknowledged) {
+    if (acknowledged && feeAcknowledged) {
       onConfirm();
     }
   };
@@ -116,7 +117,10 @@ export const ConsolidateConfirmModal: React.FC<
           </Box>
 
           <Box className="flex flex-col flex-1 px-6">
-            <QueueWarning type="consolidation" />
+            <QueueWarning
+              type="consolidation"
+              onFeeAcknowledgedChange={setFeeAcknowledged}
+            />
 
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Target Validator
@@ -293,7 +297,9 @@ export const ConsolidateConfirmModal: React.FC<
                 variant="contained"
                 onClick={handleConfirm}
                 disabled={
-                  !acknowledged || (isExternalValidator && !ackExternal)
+                  !acknowledged ||
+                  (isExternalValidator && !ackExternal) ||
+                  !feeAcknowledged
                 }
               >
                 Sign

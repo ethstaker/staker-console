@@ -38,6 +38,7 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
 }) => {
   const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
+  const [feeAcknowledged, setFeeAcknowledged] = useState(true);
 
   useEffect(() => {
     if (!open) {
@@ -60,7 +61,7 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
   };
 
   const handleConfirm = () => {
-    if (acknowledged) {
+    if (acknowledged && feeAcknowledged) {
       onConfirm();
     }
   };
@@ -97,7 +98,10 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
           </Box>
 
           <Box className="flex flex-col flex-1 px-6">
-            <QueueWarning type="consolidation" />
+            <QueueWarning
+              type="consolidation"
+              onFeeAcknowledgedChange={setFeeAcknowledged}
+            />
 
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Validators to Upgrade
@@ -181,7 +185,7 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
                 color="primary"
                 variant="contained"
                 onClick={handleConfirm}
-                disabled={!acknowledged}
+                disabled={!acknowledged || !feeAcknowledged}
               >
                 Sign
               </Button>

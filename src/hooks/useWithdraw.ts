@@ -28,6 +28,7 @@ export const useWithdraw = () => {
   const [offlineError, setOfflineError] = useState<Error | undefined>();
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const [queueError, setQueueError] = useState<Error | undefined>();
+  const [hasStarted, setHasStarted] = useState(false);
 
   const contractAddress = useMemo(() => getContractAddress(chainId), [chainId]);
 
@@ -56,6 +57,7 @@ export const useWithdraw = () => {
     setOfflineError(undefined);
     setTxHash(undefined);
     setQueueError(undefined);
+    setHasStarted(true);
     const queue = await getWithdrawalQueue(chainId);
 
     if (!queue) {
@@ -118,6 +120,7 @@ export const useWithdraw = () => {
     setOfflineError(undefined);
     setTxHash(undefined);
     setQueueError(undefined);
+    setHasStarted(false);
     resetSendTransaction();
     resetUnsignedTx();
   };
@@ -129,7 +132,8 @@ export const useWithdraw = () => {
     isConfirmed,
     isReverted,
     isPendingConfirmation: isPendingConfirmation && !!txHash,
-    isPendingSignature: (isPendingSignature || !txHash) && !queueError,
+    isPendingSignature:
+      hasStarted && (isPendingSignature || !txHash) && !queueError,
     isSendSuccess,
     offlineData,
     offlineError,

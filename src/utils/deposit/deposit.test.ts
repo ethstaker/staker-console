@@ -1,10 +1,12 @@
 import { describe, it, expect } from "vitest";
+
+import { DepositData } from "@/types";
+
 import {
   constructMessageRoot,
   constructDataRoot,
   verifyDepositFile,
 } from "./index";
-import { DepositData } from "@/types";
 
 describe("constructMessageRoot", () => {
   it("constructs message root from deposit data", () => {
@@ -325,6 +327,13 @@ describe("verifyDepositFile", () => {
       const data = [{ ...validDepositData, amount: 10 ** 9 - 1 }];
       expect(() => verifyDepositFile(data, 1)).toThrow(
         `amount must be at least ${1 * 10 ** 9} but got ${10 ** 9 - 1}`,
+      );
+    });
+
+    it("throws error for non-integer amount", () => {
+      const data = [{ ...validDepositData, amount: 32 * 10 ** 9 + 0.5 }];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `amount must be an integer number of Gwei but got ${32 * 10 ** 9 + 0.5}`,
       );
     });
 

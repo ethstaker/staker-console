@@ -1,6 +1,5 @@
 import { AppKitNetwork, hoodi, mainnet } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
-import { cookieStorage, createStorage } from "wagmi";
 
 export const projectId = import.meta.env.VITE_APPKIT_PUBLIC_PROJECT_ID;
 
@@ -30,10 +29,6 @@ if (definedNetworks.length === 0) {
 export const networks: AppKitNetwork[] = definedNetworks;
 
 export const wagmiAdapter = new WagmiAdapter({
-  storage: createStorage({
-    storage: cookieStorage,
-  }),
-  ssr: true,
   networks,
   projectId,
 });

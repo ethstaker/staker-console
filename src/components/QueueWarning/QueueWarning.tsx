@@ -91,7 +91,7 @@ export const QueueWarning = ({
           }
           label={
             <Typography sx={{ color: "#ffffff", fontSize: "0.875rem" }}>
-              I understand the fee is unusually high and want to proceed anyway.
+              I understand the fee is unusually high and wish to proceed anyway.
             </Typography>
           }
         />

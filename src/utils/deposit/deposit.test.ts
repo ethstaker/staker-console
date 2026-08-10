@@ -402,6 +402,13 @@ describe("verifyDepositFile", () => {
       );
     });
 
+    it("throws error for non-integer amount", () => {
+      const data = [{ ...validDepositData, amount: 32 * 10 ** 9 + 0.5 }];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `amount must be an integer number of Gwei but got ${32 * 10 ** 9 + 0.5}`,
+      );
+    });
+
     it("throws error for compounding amount greater than 2048 ETH", () => {
       const data = [
         {

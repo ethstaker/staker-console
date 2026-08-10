@@ -116,6 +116,11 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
         `Type mismatch for amount. Expected string but got ${typeof deposit.amount}`,
       );
     }
+    if (!Number.isInteger(deposit.amount)) {
+      throw new Error(
+        `amount must be an integer number of Gwei but got ${deposit.amount}`,
+      );
+    }
     if (typeof deposit.signature !== "string") {
       throw new Error(
         `Type mismatch for signature. Expected string but got ${typeof deposit.signature}`,

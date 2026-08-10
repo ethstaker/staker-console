@@ -18,7 +18,6 @@ import { AnalyticsFlow, DepositData } from "@/types";
 
 interface DepositProgressModalProps {
   depositData: DepositData[];
-  fileName: string;
   selectedDepositData: DepositData[];
   open: boolean;
   onClose: () => void;
@@ -26,7 +25,6 @@ interface DepositProgressModalProps {
 
 export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
   depositData,
-  fileName,
   selectedDepositData,
   open,
   onClose,
@@ -47,6 +45,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
   const navigate = useNavigate();
 
   const [downloadUrl, setDownloadUrl] = useState<string>("");
+  const [downloadFileName, setDownloadFileName] = useState<string>("");
   const [offlineSuccess, setOfflineSuccess] = useState<boolean>(false);
 
   useEffect(() => {
@@ -66,6 +65,9 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
         type: "application/json",
       });
       url = URL.createObjectURL(blob);
+      setDownloadFileName(
+        `undeposited-validators-${Math.floor(Date.now() / 1000)}.json`,
+      );
     }
 
     setDownloadUrl(url);
@@ -95,6 +97,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     reset();
     onClose();
     setDownloadUrl("");
+    setDownloadFileName("");
     setOfflineSuccess(false);
   };
 
@@ -155,7 +158,11 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
                     You have not deposited all validators in the uploaded
                     deposit JSON file.
                   </Typography>
-                  <Link href={downloadUrl} download={fileName} underline="none">
+                  <Link
+                    href={downloadUrl}
+                    download={downloadFileName}
+                    underline="none"
+                  >
                     Click here to download the undeposited validators
                   </Link>
                 </Box>

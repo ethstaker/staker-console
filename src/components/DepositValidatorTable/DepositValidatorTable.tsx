@@ -27,20 +27,22 @@ import { Credentials, DepositData } from "@/types";
 
 interface DepositValidatorTableProps {
   depositData: DepositData[];
-  fileName: string;
   onBack: () => void;
   onBeginDeposit: (validators: DepositData[]) => void;
 }
 
 export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
   depositData,
-  fileName,
   onBack,
   onBeginDeposit,
 }) => {
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
   const { address } = useAccount();
-  const currentWalletBalance = useConnectedBalance();
+  const {
+    balance: currentWalletBalance,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useConnectedBalance();
   const { data: validatorData } = useValidators();
 
   const existingValidators = useMemo(() => {
@@ -97,10 +99,12 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
 
   const totalDepositAmountEth = totalDepositAmount / 1e9;
   const hasValidDeposits = selectedValidators.length > 0;
-  const hasInsufficientBalance = currentWalletBalance.isLessThan(
-    totalDepositAmountEth,
-  );
-  const canDeposit = hasValidDeposits && !hasInsufficientBalance;
+  const hasInsufficientBalance =
+    !isBalanceLoading &&
+    !isBalanceError &&
+    currentWalletBalance.isLessThan(totalDepositAmountEth);
+  const canDeposit =
+    hasValidDeposits && !isBalanceLoading && !hasInsufficientBalance;
 
   const formatAmount = (amount: number): string => {
     return (amount / 1_000_000_000).toFixed(4);
@@ -150,7 +154,9 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
       <Box className="mb-6">
         <Box className="mb-4 flex items-center gap-2">
           <CheckCircle color="success" />
-          <Typography className="text-sm text-white">{fileName}</Typography>
+          <Typography className="text-sm text-white">
+            File uploaded successfully
+          </Typography>
         </Box>
       </Box>
 
@@ -272,6 +278,22 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
           </Typography>
         </Typography>
       </Box>
+
+      {hasValidDeposits && isBalanceLoading && (
+        <Box className="mt-4 flex justify-end">
+          <Typography variant="body2" className="text-secondaryText">
+            Checking wallet balance...
+          </Typography>
+        </Box>
+      )}
+
+      {hasValidDeposits && isBalanceError && (
+        <Box className="mt-4 flex justify-end">
+          <Typography variant="body2" className="text-error">
+            Unable to verify wallet balance. Please try again.
+          </Typography>
+        </Box>
+      )}
 
       {hasValidDeposits && hasInsufficientBalance && (
         <Box className="mt-4 flex justify-end">

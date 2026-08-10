@@ -9,7 +9,7 @@ import { DepositData } from "@/types";
 import { ChainMismatchError, verifyDepositFile } from "@/utils/deposit";
 
 interface DepositUploadProps {
-  onFileUploaded: (data: DepositData[], fileName: string) => void;
+  onFileUploaded: (data: DepositData[]) => void;
 }
 
 export const DepositUpload: React.FC<DepositUploadProps> = ({
@@ -41,7 +41,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
 
       verifyDepositFile(data, chainId);
 
-      onFileUploaded(data, file.name);
+      onFileUploaded(data);
     } catch (err) {
       if (err instanceof ChainMismatchError) {
         setErrorChain(err.chainId);

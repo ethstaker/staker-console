@@ -12,6 +12,7 @@ import {
   DepositDataContainer,
   DepositMessageContainer,
 } from "@/types";
+import { isUnprefixedHexOfLength } from "@/utils/hex";
 
 export class ChainMismatchError extends Error {
   public readonly chainId: number;
@@ -170,6 +171,32 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
     if (deposit.deposit_data_root.length !== 64) {
       throw new Error(
         `deposit_data_root length mismatch. Expected 64 but got ${deposit.deposit_data_root.length}`,
+      );
+    }
+
+    // Verify data is valid hexadecimal
+    if (!isUnprefixedHexOfLength(deposit.pubkey, 96)) {
+      throw new Error(`pubkey must be a 96 character hexadecimal string`);
+    }
+    if (!isUnprefixedHexOfLength(deposit.withdrawal_credentials, 64)) {
+      throw new Error(
+        `withdrawal_credentials must be a 64 character hexadecimal string`,
+      );
+    }
+    if (!isUnprefixedHexOfLength(deposit.signature, 192)) {
+      throw new Error(`signature must be a 192 character hexadecimal string`);
+    }
+    if (!isUnprefixedHexOfLength(deposit.fork_version, 8)) {
+      throw new Error(`fork_version must be an 8 character hexadecimal string`);
+    }
+    if (!isUnprefixedHexOfLength(deposit.deposit_message_root, 64)) {
+      throw new Error(
+        `deposit_message_root must be a 64 character hexadecimal string`,
+      );
+    }
+    if (!isUnprefixedHexOfLength(deposit.deposit_data_root, 64)) {
+      throw new Error(
+        `deposit_data_root must be a 64 character hexadecimal string`,
       );
     }
 

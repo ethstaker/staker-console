@@ -1,4 +1,5 @@
 const hexPatternCache = new Map<number, RegExp>();
+const unprefixedHexPatternCache = new Map<number, RegExp>();
 
 const getHexBytePattern = (byteLength: number): RegExp => {
   let pattern = hexPatternCache.get(byteLength);
@@ -9,11 +10,28 @@ const getHexBytePattern = (byteLength: number): RegExp => {
   return pattern;
 };
 
+const getUnprefixedHexCharPattern = (charLength: number): RegExp => {
+  let pattern = unprefixedHexPatternCache.get(charLength);
+  if (!pattern) {
+    pattern = new RegExp(`^[0-9a-fA-F]{${charLength}}$`);
+    unprefixedHexPatternCache.set(charLength, pattern);
+  }
+  return pattern;
+};
+
 export const isHexOfByteLength = (
   value: unknown,
   byteLength: number,
 ): value is string =>
   typeof value === "string" && getHexBytePattern(byteLength).test(value);
+
+// Some values are not prefixed with 0x
+export const isUnprefixedHexOfLength = (
+  value: unknown,
+  charLength: number,
+): value is string =>
+  typeof value === "string" &&
+  getUnprefixedHexCharPattern(charLength).test(value);
 
 export const PUBKEY_BYTE_LENGTH = 48;
 

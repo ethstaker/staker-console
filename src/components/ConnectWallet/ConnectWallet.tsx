@@ -12,16 +12,20 @@ export const ConnectWallet = () => {
   const chainId = useChainId();
 
   const [showOfflineConnect, setShowOfflineConnect] = useState(false);
+  const [previousAddress, setPreviousAddress] = useState<
+    `0x${string}` | undefined
+  >();
 
   useEffect(() => {
-    const previousAddress = window.sessionStorage.getItem("offline-address");
+    const stored = window.sessionStorage.getItem("offline-address");
 
-    if (!previousAddress) {
+    if (!stored) {
       return;
     }
 
-    if (isAddress(previousAddress)) {
-      onOfflineConnectModalClose(previousAddress as `0x${string}`);
+    if (isAddress(stored)) {
+      setPreviousAddress(stored as `0x${string}`);
+      setShowOfflineConnect(true);
     } else {
       window.sessionStorage.removeItem("offline-address");
     }
@@ -37,8 +41,11 @@ export const ConnectWallet = () => {
       });
 
       window.sessionStorage.setItem("offline-address", address);
+    } else {
+      window.sessionStorage.removeItem("offline-address");
     }
 
+    setPreviousAddress(undefined);
     setShowOfflineConnect(false);
   };
 
@@ -104,6 +111,7 @@ export const ConnectWallet = () => {
       <OfflineConnectModal
         open={showOfflineConnect}
         onClose={onOfflineConnectModalClose}
+        initialAddress={previousAddress}
       />
     </Box>
   );

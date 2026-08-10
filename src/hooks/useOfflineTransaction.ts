@@ -32,7 +32,13 @@ export const useOfflineTransaction = () => {
       serializedTransaction: hash as any,
     });
 
-    if (recoveredAddress.toLowerCase() !== address?.toLowerCase()) {
+    if (!address) {
+      throw new Error(
+        "Wallet disconnected. Reconnect before submitting the signed transaction.",
+      );
+    }
+
+    if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
       throw new Error(
         "Address used to sign transaction does not match connected wallet",
       );

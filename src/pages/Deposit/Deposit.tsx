@@ -14,7 +14,6 @@ import { DepositData } from "@/types";
 const Deposit: React.FC = () => {
   const [step, setStep] = useState<"upload" | "selection">("upload");
   const [depositData, setDepositData] = useState<DepositData[]>([]);
-  const [fileName, setFileName] = useState<string>("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showDepositInfoModal, setShowDepositInfoModal] = useState(false);
@@ -22,16 +21,14 @@ const Deposit: React.FC = () => {
     [],
   );
 
-  const handleFileUploaded = (data: DepositData[], filename: string) => {
+  const handleFileUploaded = (data: DepositData[]) => {
     setDepositData(data);
-    setFileName(filename);
     setStep("selection");
   };
 
   const handleBack = () => {
     setStep("upload");
     setDepositData([]);
-    setFileName("");
   };
 
   const onBeginDeposit = (validators: DepositData[]) => {
@@ -96,7 +93,6 @@ const Deposit: React.FC = () => {
 
             <DepositValidatorTable
               depositData={depositData}
-              fileName={fileName}
               onBack={handleBack}
               onBeginDeposit={onBeginDeposit}
             />
@@ -110,7 +106,6 @@ const Deposit: React.FC = () => {
 
             <DepositProgressModal
               depositData={depositData}
-              fileName={fileName}
               selectedDepositData={selectedValidators}
               open={showProgressModal}
               onClose={handleCloseProgressModal}

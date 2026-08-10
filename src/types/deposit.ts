@@ -25,3 +25,17 @@ export const DepositMessageContainer = new ContainerType({
   withdrawalCredentials: new ByteVectorType(32),
   amount: new UintNumberType(8),
 });
+
+export const DOMAIN_DEPOSIT = Uint8Array.from([0x03, 0x00, 0x00, 0x00]);
+
+export const ZERO_BYTES32 = new Uint8Array(32);
+
+export const ForkDataContainer = new ContainerType({
+  currentVersion: new ByteVectorType(4),
+  genesisValidatorsRoot: new ByteVectorType(32),
+});
+
+export const SigningDataContainer = new ContainerType({
+  objectRoot: new ByteVectorType(32),
+  domain: new ByteVectorType(32),
+});

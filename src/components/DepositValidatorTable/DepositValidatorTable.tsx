@@ -27,14 +27,12 @@ import { Credentials, DepositData } from "@/types";
 
 interface DepositValidatorTableProps {
   depositData: DepositData[];
-  fileName: string;
   onBack: () => void;
   onBeginDeposit: (validators: DepositData[]) => void;
 }
 
 export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
   depositData,
-  fileName,
   onBack,
   onBeginDeposit,
 }) => {
@@ -156,7 +154,9 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
       <Box className="mb-6">
         <Box className="mb-4 flex items-center gap-2">
           <CheckCircle color="success" />
-          <Typography className="text-sm text-white">{fileName}</Typography>
+          <Typography className="text-sm text-white">
+            File uploaded successfully
+          </Typography>
         </Box>
       </Box>
 

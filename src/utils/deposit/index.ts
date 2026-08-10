@@ -1,3 +1,4 @@
+import { bls12_381 } from "@noble/curves/bls12-381";
 import { Buffer } from "buffer";
 
 import {
@@ -11,8 +12,55 @@ import {
   DepositData,
   DepositDataContainer,
   DepositMessageContainer,
+  ForkDataContainer,
+  SigningDataContainer,
+  DOMAIN_DEPOSIT,
+  ZERO_BYTES32,
 } from "@/types";
 import { isUnprefixedHexOfLength } from "@/utils/hex";
+
+// Domain separation tag for the BLS proof-of-possession ciphersuite
+const BLS_SIGNATURE_DST = "BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_";
+
+export const computeDepositDomain = (forkVersion: Buffer): Buffer => {
+  const forkDataRoot = ForkDataContainer.hashTreeRoot({
+    currentVersion: forkVersion,
+    genesisValidatorsRoot: ZERO_BYTES32,
+  });
+
+  return Buffer.concat([
+    DOMAIN_DEPOSIT,
+    Buffer.from(forkDataRoot).subarray(0, 28),
+  ]);
+};
+
+export const computeSigningRoot = (
+  objectRoot: Buffer,
+  domain: Buffer,
+): Buffer => {
+  return Buffer.from(SigningDataContainer.hashTreeRoot({ objectRoot, domain }));
+};
+
+export const verifyDepositSignature = (deposit: DepositData): boolean => {
+  const domain = computeDepositDomain(
+    Buffer.from(deposit.fork_version!, "hex"),
+  );
+  const signingRoot = computeSigningRoot(
+    Buffer.from(deposit.deposit_message_root!, "hex"),
+    domain,
+  );
+
+  try {
+    return bls12_381.verify(
+      Buffer.from(deposit.signature, "hex"),
+      signingRoot,
+      Buffer.from(deposit.pubkey, "hex"),
+      { DST: BLS_SIGNATURE_DST },
+    );
+  } catch {
+    return false;
+  }
+};
 
 export class ChainMismatchError extends Error {
   public readonly chainId: number;
@@ -272,6 +320,13 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
           chainId,
         )} but got ${getChainName(givenChainId)}`,
         givenChainId,
+      );
+    }
+
+    // Verify BLS signature
+    if (!verifyDepositSignature(deposit)) {
+      throw new Error(
+        `Invalid BLS signature for pubkey ${deposit.pubkey}. The signature does not match the deposit message and this deposit would be rejected on execution, permanently burning the deposited funds. Do not use this file.`,
       );
     }
   }

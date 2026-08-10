@@ -49,17 +49,17 @@ describe("constructDataRoot", () => {
 describe("verifyDepositFile", () => {
   const validDepositData: DepositData = {
     pubkey:
-      "a1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c",
+      "97248533cef0908a5ebe52c3b487471301bf6369010e6167f63dd74feddac2dfb5336a59a331d38eb0e454d6f6fcb1a4",
     withdrawal_credentials:
-      "010000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      "010000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045",
     amount: 32000000000,
     signature:
-      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "910eb06089ea1abf4e6c3fec445891a73f7953a4d760a2c045254d08d9f7002c1473931610408f45a8833a910a93e8dd020fab6ca1e573f2f7a293cd82ac0a7e1c9c68a0b08105fe34b868f374843e3a7dc59c74f7af601e42271721d65e9d4c",
     fork_version: "00000000",
     deposit_message_root:
-      "0000000000000000000000000000000000000000000000000000000000000000",
+      "6046bcd6e53b1bb54e519b1a95c82a1013bf85db6945dd1bc09e233cd07deab0",
     deposit_data_root:
-      "0000000000000000000000000000000000000000000000000000000000000000",
+      "d5b80c39038b0e7a58d083de46e55cc99d816c855a3d0dcca2404fd287985ea4",
   };
 
   describe("validates array format", () => {
@@ -313,7 +313,9 @@ describe("verifyDepositFile", () => {
       const deposit = {
         ...validDepositData,
         withdrawal_credentials:
-          "000000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045",
+        signature:
+          "90a761fcedc7da9c928f63708c90ccb0cadfddfe033ea6189140489fce45f295fb4a61ae5dacb8f32023c776bec6f0ac04d71fb784d942ca1f493e860557d7a4479a580fa599fef098c20e0be4253bb2b9ab66d16cb3815049606b81304c66a6",
       };
       const data = [
         {
@@ -341,7 +343,9 @@ describe("verifyDepositFile", () => {
       const deposit = {
         ...validDepositData,
         withdrawal_credentials:
-          "020000000000000000000000d8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "020000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045",
+        signature:
+          "a6c0c210533a6e3d4a2538298de15de2e155d90adc6a7c8ee8d43e6b6b6cedbc2db7ac63d16729af9955c786eeab84110cf041f4e119a0a5bdf2a286f743cf6a16ddc4ebf1606680ff84783b2c75c888673c3e966dbd83e6cbc421ab9f3d1410",
       };
       const data = [
         {
@@ -380,8 +384,13 @@ describe("verifyDepositFile", () => {
 
     it("accepts distinct pubkeys", () => {
       const secondPubkey =
-        "b1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c";
-      const secondDeposit = { ...validDepositData, pubkey: secondPubkey };
+        "8b5602ce59fb113eec6a6d917909b45e10560e69a4caa384d9006ab4fa1616c4883f89b4c731fcc932fac1b3b8bf82d6";
+      const secondDeposit = {
+        ...validDepositData,
+        pubkey: secondPubkey,
+        signature:
+          "91c6e31aa520f730a1cadda27e61e5fd4454c502a7ca5509f039bc78493209ee089b2308e4f7924445cefdde93ccc8c518dece824e6ab60c44ccd83fc845a440213efa332da14bf004a32b2f79d0463dd85915e7efeff584395f4996bf894310",
+      };
       const data = [
         validEntry,
         {
@@ -444,7 +453,7 @@ describe("verifyDepositFile", () => {
 
     it("accepts valid non-compounding amount up to 32 ETH", () => {
       const data = [{ ...validDepositData, amount: 32 * 10 ** 9 }];
-      expect(() => verifyDepositFile(data, 1)).toThrow(/root is not valid/);
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
     });
   });
 
@@ -469,7 +478,9 @@ describe("verifyDepositFile", () => {
     });
 
     it("throws ChainMismatchError for wrong chain", () => {
-      const data = [{ ...validDepositData, fork_version: "01017000" }];
+      // "10000910" is Hoodi's real fork_version, so it resolves to a
+      // recognized (but different) chain rather than an unsupported one.
+      const data = [{ ...validDepositData, fork_version: "10000910" }];
       expect(() => verifyDepositFile(data, 1)).toThrow(
         /Chain mismatch|deposit_message_root is not valid|deposit_data_root is not valid/,
       );
@@ -500,6 +511,42 @@ describe("verifyDepositFile", () => {
       ];
       expect(() => verifyDepositFile(data, 1)).toThrow(
         "deposit_data_root is not valid and attempting deposit will fail",
+      );
+    });
+  });
+
+  describe("validates BLS signature", () => {
+    it("accepts a genuinely valid deposit", () => {
+      const data = [validDepositData];
+      expect(() => verifyDepositFile(data, 1)).not.toThrow();
+    });
+
+    it("throws for a signature that does not match the deposit message, even though the deposit_data_root was recomputed to be internally consistent", () => {
+      const tamperedSignature =
+        "90a761fcedc7da9c928f63708c90ccb0cadfddfe033ea6189140489fce45f295fb4a61ae5dacb8f32023c776bec6f0ac04d71fb784d942ca1f493e860557d7a4479a580fa599fef098c20e0be4253bb2b9ab66d16cb3815049606b81304c66a6";
+      const deposit = { ...validDepositData, signature: tamperedSignature };
+      const data = [
+        {
+          ...deposit,
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `Invalid BLS signature for pubkey ${validDepositData.pubkey}`,
+      );
+    });
+
+    it("throws for a well-formed but cryptographically invalid signature", () => {
+      const bogusSignature = "b".repeat(192);
+      const deposit = { ...validDepositData, signature: bogusSignature };
+      const data = [
+        {
+          ...deposit,
+          deposit_data_root: constructDataRoot(deposit),
+        },
+      ];
+      expect(() => verifyDepositFile(data, 1)).toThrow(
+        `Invalid BLS signature for pubkey ${validDepositData.pubkey}`,
       );
     });
   });

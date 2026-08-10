@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, Typography } from "@mui/material";
 import BigNumber from "bignumber.js";
 import { useEffect, useMemo, useState } from "react";
 import { useChainId } from "wagmi";
@@ -10,13 +10,19 @@ import { getWithdrawalQueue } from "@/utils/withdraw";
 
 interface QueueWarningProps {
   type: "consolidation" | "withdrawal";
+  onFeeAcknowledgedChange?: (acknowledged: boolean) => void;
 }
 
-const QUEUE_THRESHOLD = 100 * 10 ** 9; // 100 gwei
+const WARNING_THRESHOLD = BigInt(100 * 10 ** 9); // 100 gwei
+const CONFIRM_THRESHOLD = BigInt(0.01 * 10 ** 18); // 0.01 ETH
 
-export const QueueWarning = ({ type }: QueueWarningProps) => {
+export const QueueWarning = ({
+  type,
+  onFeeAcknowledgedChange,
+}: QueueWarningProps) => {
   const chainId = useChainId();
   const [queue, setQueue] = useState<Queue | undefined>(undefined);
+  const [acknowledged, setAcknowledged] = useState(false);
 
   const fetchQueue = async () => {
     const getQueue =
@@ -35,6 +41,16 @@ export const QueueWarning = ({ type }: QueueWarningProps) => {
     }
   }, [chainId, type]);
 
+  const requiresConfirmation = !!queue && queue.fee > CONFIRM_THRESHOLD;
+
+  useEffect(() => {
+    setAcknowledged(false);
+  }, [queue]);
+
+  useEffect(() => {
+    onFeeAcknowledgedChange?.(!requiresConfirmation || acknowledged);
+  }, [requiresConfirmation, acknowledged, onFeeAcknowledgedChange]);
+
   const feeDisplay = useMemo(() => {
     if (!queue || !queue.fee) {
       return "";
@@ -48,8 +64,39 @@ export const QueueWarning = ({ type }: QueueWarningProps) => {
     }
   }, [queue]);
 
-  if (!queue || queue.fee < QUEUE_THRESHOLD) {
+  if (!queue || queue.fee < WARNING_THRESHOLD) {
     return null;
+  }
+
+  if (requiresConfirmation) {
+    return (
+      <WarningAlert title={`Unusually high ${type} fee`} type="error">
+        <Typography className="mb-3 text-sm text-white">
+          The current {type} fee is {feeDisplay}, well above the normal range.
+          This is caused by an unusually long queue and we recommend waiting
+          until the queue processes before continuing.
+        </Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={acknowledged}
+              className="text-secondaryText"
+              onChange={(e) => setAcknowledged(e.target.checked)}
+              sx={{
+                "&.Mui-checked": {
+                  color: "#627EEA",
+                },
+              }}
+            />
+          }
+          label={
+            <Typography sx={{ color: "#ffffff", fontSize: "0.875rem" }}>
+              I understand the fee is unusually high and wish to proceed anyway.
+            </Typography>
+          }
+        />
+      </WarningAlert>
+    );
   }
 
   return (

@@ -51,6 +51,7 @@ export const PartialWithdrawConfirmModal: React.FC<
   } = useConnectedBalance();
   const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
+  const [feeAcknowledged, setFeeAcknowledged] = useState(true);
 
   useEffect(() => {
     if (!open) {
@@ -90,7 +91,7 @@ export const PartialWithdrawConfirmModal: React.FC<
   }, [currentWalletBalance, totalWithdrawalAmount]);
 
   const handleConfirm = () => {
-    if (acknowledged) {
+    if (acknowledged && feeAcknowledged) {
       onConfirm();
     }
   };
@@ -131,7 +132,10 @@ export const PartialWithdrawConfirmModal: React.FC<
           </Box>
 
           <Box className="flex flex-col flex-1 px-6">
-            <QueueWarning type="withdrawal" />
+            <QueueWarning
+              type="withdrawal"
+              onFeeAcknowledgedChange={setFeeAcknowledged}
+            />
 
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Connected Wallet
@@ -261,7 +265,7 @@ export const PartialWithdrawConfirmModal: React.FC<
                 color="primary"
                 variant="contained"
                 onClick={handleConfirm}
-                disabled={!acknowledged}
+                disabled={!acknowledged || !feeAcknowledged}
               >
                 Sign
               </Button>

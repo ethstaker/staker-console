@@ -45,6 +45,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
   const { data: walletBalanceResponse } = useBalance({ address });
   const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [confirmationText, setConfirmationText] = useState("");
+  const [feeAcknowledged, setFeeAcknowledged] = useState(true);
 
   useEffect(() => {
     if (!open) {
@@ -86,7 +87,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
     confirmationText.toLowerCase().trim() === "unstake funds";
 
   const handleConfirm = () => {
-    if (isConfirmationValid) {
+    if (isConfirmationValid && feeAcknowledged) {
       onConfirm();
     }
   };
@@ -123,7 +124,10 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
           </Box>
 
           <Box className="flex flex-col flex-1 px-6">
-            <QueueWarning type="withdrawal" />
+            <QueueWarning
+              type="withdrawal"
+              onFeeAcknowledgedChange={setFeeAcknowledged}
+            />
 
             <Typography variant="h6" className="mb-3 font-semibold text-white">
               Connected Wallet
@@ -239,7 +243,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
                 color="primary"
                 variant="contained"
                 onClick={handleConfirm}
-                disabled={!isConfirmationValid}
+                disabled={!isConfirmationValid || !feeAcknowledged}
               >
                 Sign
               </Button>

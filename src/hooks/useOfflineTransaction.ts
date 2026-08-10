@@ -79,6 +79,32 @@ export const useOfflineTransaction = () => {
       );
     }
 
+    if (tx.type !== offlineData.transaction.type) {
+      throw new Error(
+        "Type mismatch: The provided signed hash type does not match the transaction requested",
+      );
+    }
+
+    if (tx.gas !== offlineData.transaction.gas) {
+      throw new Error(
+        "Gas mismatch: The provided signed hash gas does not match the transaction requested",
+      );
+    }
+
+    if (tx.maxFeePerGas !== offlineData.transaction.maxFeePerGas) {
+      throw new Error(
+        "Max fee per gas mismatch: The provided signed hash max fee per gas does not match the transaction requested",
+      );
+    }
+
+    if (
+      tx.maxPriorityFeePerGas !== offlineData.transaction.maxPriorityFeePerGas
+    ) {
+      throw new Error(
+        "Max priority fee per gas mismatch: The provided signed hash max priority fee per gas does not match the transaction requested",
+      );
+    }
+
     const transactionHash = await client?.sendRawTransaction({
       serializedTransaction: hash,
     });

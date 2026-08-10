@@ -131,6 +131,9 @@ export const OfflineMultiModal = <T,>({
   const onNextTransaction = () => {
     resetConsolidate();
     resetWithdraw();
+    if (transactions.length <= 1) {
+      return;
+    }
     setCurrentIndex((prev) => Math.min(transactions.length - 1, prev + 1));
     setTransactionComplete(false);
   };

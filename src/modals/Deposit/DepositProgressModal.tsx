@@ -105,6 +105,21 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     return currentConnection?.connector?.id === "offline";
   }, [currentConnection]);
 
+  const undepositedNotice = !!downloadUrl && (
+    <Box className="mb-6 flex items-start gap-2 rounded-sm border border-primary/50 bg-primary/15 p-3">
+      <Info color="primary" />
+      <Box className="flex flex-col gap-2">
+        <Typography className="text-sm text-white">
+          You have not deposited all validators in the uploaded deposit JSON
+          file.
+        </Typography>
+        <Link href={downloadUrl} download={downloadFileName} underline="none">
+          Click here to download the undeposited validators
+        </Link>
+      </Box>
+    </Box>
+  );
+
   return (
     <ProgressModal
       open={open}
@@ -117,12 +132,17 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
       }
     >
       {isOffline ? (
-        <OfflineProgress
-          offlineData={offlineData}
-          offlineError={offlineError}
-          onConfirmation={onOfflineConfirmation}
-          onRetry={retryTransaction}
-        />
+        <>
+          <OfflineProgress
+            offlineData={offlineData}
+            offlineError={offlineError}
+            onConfirmation={onOfflineConfirmation}
+            onRetry={retryTransaction}
+          />
+          {!!undepositedNotice && (
+            <Box className="px-6 mt-4">{undepositedNotice}</Box>
+          )}
+        </>
       ) : (
         <Box className="px-6">
           <Typography className="mb-6 text-secondaryText">
@@ -150,24 +170,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
               waitingMessage="Waiting for signature"
             />
 
-            {!!downloadUrl && (
-              <Box className="mb-6 flex items-start gap-2 rounded-sm border border-primary/50 bg-primary/15 p-3">
-                <Info color="primary" />
-                <Box className="flex flex-col gap-2">
-                  <Typography className="text-sm text-white">
-                    You have not deposited all validators in the uploaded
-                    deposit JSON file.
-                  </Typography>
-                  <Link
-                    href={downloadUrl}
-                    download={downloadFileName}
-                    underline="none"
-                  >
-                    Click here to download the undeposited validators
-                  </Link>
-                </Box>
-              </Box>
-            )}
+            {undepositedNotice}
 
             {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
 

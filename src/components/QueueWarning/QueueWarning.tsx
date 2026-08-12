@@ -28,9 +28,13 @@ export const QueueWarning = ({
     const getQueue =
       type === "consolidation" ? getConsolidationQueue : getWithdrawalQueue;
 
-    const currentQueue = await getQueue(chainId);
-
-    setQueue(currentQueue);
+    try {
+      const currentQueue = await getQueue(chainId);
+      setQueue(currentQueue);
+    } catch (error) {
+      console.error(error);
+      setQueue(undefined);
+    }
   };
 
   useEffect(() => {

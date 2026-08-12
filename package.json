@@ -77,6 +77,8 @@
   },
   "keywords": [],
   "overrides": {
+    "axios": "^1.18.0",
+    "ws": "^8.21.0",
     "minimatch": "^5.1.8",
     "serialize-javascript": "^7.0.3",
     "uuid": "^14.0.0",

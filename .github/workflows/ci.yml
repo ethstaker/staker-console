@@ -30,10 +30,7 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies
-        # TODO: drop continue-on-error once the ws DoS advisory pinned via
-        # viem (requires a wagmi major-version upgrade) is resolved.
         run: npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Run TypeScript check
         run: npm run ts:check

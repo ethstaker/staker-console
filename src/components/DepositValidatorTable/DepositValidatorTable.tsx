@@ -114,8 +114,23 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
     return `0x${pubkey.slice(0, 4)}...${pubkey.slice(-6)}`;
   };
 
+  const getCredentialsType = (credentials: string): Credentials | null => {
+    const prefix = credentials.slice(0, 2);
+    switch (prefix) {
+      case "00":
+        return Credentials.bls;
+      case "01":
+        return Credentials.execution;
+      case "02":
+        return Credentials.compounding;
+      default:
+        return null;
+    }
+  };
+
   const matchingAddress = (credentials: string): boolean => {
-    if (!address || credentials.startsWith("00")) {
+    const credentialsType = getCredentialsType(credentials);
+    if (!address || [null, Credentials.bls].includes(credentialsType)) {
       return false;
     }
 
@@ -127,8 +142,16 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
   };
 
   const withdrawalAddress = (validator: DepositData): React.ReactNode => {
-    if (validator.withdrawal_credentials.startsWith("00")) {
+    const credentialsType = getCredentialsType(
+      validator.withdrawal_credentials,
+    );
+
+    if (credentialsType === Credentials.bls) {
       return <span>Unset</span>;
+    }
+
+    if (credentialsType === null) {
+      return <span className="text-error">Invalid</span>;
     }
 
     const address: `0x${string}` = `0x${validator.withdrawal_credentials.slice(
@@ -195,12 +218,9 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
                 const isSelected = selectedValidators.includes(
                   validator.pubkey,
                 );
-                const credentialsType =
-                  validator.withdrawal_credentials.startsWith("01")
-                    ? Credentials.execution
-                    : validator.withdrawal_credentials.startsWith("02")
-                      ? Credentials.compounding
-                      : Credentials.bls;
+                const credentialsType = getCredentialsType(
+                  validator.withdrawal_credentials,
+                );
 
                 const existingValidator = !!existingValidators.find(
                   (v) => v.pubkey.slice(2) === validator.pubkey,
@@ -243,7 +263,13 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
                       </Typography>
                     </CustomTableCell>
                     <CustomTableCell>
-                      <CredentialsTag credentials={credentialsType} />
+                      {credentialsType === null ? (
+                        <Typography className="inline rounded border border-error bg-error/20 px-2 py-1 text-xs font-semibold text-error">
+                          Invalid
+                        </Typography>
+                      ) : (
+                        <CredentialsTag credentials={credentialsType} />
+                      )}
                     </CustomTableCell>
                     <CustomTableCell>
                       <Box className="flex flex-row gap-2 items-center">

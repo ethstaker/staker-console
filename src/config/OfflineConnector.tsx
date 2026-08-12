@@ -139,7 +139,7 @@ export function OfflineConnector(options: OfflineConnectorOptions) {
         return chainId;
       },
       async isAuthorized() {
-        return !address;
+        return !!address;
       },
       async switchChain({ chainId: newChainId }) {
         chainId = newChainId;

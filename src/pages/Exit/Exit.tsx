@@ -40,7 +40,7 @@ const Exit: React.FC = () => {
         (pubkey) => validatorData.validators.find((v) => v.pubkey === pubkey)!,
       )
       .filter(Boolean);
-  }, [selectedValidators]);
+  }, [selectedValidators, validatorData]);
 
   const handleExit = () => {
     if (selectedValidators.length === 0) {

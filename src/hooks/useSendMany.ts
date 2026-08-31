@@ -23,6 +23,7 @@ export const useSendMany = () => {
     }
     */
     return false;
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- deps kept for the block commented out above, which is restored when Send Many is enabled for Hoodi
   }, [capabilities, chainId]);
 
   const {

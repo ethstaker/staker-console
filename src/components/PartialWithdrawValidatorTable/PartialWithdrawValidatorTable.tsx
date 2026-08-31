@@ -66,7 +66,7 @@ export const PartialWithdrawValidatorTable = ({
       setSearchQuery(selectedValidator.pubkey);
       setSelectedValidator(null);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, setSelectedValidator]);
 
   const validators = useMemo(() => {
     return validatorData?.validators || [];
@@ -84,7 +84,7 @@ export const PartialWithdrawValidatorTable = ({
         ),
       );
     }
-  }, [entries, validators]);
+  }, [entries, validators, setEntries]);
 
   const filteredValidators = useMemo(() => {
     return validators

@@ -45,6 +45,7 @@ export const UpgradeValidatorsTable = ({
       clearData();
       setSelectedPubkeys([]);
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- unmount-only cleanup; clearData is re-created every render, so listing it would drop the query cache and clear the selection on every render
   }, []);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export const UpgradeValidatorsTable = ({
       setSelectedPubkeys([selectedValidator.pubkey]);
       setSelectedValidator(null);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, setSelectedPubkeys, setSelectedValidator]);
 
   const validators = useMemo(() => {
     return (validatorData?.validators || []).filter(
@@ -73,6 +74,7 @@ export const UpgradeValidatorsTable = ({
         prev.filter((pubkey) => validators.some((v) => v.pubkey === pubkey)),
       );
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- prunes the selection only when the fetched validator list changes, not when the user changes the selection
   }, [validatorData]);
 
   const filteredValidators = useMemo(() => {

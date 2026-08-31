@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Staker Console",
+  "engines": {
+    "node": ">=24"
+  },
   "license": "GPL-3.0",
   "scripts": {
     "dev": "vite --force",
@@ -13,7 +16,7 @@
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
+    "lint:check": "eslint src --max-warnings=0",
     "ts:check": "tsc --noEmit",
     "ts:check:strict": "tsc --noEmit --skipLibCheck",
     "ts:check:staged": "node scripts/ts-check-staged.js",
@@ -40,7 +43,7 @@
     "wagmi": "^2.15.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.2.1",
     "@types/node": "^20.19.11",
     "@types/react": "^19.2.17",
@@ -49,11 +52,10 @@
     "@typescript-eslint/parser": "^8.61.0",
     "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.23",
-    "eslint": "^9.39.2",
+    "eslint": "^10.9.1",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-import-x": "^4.17.1",
+    "@eslint-react/eslint-plugin": "^5.18.6",
     "globals": "^17.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
@@ -69,7 +71,7 @@
     "vitest": "^4.1.0"
   },
   "lint-staged": {
-    "src/**/!(*.test).{ts,tsx}": [
+    "src/**/*.{ts,tsx}": [
       "node scripts/ts-check-staged.js",
       "prettier --write"
     ],
@@ -79,15 +81,18 @@
   "overrides": {
     "axios": "^1.18.0",
     "ws": "^8.21.0",
-    "minimatch": "^5.1.8",
-    "serialize-javascript": "^7.0.3",
     "uuid": "^14.0.0",
-    "ajv": "^6.14.0",
-    "serve": {
-      "ajv": "^8.18.0"
-    },
-    "workbox-build": {
-      "ajv": "^8.18.0"
-    }
+    "unrs-resolver": "1.11.1",
+    "@wagmi/connectors": "6.2.0"
+  },
+  "allowScripts": {
+    "keccak@3.0.4": true,
+    "utf-8-validate@5.0.10": true,
+    "@reown/appkit@1.7.8": true,
+    "@reown/appkit@1.8.23": true,
+    "bufferutil@4.1.0": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.11.1": true,
+    "fsevents@2.3.3": true
   }
 }

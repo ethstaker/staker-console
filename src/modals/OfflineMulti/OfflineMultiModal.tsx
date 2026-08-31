@@ -92,6 +92,7 @@ export const OfflineMultiModal = <T,>({
     if (open && transactions[currentIndex]) {
       generateTransaction(transactions[currentIndex]);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- currentTransactionKey is the stable identity proxy for transactions[currentIndex]; listing the array or generateTransaction would regenerate on every render
   }, [currentIndex, currentTransactionKey, open]);
 
   const currentOfflineData = useMemo(() => {
@@ -173,6 +174,7 @@ export const OfflineMultiModal = <T,>({
           </Box>
 
           {transactions.map((t, index) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- the list is built once and never reordered; the index is the identity here, and is also what drives the visibility toggle below
             <Box className={index !== currentIndex ? "hidden" : ""} key={index}>
               <Box className="flex justify-center text-lg font-semibold">
                 Transaction {index + 1}/{transactions.length}

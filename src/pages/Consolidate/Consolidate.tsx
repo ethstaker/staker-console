@@ -51,7 +51,7 @@ const Consolidate: React.FC = () => {
       }
       setSelectedValidator(null);
     }
-  }, [selectedValidator, address]);
+  }, [selectedValidator, address, setSelectedValidator]);
 
   const validators = useMemo(() => {
     return validatorData?.validators || [];

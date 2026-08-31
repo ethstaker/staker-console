@@ -107,7 +107,7 @@ export const TargetValidatorSelectionModal: React.FC<
     return !validators.find((v) => v.pubkey === selectedValidator.pubkey);
   }, [validators, selectedValidator]);
 
-  const ValidatorDetails = (validator: Validator) => {
+  const renderValidatorDetails = (validator: Validator) => {
     const isExternalValidator = !validators.find(
       (v) => v.pubkey === validator.pubkey,
     );
@@ -242,7 +242,7 @@ export const TargetValidatorSelectionModal: React.FC<
                 }}
               >
                 {searchedValidator ? (
-                  ValidatorDetails(searchedValidator)
+                  renderValidatorDetails(searchedValidator)
                 ) : filteredValidators.length === 0 ? (
                   <Box className="p-6 text-center">
                     <Typography className="text-secondaryText">
@@ -253,7 +253,7 @@ export const TargetValidatorSelectionModal: React.FC<
                   </Box>
                 ) : (
                   filteredValidators.map((validator) =>
-                    ValidatorDetails(validator),
+                    renderValidatorDetails(validator),
                   )
                 )}
               </Box>

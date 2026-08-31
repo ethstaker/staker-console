@@ -53,7 +53,7 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
     }
 
     setAcknowledged(false);
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const totalAmount = useMemo(() => {
     return selectedValidators.reduce((total, validator) => {
@@ -159,6 +159,7 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
               <Table size="small">
                 <TableBody>
                   {selectedValidators.map((validator, index) => (
+                    // eslint-disable-next-line @eslint-react/no-array-index-key -- the confirm table is a static snapshot of the selection; rows are never inserted, removed or reordered while the modal is open
                     <TableRow key={index}>
                       <CustomModalTableCell sx={{ width: "60%" }}>
                         <Typography className="font-mono text-sm">

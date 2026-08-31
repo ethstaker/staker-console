@@ -1,6 +1,13 @@
 import { describe, it, expect } from "vitest";
 
-import { parseValidatorResponse, parseValidatorsResponse } from "./validator";
+import {
+  convertValidatorResponse,
+  Credentials,
+  parseValidatorResponse,
+  parseValidatorsResponse,
+  PendingDeposit,
+  PendingPartialWithdrawal,
+} from "./validator";
 
 const validPubkey =
   "0xa1d1ad0714035353258038e964ae9675dc0252ee22cea896825c01458e1807bfad2f9969338798548d9858a571f7425c";
@@ -121,5 +128,110 @@ describe("parseValidatorResponse", () => {
     expect(() => parseValidatorResponse("not-an-object")).toThrow(
       /invalid validator payload/,
     );
+  });
+});
+
+describe("convertValidatorResponse", () => {
+  // Mirrors the production path: useValidators() parses the payload, then
+  // converts it. Parsing first also gives us correctly typed fixtures.
+  const buildValidator = () =>
+    parseValidatorsResponse(buildValidResponse())[0].validator;
+
+  // Only `amount` is read by the conversion; the rest satisfies the type.
+  const buildDeposit = (amount: string): PendingDeposit => ({
+    amount,
+    pubkey: validPubkey,
+    signature: `0x${"ab".repeat(96)}`,
+    slot: "1000",
+    withdrawal_credentials: validWithdrawalCredentials,
+  });
+
+  const buildWithdrawal = (amount: string): PendingPartialWithdrawal => ({
+    amount,
+    validator_index: "12345",
+    withdrawable_epoch: "200",
+  });
+
+  // Swaps the leading credentials byte, preserving the 32-byte length.
+  const withCredentialsPrefix = (prefix: string) =>
+    `${prefix}${validWithdrawalCredentials.slice(4)}`;
+
+  const expectedWithdrawalAddress =
+    "0xd8da6bf26964af9d7eed9e03e53415d37aa9604a";
+
+  it("sums pending deposit amounts, converted from gwei", () => {
+    const result = convertValidatorResponse(buildValidator(), [
+      buildDeposit("1000000000"),
+      buildDeposit("2500000000"),
+    ]);
+
+    expect(result?.pendingDepositChange).toBe(3.5);
+  });
+
+  it("sums pending partial withdrawal amounts, converted from gwei", () => {
+    const result = convertValidatorResponse(
+      buildValidator(),
+      [],
+      [buildWithdrawal("500000000"), buildWithdrawal("250000000")],
+    );
+
+    expect(result?.pendingWithdrawalChange).toBe(0.75);
+  });
+
+  it("defaults both pending changes to 0 when no arrays are given", () => {
+    const result = convertValidatorResponse(buildValidator());
+
+    expect(result?.pendingDepositChange).toBe(0);
+    expect(result?.pendingWithdrawalChange).toBe(0);
+  });
+
+  it("treats a missing amount as 0", () => {
+    const result = convertValidatorResponse(
+      buildValidator(),
+      [buildDeposit(""), buildDeposit("1000000000")],
+      [buildWithdrawal("")],
+    );
+
+    expect(result?.pendingDepositChange).toBe(1);
+    expect(result?.pendingWithdrawalChange).toBe(0);
+  });
+
+  it("returns undefined for a null validator (404)", () => {
+    expect(convertValidatorResponse(null)).toBeUndefined();
+  });
+
+  it("converts balances from gwei to ETH", () => {
+    const result = convertValidatorResponse(buildValidator());
+
+    expect(result?.totalBalance).toBe(32);
+    expect(result?.effectiveBalance).toBe(32);
+    expect(result?.activationEpoch).toBe(100);
+  });
+
+  it("derives the withdrawal address from 0x01 credentials", () => {
+    const result = convertValidatorResponse(buildValidator());
+
+    expect(result?.credentials).toBe(Credentials.execution);
+    expect(result?.withdrawalAddress).toBe(expectedWithdrawalAddress);
+  });
+
+  it("reports an unset withdrawal address for BLS credentials", () => {
+    const validator = buildValidator();
+    validator.validator.withdrawal_credentials = withCredentialsPrefix("0x00");
+
+    const result = convertValidatorResponse(validator);
+
+    expect(result?.credentials).toBe(Credentials.bls);
+    expect(result?.withdrawalAddress).toBe("unset");
+  });
+
+  it("recognises compounding credentials and still derives the address", () => {
+    const validator = buildValidator();
+    validator.validator.withdrawal_credentials = withCredentialsPrefix("0x02");
+
+    const result = convertValidatorResponse(validator);
+
+    expect(result?.credentials).toBe(Credentials.compounding);
+    expect(result?.withdrawalAddress).toBe(expectedWithdrawalAddress);
   });
 });

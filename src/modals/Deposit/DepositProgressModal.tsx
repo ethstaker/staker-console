@@ -88,6 +88,7 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     if (open && selectedDepositData.length > 0) {
       runDeposit();
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- must submit exactly once when the modal opens; runDeposit is re-created every render, so listing it would re-send the deposit on every render
   }, [open, selectedDepositData]);
 
   useEffect(() => {

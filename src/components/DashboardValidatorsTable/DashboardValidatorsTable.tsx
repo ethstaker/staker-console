@@ -52,6 +52,7 @@ export const DashboardValidatorsTable: React.FC = () => {
     return () => {
       clearData();
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- unmount-only cleanup; clearData is re-created every render, so listing it would drop the query cache on every render
   }, []);
 
   const handleMenuClick = (

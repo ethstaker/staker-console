@@ -53,7 +53,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
     } else {
       setAnalyticsStartAction(AnalyticsFlow.exit);
     }
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);
@@ -168,6 +168,7 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
               <Table size="small">
                 <TableBody>
                   {selectedValidators.map((validator, index) => (
+                    // eslint-disable-next-line @eslint-react/no-array-index-key -- the confirm table is a static snapshot of the selection; rows are never inserted, removed or reordered while the modal is open
                     <TableRow key={index}>
                       <CustomModalTableCell sx={{ width: "70%" }}>
                         <Box>

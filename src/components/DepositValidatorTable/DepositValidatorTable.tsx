@@ -88,7 +88,7 @@ export const DepositValidatorTable: React.FC<DepositValidatorTableProps> = ({
 
   const isAllSelected = useMemo(() => {
     return selectedCount === depositData.length && depositData.length > 0;
-  }, [selectedCount]);
+  }, [selectedCount, depositData.length]);
 
   const totalDepositAmount = useMemo(() => {
     return selectedValidators.reduce((total, pubkey) => {

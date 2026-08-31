@@ -59,7 +59,7 @@ export const PartialWithdrawConfirmModal: React.FC<
     } else {
       setAnalyticsStartAction(AnalyticsFlow.partialWithdraw);
     }
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const formatBalance = (balance: number | string) => {
     return new BigNumber(balance).toFixed(4);

@@ -32,7 +32,7 @@ const apiFetch = async (
       throw new Error("Failed to retrieve validators");
     }
   } catch (e) {
-    throw new Error(`API error: ${e}`);
+    throw new Error(`API error: ${e}`, { cause: e });
   }
 };
 

@@ -55,6 +55,7 @@ export const ConsolidateBatchProgressModal: React.FC<
     if (open) {
       executeTransaction();
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- must submit exactly once when the modal opens; executeTransaction is re-created every render, so listing it would re-send the transaction on every render
   }, [open]);
 
   const retry = () => {

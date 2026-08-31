@@ -45,13 +45,12 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.2.1",
-    "@types/node": "^20.19.11",
+    "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.61.0",
     "@typescript-eslint/parser": "^8.61.0",
     "@vitejs/plugin-react": "^5.1.2",
-    "autoprefixer": "^10.4.23",
     "eslint": "^10.9.1",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import-x": "^4.17.1",
@@ -65,9 +64,8 @@
     "tsc-files": "^1.1.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0",
-    "vite": "^7.3.6",
+    "vite": "^8.2.2",
     "vite-plugin-html": "^3.2.2",
-    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.1.0"
   },
   "lint-staged": {
@@ -91,7 +89,6 @@
     "@reown/appkit@1.7.8": true,
     "@reown/appkit@1.8.23": true,
     "bufferutil@4.1.0": true,
-    "esbuild@0.28.2": true,
     "unrs-resolver@1.11.1": true,
     "fsevents@2.3.3": true
   }

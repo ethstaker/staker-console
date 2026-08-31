@@ -13,7 +13,7 @@ A web-based application for managing Ethereum validators, allowing users to depo
 
 ## Prerequisites
 
-- Node.js v20.19 or higher
+- Node.js v24.20 or higher
 - npm or yarn
 - AppKit Project ID
 
@@ -22,7 +22,7 @@ A web-based application for managing Ethereum validators, allowing users to depo
 ```bash
 git clone <repository-url>
 cd staker-console
-npm install
+npm ci
 ```
 
 ## Configuration

@@ -14,7 +14,7 @@ import {
   UpgradeProgressModal,
 } from "@/modals/Upgrade";
 import { AnalyticsFlow, ConsolidateEntry } from "@/types";
-import { Credentials, ValidatorStatus } from "@/types/validator";
+import { Credentials, Validator, ValidatorStatus } from "@/types/validator";
 
 const Upgrade: React.FC = () => {
   const [currentConnection] = useConnections();
@@ -57,9 +57,9 @@ const Upgrade: React.FC = () => {
     setShowProgressModal(false);
   };
 
-  const selectedValidatorObjects = validators.filter((v) =>
-    selectedPubkeys.includes(v.pubkey),
-  );
+  const selectedValidatorObjects = selectedPubkeys
+    .map((pubkey) => validators.find((v) => v.pubkey === pubkey))
+    .filter((v): v is Validator => !!v);
 
   const consolidateEntries: ConsolidateEntry[] = useMemo(() => {
     if (!selectedValidatorObjects) {

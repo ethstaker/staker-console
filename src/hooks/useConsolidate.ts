@@ -77,6 +77,7 @@ export const useConsolidate = () => {
         unsignedTxRequest = beginUnsignedTxRequest();
       } catch (e) {
         console.error(e);
+        setOfflineError(e as Error);
         return;
       }
     }

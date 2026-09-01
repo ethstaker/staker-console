@@ -14,7 +14,7 @@ import {
   UpgradeProgressModal,
 } from "@/modals/Upgrade";
 import { AnalyticsFlow, ConsolidateEntry } from "@/types";
-import { Credentials, ValidatorStatus } from "@/types/validator";
+import { Credentials, Validator, ValidatorStatus } from "@/types/validator";
 
 const Upgrade: React.FC = () => {
   const [currentConnection] = useConnections();
@@ -24,6 +24,9 @@ const Upgrade: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [committedTransactions, setCommittedTransactions] = useState<
+    ConsolidateEntry[]
+  >([]);
 
   const validators = useMemo(() => {
     return (validatorData?.validators || []).filter(
@@ -42,6 +45,7 @@ const Upgrade: React.FC = () => {
 
   const handleConfirmUpgrade = () => {
     setShowConfirmModal(false);
+    setCommittedTransactions(consolidateEntries);
     setShowProgressModal(true);
   };
 
@@ -53,9 +57,9 @@ const Upgrade: React.FC = () => {
     setShowProgressModal(false);
   };
 
-  const selectedValidatorObjects = validators.filter((v) =>
-    selectedPubkeys.includes(v.pubkey),
-  );
+  const selectedValidatorObjects = selectedPubkeys
+    .map((pubkey) => validators.find((v) => v.pubkey === pubkey))
+    .filter((v): v is Validator => !!v);
 
   const consolidateEntries: ConsolidateEntry[] = useMemo(() => {
     if (!selectedValidatorObjects) {
@@ -135,7 +139,7 @@ const Upgrade: React.FC = () => {
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Upgrade"
-          transactions={consolidateEntries}
+          transactions={committedTransactions}
           type="consolidate"
         />
       ) : (

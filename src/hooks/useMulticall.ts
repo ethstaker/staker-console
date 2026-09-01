@@ -55,6 +55,7 @@ export const useMulticall = () => {
         unsignedTxRequest = beginUnsignedTxRequest();
       } catch (e) {
         console.error(e);
+        setOfflineError(e as Error);
         return;
       }
     }

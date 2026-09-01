@@ -73,27 +73,12 @@ export const OfflineMultiModal = <T,>({
     }
   };
 
-  const currentTransactionKey = useMemo(() => {
-    const transaction = transactions[currentIndex];
-    if (!transaction) {
-      return undefined;
-    }
-
-    if (type === "consolidate") {
-      const t = transaction as unknown as ConsolidateEntry;
-      return `${t.sourceValidator.pubkey}-${t.targetValidator.pubkey}`;
-    }
-
-    const t = transaction as unknown as WithdrawalEntry;
-    return `${t.validator.pubkey}-${t.withdrawalAmount}`;
-  }, [transactions, currentIndex, type]);
-
   useEffect(() => {
     if (open && transactions[currentIndex]) {
       generateTransaction(transactions[currentIndex]);
     }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- currentTransactionKey is the stable identity proxy for transactions[currentIndex]; listing the array or generateTransaction would regenerate on every render
-  }, [currentIndex, currentTransactionKey, open]);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- generateTransaction is re-created every render (sendConsolidate/sendWithdraw aren't memoized by their hooks); transactions is committed once per session by the parent at confirm time, so it's safe to depend on directly here
+  }, [currentIndex, open, transactions]);
 
   const currentOfflineData = useMemo(() => {
     if (type === "consolidate") {

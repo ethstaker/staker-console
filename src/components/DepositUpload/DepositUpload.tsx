@@ -28,6 +28,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
     if (chainId && uploadedFile) {
       processFile(uploadedFile);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- re-parse only when the chain or the file changes; processFile is re-created every render, so listing it would re-parse on every render
   }, [chainId, uploadedFile]);
 
   const processFile = async (file: File) => {

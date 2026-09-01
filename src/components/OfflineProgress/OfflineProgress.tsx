@@ -26,19 +26,22 @@ export const OfflineProgress = ({
   queueError,
 }: OfflineProgressProps) => {
   const [signedTx, setSignedTx] = useState<`0x${string}` | undefined>();
-  const [txDetails, setTxDetails] = useState<string>("");
   const [txError, setTxError] = useState<Error | undefined>();
 
   const { confirmError, isConfirmed, reset, submitTransaction, txHash } =
     useOfflineTransaction();
 
-  useMemo(() => {
-    if (offlineData) {
-      setTxDetails(JSON.stringify(offlineData.transaction, null, 2));
-    } else {
+  const txDetails = useMemo(
+    () => (offlineData ? JSON.stringify(offlineData.transaction, null, 2) : ""),
+    [offlineData],
+  );
+
+  useEffect(() => {
+    if (!offlineData) {
       reset();
     }
-  }, [offlineData, setTxDetails]);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- reset is re-created every render, so listing it would reset the transaction state on every render while offlineData is unset
+  }, [offlineData]);
 
   const submitOfflineTransaction = async () => {
     if (!signedTx || !offlineData) {

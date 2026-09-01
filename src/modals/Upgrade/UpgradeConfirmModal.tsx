@@ -46,7 +46,7 @@ export const UpgradeConfirmModal: React.FC<UpgradeConfirmModalProps> = ({
     } else {
       setAnalyticsStartAction(AnalyticsFlow.upgrade);
     }
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const formatPubkey = (pubkey: string) => {
     return pubkey.length > 20

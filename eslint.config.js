@@ -2,12 +2,12 @@ import js from '@eslint/js';
 import globals from 'globals';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import parser from '@typescript-eslint/parser';
-import importPlugin from 'eslint-plugin-import';
-import pluginReact from 'eslint-plugin-react';
+import { importX } from 'eslint-plugin-import-x';
+import reactPlugin from '@eslint-react/eslint-plugin';
 
 export default [
   js.configs.recommended,
-  pluginReact.configs.flat.recommended,
+  reactPlugin.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     ignores: ['dist', 'node_modules'],
@@ -26,18 +26,16 @@ export default [
       },
     },
     plugins: {
-      import: importPlugin,
+      'import-x': importX,
       '@typescript-eslint': typescriptEslint
     },
     rules: {
-      ...importPlugin.configs.recommended.rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/jsx-uses-react': 'off',
+      ...importX.flatConfigs.recommended.rules,
       'eqeqeq': 'error',
-      'import/first': 'error',
-      'import/no-duplicates': 'error',
-      'import/no-unresolved': 'error',
-      'import/order': [
+      'import-x/first': 'error',
+      'import-x/no-duplicates': 'error',
+      'import-x/no-unresolved': 'error',
+      'import-x/order': [
         'error',
         {
           groups: [
@@ -60,14 +58,15 @@ export default [
         },
       ],
       '@typescript-eslint/no-unused-vars': 'error',
-      'no-unused-vars': 'off'
+      'no-unused-vars': 'off',
+      // Off: our effects orchestrate wallet/async state, sync from storage, and
+      // reset modal state on open - cases where this rule has no better
+      // alternative to suggest. Render-purity bugs are still caught by
+      // @eslint-react/use-memo and @eslint-react/exhaustive-deps.
+      '@eslint-react/set-state-in-effect': 'off'
     },
     settings: {
-      ...importPlugin.configs.recommended.settings,
-      react: {
-        version: 'detect',
-      },
-      'import/resolver': {
+      'import-x/resolver': {
         typescript: true,
       },
     },

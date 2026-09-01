@@ -71,6 +71,7 @@ export const ConsolidateProgressModal: React.FC<
     } else {
       setTransactions([]);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- seeds the list once per open; consolidateEntries is a new array every render, so listing it would re-seed and wipe in-flight progress
   }, [open]);
 
   const handleRowClick = (index: number, state: TransactionState) => {

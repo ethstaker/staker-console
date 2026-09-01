@@ -57,6 +57,7 @@ export const GoogleAnalytics = () => {
 
     sendEvent("flow_start", analyticsStartAction);
     setAnalyticsStartAction(null);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- sendEvent is re-created every render; listing it would emit a duplicate flow_start on every render
   }, [analyticsStartAction, consentGiven]);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export const GoogleAnalytics = () => {
     if (!storedAddresses.includes(address)) {
       sendValidatorCount(address, validatorCount);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- sendValidatorCount is re-created every render and itself writes storedAddresses; listing either would emit duplicate validator_count events
   }, [address, consentGiven, isConnected, validatorCount]);
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export const GoogleAnalytics = () => {
 
     sendEvent("flow_complete", analyticsCompleteAction);
     setAnalyticsCompleteAction(null);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- sendEvent is re-created every render; listing it would emit a duplicate flow_complete on every render
   }, [analyticsCompleteAction, consentGiven]);
 
   const sendPageView = () => {
@@ -130,6 +133,7 @@ export const GoogleAnalytics = () => {
 
       sendPageView();
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- fires once when consent is granted; sendPageView is re-created every render, so listing it would emit a page_view on every render
   }, [consentGiven]);
 
   useEffect(() => {
@@ -138,6 +142,7 @@ export const GoogleAnalytics = () => {
     }
 
     sendPageView();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- one page_view per route change only; consentGiven is handled by the effect above and sendPageView is re-created every render
   }, [location]);
 
   const onUserConsent = (consent: string) => {

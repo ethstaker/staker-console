@@ -38,6 +38,7 @@ const Header: React.FC = () => {
     } else {
       setLoaded(true);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- this effect performs a hard redirect, so it must run only on a chainId/loaded change and never on a switchChain identity change
   }, [chainId, loaded]);
 
   return (

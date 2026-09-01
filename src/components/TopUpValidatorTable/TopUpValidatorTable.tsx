@@ -68,6 +68,7 @@ export const TopUpValidatorTable = ({
     return () => {
       clearData();
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- unmount-only cleanup; clearData is re-created every render, so listing it would drop the query cache on every render
   }, []);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export const TopUpValidatorTable = ({
       setSearchQuery(selectedValidator.pubkey);
       setSelectedValidator(null);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, setSelectedValidator]);
 
   useEffect(() => {
     const newValidators = searchedValidator
@@ -89,6 +90,7 @@ export const TopUpValidatorTable = ({
         ),
       ),
     );
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- prunes entries when the validator list changes; listing entries would loop, since dedupeTopUpEntries always returns a new array and so setEntries would re-trigger this effect
   }, [searchedValidator, validatorData]);
 
   const filteredValidators = useMemo(() => {

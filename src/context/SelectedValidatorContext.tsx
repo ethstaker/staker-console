@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useContext } from "react";
+import { createContext, ReactNode, useState, use } from "react";
 
 import { Validator } from "@/types/validator";
 
@@ -19,12 +19,12 @@ export const SelectedValidatorProvider = ({
     null,
   );
   return (
-    <SelectedValidatorContext.Provider
+    <SelectedValidatorContext
       value={{ selectedValidator, setSelectedValidator }}
     >
       {children}
-    </SelectedValidatorContext.Provider>
+    </SelectedValidatorContext>
   );
 };
 
-export const useSelectedValidator = () => useContext(SelectedValidatorContext);
+export const useSelectedValidator = () => use(SelectedValidatorContext);

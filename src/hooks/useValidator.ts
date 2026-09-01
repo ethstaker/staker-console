@@ -28,7 +28,7 @@ const apiFetch = async (
       throw new Error(`Failed to retrieve validator ${pubkey}`);
     }
   } catch (e) {
-    throw new Error(`API error: ${e}`);
+    throw new Error(`API error: ${e}`, { cause: e });
   }
 };
 

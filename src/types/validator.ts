@@ -242,7 +242,7 @@ export const convertValidatorResponse = (
     (change: number, deposit: PendingDeposit) => {
       const depositAmount = new BigNumber(deposit.amount || "0").div(10 ** 9);
 
-      return (change += depositAmount.toNumber());
+      return change + depositAmount.toNumber();
     },
     0,
   );
@@ -253,7 +253,7 @@ export const convertValidatorResponse = (
         10 ** 9,
       );
 
-      return (change += withdrawalAmount.toNumber());
+      return change + withdrawalAmount.toNumber();
     },
     0,
   );

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useContext } from "react";
+import { createContext, ReactNode, useState, use } from "react";
 
 import { AnalyticsFlow } from "@/types";
 
@@ -26,7 +26,7 @@ export const GoogleAnalyticsProvider = ({
     useState<AnalyticsFlow | null>(null);
 
   return (
-    <GoogleAnalyticsContext.Provider
+    <GoogleAnalyticsContext
       value={{
         analyticsStartAction,
         setAnalyticsStartAction,
@@ -35,8 +35,8 @@ export const GoogleAnalyticsProvider = ({
       }}
     >
       {children}
-    </GoogleAnalyticsContext.Provider>
+    </GoogleAnalyticsContext>
   );
 };
 
-export const useGoogleAnalytics = () => useContext(GoogleAnalyticsContext);
+export const useGoogleAnalytics = () => use(GoogleAnalyticsContext);

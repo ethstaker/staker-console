@@ -109,6 +109,7 @@ export const TopUpProgressModal: React.FC<TopUpProgressModalProps> = ({
     if (open && entries.length > 0) {
       runTopUp();
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- must submit exactly once when the modal opens; runTopUp is re-created every render and entries.length is only a guard, so listing either would re-send the top-up
   }, [open]);
 
   const retryTransaction = () => {

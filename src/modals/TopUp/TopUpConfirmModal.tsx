@@ -56,7 +56,7 @@ export const TopUpConfirmModal: React.FC<TopUpConfirmModalProps> = ({
     } else {
       setAnalyticsStartAction(AnalyticsFlow.topUp);
     }
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const formatBalance = (balance: number | string) => {
     return new BigNumber(balance).toFixed(4);
@@ -177,6 +177,7 @@ export const TopUpConfirmModal: React.FC<TopUpConfirmModalProps> = ({
                       (v) => v.pubkey === entry.validatorPubkey,
                     );
                     return (
+                      // eslint-disable-next-line @eslint-react/no-array-index-key -- the confirm table is a static snapshot of the selection; rows are never inserted, removed or reordered while the modal is open
                       <TableRow key={index}>
                         <CustomModalTableCell sx={{ width: "70%" }}>
                           <Box className="flex flex-row items-center gap-2">

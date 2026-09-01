@@ -61,7 +61,7 @@ export const ConsolidateConfirmModal: React.FC<
     } else {
       setAnalyticsStartAction(AnalyticsFlow.consolidate);
     }
-  }, [open]);
+  }, [open, setAnalyticsStartAction]);
 
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);
@@ -197,6 +197,7 @@ export const ConsolidateConfirmModal: React.FC<
               <Table size="small">
                 <TableBody>
                   {sourceValidators.map((validator, index) => (
+                    // eslint-disable-next-line @eslint-react/no-array-index-key -- the confirm table is a static snapshot of the selection; rows are never inserted, removed or reordered while the modal is open
                     <TableRow key={index}>
                       <CustomModalTableCell sx={{ width: "50%" }}>
                         <Box>

@@ -47,6 +47,7 @@ export const useTransactions = <T extends Transaction>({
     setProcessingIndex(0);
     setIsProcessing(false);
     reset();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- resets state only when the modal opens or closes; reset is re-created every render, so listing it would wipe progress on every render
   }, [open]);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export const useTransactions = <T extends Transaction>({
       setHasStartedTransaction(true);
       processTransaction(transactions[0]);
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- transactions.length is the intended trigger; listing the whole array would re-run this as each transaction updates and re-submit the first one
   }, [
     open,
     transactions.length,
@@ -175,7 +177,13 @@ export const useTransactions = <T extends Transaction>({
         setExpandedValidator(null);
       }
     }, 500);
-  }, [processingIndex, reset, processTransaction, transactions]);
+  }, [
+    processingIndex,
+    reset,
+    processTransaction,
+    transactions,
+    setExpandedValidator,
+  ]);
 
   // Clear the timeout when the modal closes to prevent processing transactions
   useEffect(() => {
@@ -205,7 +213,7 @@ export const useTransactions = <T extends Transaction>({
         setExpandedValidator(processingIndex);
       }
     }
-  }, [isProcessing, processingIndex, transactions]);
+  }, [isProcessing, processingIndex, transactions, setExpandedValidator]);
 
   const completedCount = useMemo(
     () =>
@@ -224,7 +232,7 @@ export const useTransactions = <T extends Transaction>({
 
   const allCompleted = useMemo(
     () => finalStateCount === transactions.length,
-    [completedCount, transactions],
+    [finalStateCount, transactions.length],
   );
 
   const handleRetry = (pubkey: `0x${string}`) => {

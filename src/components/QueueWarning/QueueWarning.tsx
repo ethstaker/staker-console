@@ -43,6 +43,7 @@ export const QueueWarning = ({
     } else {
       fetchQueue();
     }
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- fetch only when the chain or queue type changes; fetchQueue is re-created every render, so listing it would refetch on every render
   }, [chainId, type]);
 
   const requiresConfirmation = !!queue && queue.fee > CONFIRM_THRESHOLD;

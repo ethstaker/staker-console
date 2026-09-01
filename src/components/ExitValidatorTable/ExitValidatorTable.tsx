@@ -48,7 +48,7 @@ export const ExitValidatorTable = ({
       setSelectedValidators([selectedValidator.pubkey]);
       setSelectedValidator(null);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, setSelectedValidator, setSelectedValidators]);
 
   const validators: Validator[] = useMemo(() => {
     return validatorData?.validators || [];

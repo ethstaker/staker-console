@@ -54,7 +54,7 @@ function AppContent() {
       setRedirectRoute("");
       navigate(redirectRoute, { replace: true });
     }
-  }, [isConnected, redirectRoute]);
+  }, [isConnected, redirectRoute, navigate]);
 
   useEffect(() => {
     if (location.pathname === "/") {

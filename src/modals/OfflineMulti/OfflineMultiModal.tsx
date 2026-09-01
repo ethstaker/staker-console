@@ -56,12 +56,9 @@ export const OfflineMultiModal = <T,>({
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [transactionComplete, setTransactionComplete] =
     useState<boolean>(false);
-  const [lockedTransactions, setLockedTransactions] = useState<T[]>([]);
 
-  useEffect(() => {
-    if (open) {
-      setLockedTransactions(transactions);
-    }
+  const lockedTransactions = useMemo(() => {
+    return open ? transactions : [];
     // eslint-disable-next-line @eslint-react/exhaustive-deps -- snapshot the queue once per open; transactions is a new array every render (derived from polled validator data), so listing it would let the queue reshuffle mid-session
   }, [open]);
 

@@ -24,6 +24,9 @@ const Upgrade: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [committedTransactions, setCommittedTransactions] = useState<
+    ConsolidateEntry[]
+  >([]);
 
   const validators = useMemo(() => {
     return (validatorData?.validators || []).filter(
@@ -42,6 +45,7 @@ const Upgrade: React.FC = () => {
 
   const handleConfirmUpgrade = () => {
     setShowConfirmModal(false);
+    setCommittedTransactions(consolidateEntries);
     setShowProgressModal(true);
   };
 
@@ -135,7 +139,7 @@ const Upgrade: React.FC = () => {
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Upgrade"
-          transactions={consolidateEntries}
+          transactions={committedTransactions}
           type="consolidate"
         />
       ) : (

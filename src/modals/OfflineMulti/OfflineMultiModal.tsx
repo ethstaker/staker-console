@@ -57,11 +57,6 @@ export const OfflineMultiModal = <T,>({
   const [transactionComplete, setTransactionComplete] =
     useState<boolean>(false);
 
-  const lockedTransactions = useMemo(() => {
-    return open ? transactions : [];
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- snapshot the queue once per open; transactions is a new array every render (derived from polled validator data), so listing it would let the queue reshuffle mid-session
-  }, [open]);
-
   const generateTransaction = (transaction: T) => {
     if (type === "consolidate") {
       const consolidateTransaction = transaction as ConsolidateEntry;
@@ -78,27 +73,12 @@ export const OfflineMultiModal = <T,>({
     }
   };
 
-  const currentTransactionKey = useMemo(() => {
-    const transaction = lockedTransactions[currentIndex];
-    if (!transaction) {
-      return undefined;
-    }
-
-    if (type === "consolidate") {
-      const t = transaction as unknown as ConsolidateEntry;
-      return `${t.sourceValidator.pubkey}-${t.targetValidator.pubkey}`;
-    }
-
-    const t = transaction as unknown as WithdrawalEntry;
-    return `${t.validator.pubkey}-${t.withdrawalAmount}`;
-  }, [lockedTransactions, currentIndex, type]);
-
   useEffect(() => {
-    if (open && lockedTransactions[currentIndex]) {
-      generateTransaction(lockedTransactions[currentIndex]);
+    if (open && transactions[currentIndex]) {
+      generateTransaction(transactions[currentIndex]);
     }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- currentTransactionKey is the stable identity proxy for lockedTransactions[currentIndex]; listing the array or generateTransaction would regenerate on every render
-  }, [currentIndex, currentTransactionKey, open]);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- generateTransaction is re-created every render (sendConsolidate/sendWithdraw aren't memoized by their hooks); transactions is committed once per session by the parent at confirm time, so it's safe to depend on directly here
+  }, [currentIndex, open, transactions]);
 
   const currentOfflineData = useMemo(() => {
     if (type === "consolidate") {
@@ -129,20 +109,18 @@ export const OfflineMultiModal = <T,>({
   };
 
   const onRetry = () => {
-    if (lockedTransactions[currentIndex]) {
-      generateTransaction(lockedTransactions[currentIndex]);
+    if (transactions[currentIndex]) {
+      generateTransaction(transactions[currentIndex]);
     }
   };
 
   const onNextTransaction = () => {
     resetConsolidate();
     resetWithdraw();
-    if (lockedTransactions.length <= 1) {
+    if (transactions.length <= 1) {
       return;
     }
-    setCurrentIndex((prev) =>
-      Math.min(lockedTransactions.length - 1, prev + 1),
-    );
+    setCurrentIndex((prev) => Math.min(transactions.length - 1, prev + 1));
     setTransactionComplete(false);
   };
 
@@ -180,11 +158,11 @@ export const OfflineMultiModal = <T,>({
             </Box>
           </Box>
 
-          {lockedTransactions.map((t, index) => (
+          {transactions.map((t, index) => (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- the list is built once and never reordered; the index is the identity here, and is also what drives the visibility toggle below
             <Box className={index !== currentIndex ? "hidden" : ""} key={index}>
               <Box className="flex justify-center text-lg font-semibold">
-                Transaction {index + 1}/{lockedTransactions.length}
+                Transaction {index + 1}/{transactions.length}
               </Box>
               <Box>
                 <OfflineProgress
@@ -196,7 +174,7 @@ export const OfflineMultiModal = <T,>({
                 />
               </Box>
               <Box className="mt-4 flex justify-center border-t border-t-[#404040] px-6 py-4">
-                {index < lockedTransactions.length - 1 && (
+                {index < transactions.length - 1 && (
                   <Button
                     disabled={!transactionComplete}
                     variant="contained"
@@ -205,7 +183,7 @@ export const OfflineMultiModal = <T,>({
                     Next Transaction
                   </Button>
                 )}
-                {index === lockedTransactions.length - 1 && (
+                {index === transactions.length - 1 && (
                   <Button
                     disabled={!transactionComplete}
                     variant="contained"

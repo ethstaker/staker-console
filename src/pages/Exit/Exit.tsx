@@ -13,7 +13,7 @@ import {
   ExitProgressModal,
 } from "@/modals/Exit";
 import { OfflineMultiModal } from "@/modals/OfflineMulti";
-import { AnalyticsFlow } from "@/types";
+import { AnalyticsFlow, WithdrawalEntry } from "@/types";
 
 const Exit: React.FC = () => {
   const { address } = useAccount();
@@ -24,6 +24,9 @@ const Exit: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [committedTransactions, setCommittedTransactions] = useState<
+    WithdrawalEntry[]
+  >([]);
 
   const totalExitAmount = useMemo(() => {
     return selectedValidators.reduce((total, pubkey) => {
@@ -51,6 +54,7 @@ const Exit: React.FC = () => {
 
   const handleConfirmExit = () => {
     setShowConfirmModal(false);
+    setCommittedTransactions(withdrawalEntries);
     setShowProgressModal(true);
   };
 
@@ -152,7 +156,7 @@ const Exit: React.FC = () => {
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Exit"
-          transactions={withdrawalEntries}
+          transactions={committedTransactions}
           type="withdraw"
         />
       ) : (

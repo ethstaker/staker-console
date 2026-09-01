@@ -38,6 +38,9 @@ const Consolidate: React.FC = () => {
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showTargetSelectionModal, setShowTargetSelectionModal] =
     useState(false);
+  const [committedTransactions, setCommittedTransactions] = useState<
+    ConsolidateEntry[]
+  >([]);
 
   useEffect(() => {
     if (selectedValidator) {
@@ -143,6 +146,7 @@ const Consolidate: React.FC = () => {
     }
 
     setShowConfirmModal(false);
+    setCommittedTransactions(consolidateEntries);
     setShowProgressModal(true);
   };
 
@@ -344,7 +348,7 @@ const Consolidate: React.FC = () => {
               open={showProgressModal}
               onClose={handleCloseProgressModal}
               title="Offline Consolidate"
-              transactions={consolidateEntries}
+              transactions={committedTransactions}
               type="consolidate"
             />
           ) : (

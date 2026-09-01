@@ -25,6 +25,9 @@ const PartialWithdraw: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [committedTransactions, setCommittedTransactions] = useState<
+    WithdrawalEntry[]
+  >([]);
 
   const validators = useMemo(() => {
     return validatorData?.validators || [];
@@ -51,6 +54,7 @@ const PartialWithdraw: React.FC = () => {
 
   const handleConfirmWithdraw = () => {
     setShowConfirmModal(false);
+    setCommittedTransactions(entries);
     setShowProgressModal(true);
   };
 
@@ -143,7 +147,7 @@ const PartialWithdraw: React.FC = () => {
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Partial Withdraw"
-          transactions={entries}
+          transactions={committedTransactions}
           type="withdraw"
         />
       ) : (

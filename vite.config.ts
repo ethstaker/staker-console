@@ -53,7 +53,8 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: false,
-      chunkSizeWarningLimit: 600,
+// The app cannot be broken up without major refactor. We accept its size
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
           entryFileNames: 'assets/[name].[hash].js',

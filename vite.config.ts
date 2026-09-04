@@ -53,7 +53,7 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: false,
-// The app cannot be broken up without major refactor. We accept its size
+      // The app cannot be broken up without major refactor. We accept its size
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {

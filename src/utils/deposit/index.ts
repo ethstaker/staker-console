@@ -1,4 +1,4 @@
-import { bls12_381 } from "@noble/curves/bls12-381";
+import { bls12_381 } from "@noble/curves/bls12-381.js";
 import { Buffer } from "buffer";
 
 import {
@@ -51,11 +51,13 @@ export const verifyDepositSignature = (deposit: DepositData): boolean => {
   );
 
   try {
-    return bls12_381.verify(
+    const bls = bls12_381.longSignatures;
+    const messagePoint = bls.hash(signingRoot, BLS_SIGNATURE_DST);
+
+    return bls.verify(
       Buffer.from(deposit.signature, "hex"),
-      signingRoot,
+      messagePoint,
       Buffer.from(deposit.pubkey, "hex"),
-      { DST: BLS_SIGNATURE_DST },
     );
   } catch {
     return false;

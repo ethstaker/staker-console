@@ -48,11 +48,13 @@ export default defineConfig(({ command, mode }) => {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': path.resolve(import.meta.dirname, './src'),
       },
     },
     build: {
       sourcemap: false,
+      // The app cannot be broken up without major refactor. We accept its size
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
           entryFileNames: 'assets/[name].[hash].js',
@@ -77,7 +79,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     test: {
-      root: path.resolve(__dirname, './src'),
+      root: path.resolve(import.meta.dirname, './src'),
     },
   }
 });

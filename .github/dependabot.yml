@@ -9,7 +9,6 @@ updates:
     groups:
       build-and-dev:
         patterns:
-          - "autoprefixer"
           - "eslint*"
           - "@eslint*"
           - "globals"

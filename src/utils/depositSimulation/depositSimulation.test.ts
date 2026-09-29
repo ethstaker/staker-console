@@ -25,6 +25,8 @@ const makeDeposit = (pubkey: string): DepositData => ({
     ),
 });
 
+const failingPubkey = (17).toString(16).padStart(96, "a");
+
 const pubkeyA =
   "97248533cef0908a5ebe52c3b487471301bf6369010e6167f63dd74feddac2dfb5336a59a331d38eb0e454d6f6fcb1a4";
 const pubkeyB =
@@ -164,9 +166,7 @@ describe("simulateDepositBatch", () => {
   });
 
   it("returns undefined when the simulation call throws (RPC failure)", async () => {
-    const simulateContract = vi
-      .fn()
-      .mockRejectedValue(new Error("RPC error"));
+    const simulateContract = vi.fn().mockRejectedValue(new Error("RPC error"));
 
     const result = await simulateDepositBatch([makeDeposit(pubkeyA)], {
       account,
@@ -186,15 +186,12 @@ describe("simulateDepositBatch", () => {
       ],
     });
 
-    await simulateDepositBatch(
-      [makeDeposit(pubkeyA), makeDeposit(pubkeyB)],
-      {
-        account,
-        contractAddress,
-        multicallAddress,
-        publicClient: { simulateContract },
-      },
-    );
+    await simulateDepositBatch([makeDeposit(pubkeyA), makeDeposit(pubkeyB)], {
+      account,
+      contractAddress,
+      multicallAddress,
+      publicClient: { simulateContract },
+    });
 
     const callArgs = simulateContract.mock.calls[0][0];
     expect(callArgs.address).toBe(multicallAddress);
@@ -205,5 +202,107 @@ describe("simulateDepositBatch", () => {
     expect(callArgs.args[0][0].allowFailure).toBe(true);
     expect(callArgs.args[0][0].value).toBe(32000000000n * 10n ** 9n);
     expect(callArgs.value).toBe(2n * 32000000000n * 10n ** 9n);
+  });
+
+  it("splits batches over 10 deposits into separate simulation calls", async () => {
+    const simulateContract = vi.fn().mockImplementation(({ args }) => ({
+      result: args[0].map(() => ({ success: true, returnData: "0x" })),
+    }));
+
+    const deposits = Array.from({ length: 25 }, (_, i) =>
+      makeDeposit(i.toString(16).padStart(96, "a")),
+    );
+
+    const result = await simulateDepositBatch(deposits, {
+      account,
+      contractAddress,
+      multicallAddress,
+      publicClient: { simulateContract },
+    });
+
+    expect(simulateContract).toHaveBeenCalledTimes(3);
+    expect(simulateContract.mock.calls[0][0].args[0]).toHaveLength(10);
+    expect(simulateContract.mock.calls[1][0].args[0]).toHaveLength(10);
+    expect(simulateContract.mock.calls[2][0].args[0]).toHaveLength(5);
+    expect(result?.validDeposits).toHaveLength(25);
+    expect(result?.rejectedDeposits).toHaveLength(0);
+  });
+
+  it("keeps outcomes aligned with their deposits across chunks", async () => {
+    const simulateContract = vi.fn().mockImplementation(({ args }) =>
+      Promise.resolve({
+        result: args[0].map((call: { callData: string }) => ({
+          success: !call.callData.includes(failingPubkey),
+          returnData: call.callData.includes(failingPubkey)
+            ? encodedRevertReason
+            : "0x",
+        })),
+      }),
+    );
+
+    const deposits = Array.from({ length: 25 }, (_, i) =>
+      makeDeposit(i.toString(16).padStart(96, "a")),
+    );
+
+    const result = await simulateDepositBatch(deposits, {
+      account,
+      contractAddress,
+      multicallAddress,
+      publicClient: { simulateContract },
+    });
+
+    expect(result?.rejectedDeposits).toEqual([
+      {
+        pubkey: failingPubkey,
+        reason: "DepositContract: reconstructed DepositData does not match",
+      },
+    ]);
+    expect(result?.validDeposits).toHaveLength(24);
+    expect(result?.validDeposits.some((d) => d.pubkey === failingPubkey)).toBe(
+      false,
+    );
+  });
+
+  it("prices msg.value per chunk rather than for the whole batch", async () => {
+    const simulateContract = vi.fn().mockImplementation(({ args }) => ({
+      result: args[0].map(() => ({ success: true, returnData: "0x" })),
+    }));
+
+    const deposits = Array.from({ length: 25 }, (_, i) =>
+      makeDeposit(i.toString(16).padStart(96, "a")),
+    );
+
+    await simulateDepositBatch(deposits, {
+      account,
+      contractAddress,
+      multicallAddress,
+      publicClient: { simulateContract },
+    });
+
+    const wei = 32000000000n * 10n ** 9n;
+    expect(simulateContract.mock.calls[0][0].value).toBe(10n * wei);
+    expect(simulateContract.mock.calls[2][0].value).toBe(5n * wei);
+  });
+
+  it("returns undefined when any single chunk fails", async () => {
+    const simulateContract = vi
+      .fn()
+      .mockImplementationOnce(({ args }) => ({
+        result: args[0].map(() => ({ success: true, returnData: "0x" })),
+      }))
+      .mockRejectedValueOnce(new Error("RPC error"));
+
+    const deposits = Array.from({ length: 15 }, (_, i) =>
+      makeDeposit(i.toString(16).padStart(96, "a")),
+    );
+
+    const result = await simulateDepositBatch(deposits, {
+      account,
+      contractAddress,
+      multicallAddress,
+      publicClient: { simulateContract },
+    });
+
+    expect(result).toBeUndefined();
   });
 });

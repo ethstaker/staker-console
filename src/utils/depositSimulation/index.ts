@@ -50,6 +50,8 @@ const decodeRevertReason = (data: `0x${string}` | undefined): string => {
   }
 };
 
+const MAX_CALLS_PER_SIMULATION = 10;
+
 const buildCall = (data: DepositData, contractAddress: `0x${string}`) => ({
   target: contractAddress,
   allowFailure: true,
@@ -81,19 +83,34 @@ export const simulateDepositBatch = async (
   }
 
   try {
-    const calls = depositData.map((data) => buildCall(data, contractAddress));
-    const totalValue = calls.reduce((sum, call) => sum + call.value, 0n);
+    const pending: Promise<{ result: unknown }>[] = [];
 
-    const { result } = await publicClient.simulateContract({
-      address: multicallAddress,
-      abi: multicallAbi,
-      functionName: "aggregate3Value",
-      args: [calls],
-      value: totalValue,
-      account,
-    });
+    // We currently use walletconnect rpc to simulate transactions. They have a
+    // limit to payload size of about ~12 deposits. We are forced to breakup these
+    // transactions into batches of 10 to get around this limitation. There doesn't
+    // seem to be any rate limit restriction.
+    for (let i = 0; i < depositData.length; i += MAX_CALLS_PER_SIMULATION) {
+      const calls = depositData
+        .slice(i, i + MAX_CALLS_PER_SIMULATION)
+        .map((data) => buildCall(data, contractAddress));
 
-    const outcomes = result as AggregateResult;
+      pending.push(
+        publicClient.simulateContract({
+          address: multicallAddress,
+          abi: multicallAbi,
+          functionName: "aggregate3Value",
+          args: [calls],
+          value: calls.reduce((sum, call) => sum + call.value, 0n),
+          account,
+        }),
+      );
+    }
+
+    const results = await Promise.all(pending);
+
+    const outcomes = results.flatMap(
+      ({ result }) => result as unknown as AggregateResult[number][],
+    );
 
     const validDeposits: DepositData[] = [];
     const rejectedDeposits: RejectedDeposit[] = [];

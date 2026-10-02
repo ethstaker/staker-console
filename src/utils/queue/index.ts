@@ -1,4 +1,5 @@
 import { GetPublicClientReturnType } from "@wagmi/core";
+import BigNumber from "bignumber.js";
 
 import { Queue } from "@/types";
 
@@ -55,4 +56,55 @@ export const getQueue = async (
   const fee = getRequiredFee(appendedFeeSize);
 
   return { length, fee };
+};
+
+export const FEE_WARNING_THRESHOLD = BigInt(100 * 10 ** 9);
+export const FEE_CONFIRM_THRESHOLD = BigInt(0.01 * 10 ** 18);
+
+export type FeeLevel = "normal" | "high" | "excessive";
+
+export const getFeeLevel = (fee: bigint): FeeLevel => {
+  if (fee > FEE_CONFIRM_THRESHOLD) {
+    return "excessive";
+  }
+  if (fee >= FEE_WARNING_THRESHOLD) {
+    return "high";
+  }
+  return "normal";
+};
+
+const GWEI = 10n ** 9n;
+
+export const formatFee = (fee: bigint): string => {
+  if (fee < GWEI) {
+    return `${fee.toString()} wei`;
+  }
+  if (fee <= 100000n * GWEI) {
+    return `${new BigNumber(fee.toString())
+      .dividedBy(10 ** 9)
+      .decimalPlaces(3)
+      .toString()} Gwei`;
+  }
+  return `${new BigNumber(fee.toString()).dividedBy(10 ** 18).toFixed(6)} ETH`;
+};
+
+export const DEFAULT_MAX_FEE = GWEI;
+
+export const MIN_FEE_INPUT = "0.000000000000000001";
+export const FEE_INPUT_ERROR = `Enter at least 1 wei (${MIN_FEE_INPUT} ETH).`;
+
+export const parseFeeInput = (value: string): bigint | null => {
+  try {
+    const amount = new BigNumber(value.trim());
+
+    if (!amount.isFinite() || (amount.decimalPlaces() ?? 0) > 18) {
+      return null;
+    }
+
+    const wei = amount.shiftedBy(18);
+
+    return wei.isGreaterThanOrEqualTo(1) ? BigInt(wei.toFixed(0)) : null;
+  } catch {
+    return null;
+  }
 };

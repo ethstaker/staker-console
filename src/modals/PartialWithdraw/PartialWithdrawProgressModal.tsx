@@ -117,7 +117,7 @@ export const PartialWithdrawProgressModal: React.FC<
               : `${completedCount} validators withdrawn successfully. ${
                   transactions.length - completedCount
                 } requests encountered errors and were skipped.`
-            : "Withdrawing funds from your validators. Each request requires a separate transaction."}
+            : "Withdrawing funds from your validators."}
         </Typography>
 
         <Box

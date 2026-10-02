@@ -2,7 +2,6 @@ export * from "./beaconchain";
 export * from "./consolidate";
 export * from "./deposit";
 export * from "./multicall";
-export * from "./sendMany";
 export * from "./topup";
 export * from "./transaction";
 export * from "./validator";
@@ -12,3 +11,5 @@ export type Queue = {
   length: bigint;
   fee: bigint;
 };
+
+export type QueueType = "consolidation" | "withdrawal";

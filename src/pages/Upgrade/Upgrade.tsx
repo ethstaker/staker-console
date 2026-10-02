@@ -23,6 +23,7 @@ const Upgrade: React.FC = () => {
   const [selectedPubkeys, setSelectedPubkeys] = useState<string[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [preferSync, setPreferSync] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [committedTransactions, setCommittedTransactions] = useState<
     ConsolidateEntry[]
@@ -55,6 +56,7 @@ const Upgrade: React.FC = () => {
 
   const handleCloseProgressModal = () => {
     setShowProgressModal(false);
+    setPreferSync(false);
   };
 
   const selectedValidatorObjects = selectedPubkeys
@@ -127,10 +129,11 @@ const Upgrade: React.FC = () => {
         onConfirm={handleConfirmUpgrade}
       />
 
-      {allowSendMany && selectedValidatorObjects.length > 1 ? (
+      {allowSendMany && !preferSync && selectedValidatorObjects.length > 1 ? (
         <UpgradeBatchProgressModal
           open={showProgressModal}
           onClose={handleCloseProgressModal}
+          onUseSync={() => setPreferSync(true)}
           validators={selectedValidatorObjects}
         />
       ) : isOffline ? (

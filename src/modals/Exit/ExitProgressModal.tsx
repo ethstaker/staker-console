@@ -120,7 +120,7 @@ export const ExitProgressModal: React.FC<ExitProgressModalProps> = ({
               : `${completedCount} validators exited successfully. ${
                   transactions.length - completedCount
                 } requests encountered errors and were skipped.`
-            : "Exiting your validators. Each request requires a separate transaction."}
+            : "Exiting your validators."}
         </Typography>
 
         <Box

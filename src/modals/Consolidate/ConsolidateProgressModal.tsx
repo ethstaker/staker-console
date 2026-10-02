@@ -116,7 +116,7 @@ export const ConsolidateProgressModal: React.FC<
               : `${completedCount} validators consolidated successfully. ${
                   transactions.length - completedCount
                 } requests encountered errors and were skipped.`
-            : "Consolidating your validators. Each request requires a separate transaction."}
+            : "Consolidating your validators."}
         </Typography>
 
         <Box

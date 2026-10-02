@@ -8,6 +8,8 @@ import { Validator } from "./validator";
 
 export enum TransactionState {
   pending = "pending",
+  verifying = "verifying",
+  review = "review",
   signing = "signing",
   confirming = "confirming",
   success = "success",

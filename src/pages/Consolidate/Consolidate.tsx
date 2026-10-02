@@ -36,6 +36,7 @@ const Consolidate: React.FC = () => {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [preferSync, setPreferSync] = useState(false);
   const [showTargetSelectionModal, setShowTargetSelectionModal] =
     useState(false);
   const [committedTransactions, setCommittedTransactions] = useState<
@@ -156,6 +157,7 @@ const Consolidate: React.FC = () => {
 
   const handleCloseProgressModal = () => {
     setShowProgressModal(false);
+    setPreferSync(false);
   };
 
   const consolidateEntries: ConsolidateEntry[] = useMemo(() => {
@@ -335,10 +337,11 @@ const Consolidate: React.FC = () => {
             onConfirm={handleConfirmConsolidate}
           />
 
-          {allowSendMany && sourceValidators.length > 1 ? (
+          {allowSendMany && !preferSync && sourceValidators.length > 1 ? (
             <ConsolidateBatchProgressModal
               open={showProgressModal}
               onClose={handleCloseProgressModal}
+              onUseSync={() => setPreferSync(true)}
               targetValidator={targetValidator}
               sourceValidators={sourceValidators}
             />

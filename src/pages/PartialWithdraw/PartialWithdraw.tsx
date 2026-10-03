@@ -24,6 +24,7 @@ const PartialWithdraw: React.FC = () => {
   const [entries, setEntries] = useState<WithdrawalEntry[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [preferSync, setPreferSync] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [committedTransactions, setCommittedTransactions] = useState<
     WithdrawalEntry[]
@@ -64,6 +65,7 @@ const PartialWithdraw: React.FC = () => {
 
   const handleCloseProgressModal = () => {
     setShowProgressModal(false);
+    setPreferSync(false);
   };
 
   const formatBalance = (balance: number) => {
@@ -135,10 +137,11 @@ const PartialWithdraw: React.FC = () => {
         onConfirm={handleConfirmWithdraw}
       />
 
-      {allowSendMany && entries.length > 1 ? (
+      {allowSendMany && !preferSync && entries.length > 1 ? (
         <PartialWithdrawBatchProgressModal
           open={showProgressModal}
           onClose={handleCloseProgressModal}
+          onUseSync={() => setPreferSync(true)}
           withdrawals={entries}
         />
       ) : isOffline ? (

@@ -10,6 +10,8 @@ export const TransactionStatus = ({ state }: { state: TransactionState }) => {
         return "success";
       case TransactionState.error:
         return "error";
+      case TransactionState.verifying:
+      case TransactionState.review:
       case TransactionState.signing:
       case TransactionState.confirming:
         return "warning";
@@ -24,6 +26,10 @@ export const TransactionStatus = ({ state }: { state: TransactionState }) => {
     switch (state) {
       case TransactionState.pending:
         return "Pending";
+      case TransactionState.verifying:
+        return "Verifying";
+      case TransactionState.review:
+        return "Review";
       case TransactionState.signing:
         return "Signing";
       case TransactionState.confirming:

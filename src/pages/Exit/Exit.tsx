@@ -23,6 +23,7 @@ const Exit: React.FC = () => {
   const [selectedValidators, setSelectedValidators] = useState<string[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [preferSync, setPreferSync] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [committedTransactions, setCommittedTransactions] = useState<
     WithdrawalEntry[]
@@ -39,8 +40,8 @@ const Exit: React.FC = () => {
 
   const selectedValidatorData = useMemo(() => {
     return selectedValidators
-      .map(
-        (pubkey) => validatorData.validators.find((v) => v.pubkey === pubkey)!,
+      .map((pubkey) =>
+        validatorData.validators.find((v) => v.pubkey === pubkey)!,
       )
       .filter(Boolean);
   }, [selectedValidators, validatorData]);
@@ -64,6 +65,7 @@ const Exit: React.FC = () => {
 
   const handleCloseProgressModal = () => {
     setShowProgressModal(false);
+    setPreferSync(false);
   };
 
   const formatBalance = (balance: number) => {
@@ -144,10 +146,11 @@ const Exit: React.FC = () => {
         onConfirm={handleConfirmExit}
       />
 
-      {allowSendMany && selectedValidatorData.length > 1 ? (
+      {allowSendMany && !preferSync && selectedValidatorData.length > 1 ? (
         <ExitBatchProgressModal
           open={showProgressModal}
           onClose={handleCloseProgressModal}
+          onUseSync={() => setPreferSync(true)}
           validators={selectedValidatorData}
         />
       ) : isOffline ? (

@@ -19,16 +19,21 @@ export const ValidatorsWrapper = ({
   children,
   searchedValidator,
 }: ValidatorsWrapperParams) => {
-  const { data: validatorData, isLoading, error } = useValidators();
+  const {
+    data: validatorData,
+    isLoading,
+    isLoadingError,
+    error,
+  } = useValidators();
 
-  return error ? (
+  return isLoadingError ? (
     <Alert
       className="my-6 rounded-xl bg-error/50 text-white"
       severity="error"
       variant="filled"
       icon={<Warning />}
     >
-      {error.message}
+      {error?.message}
     </Alert>
   ) : isLoading ? (
     <div className="mt-4 flex justify-center">

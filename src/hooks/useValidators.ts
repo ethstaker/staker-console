@@ -51,7 +51,7 @@ export const useValidators = () => {
   });
 
   const validatorData: ValidatorsData = useMemo(() => {
-    const rawData = response.isError || !response.data ? [] : response.data;
+    const rawData = response.data ?? [];
 
     const validators = rawData
       .map((item) =>
@@ -105,7 +105,7 @@ export const useValidators = () => {
       totalEffective,
       totalWithdrawalAmount,
     };
-  }, [response.data, response.isError, currentAddress]);
+  }, [response.data, currentAddress]);
 
   return {
     ...response,

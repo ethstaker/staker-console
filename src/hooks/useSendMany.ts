@@ -10,8 +10,6 @@ export const useSendMany = () => {
   const atomicStatus =
     capabilities && chainId ? capabilities[chainId]?.atomic?.status : undefined;
 
-  console.log(capabilities);
-
   return {
     allowSendMany: atomicStatus === "ready" || atomicStatus === "supported",
     atomicStatus,

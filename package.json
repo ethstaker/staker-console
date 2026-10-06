@@ -81,7 +81,8 @@
     "ws": "^8.21.0",
     "uuid": "^14.0.0",
     "unrs-resolver": "1.11.1",
-    "@wagmi/connectors": "6.2.0"
+    "@wagmi/connectors": "6.2.0",
+    "decode-uri-component": "^0.5.0"
   },
   "allowScripts": {
     "keccak@3.0.4": true,

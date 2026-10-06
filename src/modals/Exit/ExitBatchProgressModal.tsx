@@ -1,10 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useValidators } from "@/hooks/useValidators";
 import { BatchProgressModal } from "@/modals/BatchProgressModal";
-import { AnalyticsFlow, Validator } from "@/types";
+import { Validator } from "@/types";
 import { generateWithdrawalCalldata } from "@/utils/withdraw";
 
 interface ExitBatchProgressModalProps {
@@ -20,7 +19,6 @@ export const ExitBatchProgressModal: React.FC<ExitBatchProgressModalProps> = ({
   onUseSync,
   validators,
 }) => {
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const { refetch: refetchValidators } = useValidators();
   const navigate = useNavigate();
 
@@ -37,7 +35,6 @@ export const ExitBatchProgressModal: React.FC<ExitBatchProgressModalProps> = ({
       label="exit request"
       onClose={onClose}
       onFinish={() => {
-        setAnalyticsCompleteAction(AnalyticsFlow.exit);
         refetchValidators();
         navigate("/dashboard");
       }}

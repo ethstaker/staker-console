@@ -1,10 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useValidators } from "@/hooks/useValidators";
 import { BatchProgressModal } from "@/modals/BatchProgressModal";
-import { AnalyticsFlow, WithdrawalEntry } from "@/types";
+import { WithdrawalEntry } from "@/types";
 import { generateWithdrawalCalldata } from "@/utils/withdraw";
 
 interface PartialWithdrawBatchProgressModalProps {
@@ -17,7 +16,6 @@ interface PartialWithdrawBatchProgressModalProps {
 export const PartialWithdrawBatchProgressModal: React.FC<
   PartialWithdrawBatchProgressModalProps
 > = ({ open, onClose, onUseSync, withdrawals }) => {
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const { refetch: refetchValidators } = useValidators();
   const navigate = useNavigate();
 
@@ -37,7 +35,6 @@ export const PartialWithdrawBatchProgressModal: React.FC<
       label="withdrawal request"
       onClose={onClose}
       onFinish={() => {
-        setAnalyticsCompleteAction(AnalyticsFlow.partialWithdraw);
         refetchValidators();
         navigate("/dashboard");
       }}

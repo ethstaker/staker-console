@@ -1,9 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { BatchProgressModal } from "@/modals/BatchProgressModal";
-import { AnalyticsFlow, Validator } from "@/types";
+import { Validator } from "@/types";
 import { generateConsolidateCalldata } from "@/utils/consolidate";
 
 interface UpgradeBatchProgressModalProps {
@@ -16,7 +15,6 @@ interface UpgradeBatchProgressModalProps {
 export const UpgradeBatchProgressModal: React.FC<
   UpgradeBatchProgressModalProps
 > = ({ open, onClose, onUseSync, validators }) => {
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const navigate = useNavigate();
 
   return (
@@ -32,7 +30,6 @@ export const UpgradeBatchProgressModal: React.FC<
       label="upgrade request"
       onClose={onClose}
       onFinish={() => {
-        setAnalyticsCompleteAction(AnalyticsFlow.upgrade);
         navigate("/dashboard");
       }}
       onUseSync={onUseSync}

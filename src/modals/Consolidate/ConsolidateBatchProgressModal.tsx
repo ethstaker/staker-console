@@ -1,9 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { BatchProgressModal } from "@/modals/BatchProgressModal";
-import { AnalyticsFlow, Validator } from "@/types";
+import { Validator } from "@/types";
 import { generateConsolidateCalldata } from "@/utils/consolidate";
 
 interface ConsolidateBatchProgressModalProps {
@@ -17,7 +16,6 @@ interface ConsolidateBatchProgressModalProps {
 export const ConsolidateBatchProgressModal: React.FC<
   ConsolidateBatchProgressModalProps
 > = ({ open, onClose, onUseSync, targetValidator, sourceValidators }) => {
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const navigate = useNavigate();
 
   return (
@@ -36,7 +34,6 @@ export const ConsolidateBatchProgressModal: React.FC<
       label="consolidation request"
       onClose={onClose}
       onFinish={() => {
-        setAnalyticsCompleteAction(AnalyticsFlow.consolidate);
         navigate("/dashboard");
       }}
       onUseSync={onUseSync}

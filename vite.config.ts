@@ -3,7 +3,6 @@ import * as path from 'path';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, loadEnv } from 'vite';
-import { createHtmlPlugin } from 'vite-plugin-html';
 import { execSync } from 'child_process'
 
 let commitHash = 'unknown'
@@ -30,13 +29,6 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      createHtmlPlugin({
-        inject: {
-          data: {
-            VITE_GA_MEASUREMENT_ID: env.VITE_GA_MEASUREMENT_ID || '',
-          }
-        },
-      }),
       react(),
       tailwindcss(),
     ],

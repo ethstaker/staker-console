@@ -20,10 +20,9 @@ import {
   CustomModalTableCell,
 } from "@/components/CustomTable";
 import { WarningAlert } from "@/components/WarningAlert";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConnectedBalance } from "@/hooks/useConnectedBalance";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { AnalyticsFlow, DepositData } from "@/types";
+import { DepositData } from "@/types";
 
 interface DepositConfirmModalProps {
   open: boolean;
@@ -44,16 +43,11 @@ export const DepositConfirmModal: React.FC<DepositConfirmModalProps> = ({
     isLoading: isBalanceLoading,
     isError: isBalanceError,
   } = useConnectedBalance();
-  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
 
   useEffect(() => {
-    if (open) {
-      setAnalyticsStartAction(AnalyticsFlow.deposit);
-    }
-
     setAcknowledged(false);
-  }, [open, setAnalyticsStartAction]);
+  }, [open]);
 
   const totalAmount = useMemo(() => {
     return selectedValidators.reduce((total, validator) => {

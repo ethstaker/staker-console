@@ -7,7 +7,6 @@ import { useConnections } from "wagmi";
 import { DepositSimulationStatus } from "@/components/DepositSimulationStatus";
 import { OfflineProgress } from "@/components/OfflineProgress";
 import { WarningAlert } from "@/components/WarningAlert";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useDeposit } from "@/hooks/useDeposit";
 import {
   RejectedDeposit,
@@ -19,7 +18,7 @@ import {
   ProgressModalConfirming,
   ProgressModalSuccess,
 } from "@/modals/ProgressModal";
-import { AnalyticsFlow, DepositData } from "@/types";
+import { DepositData } from "@/types";
 
 interface DepositProgressModalProps {
   depositData: DepositData[];
@@ -52,7 +51,6 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
     simulateDeposits,
     simulationError,
   } = useDepositSimulation();
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const navigate = useNavigate();
 
   const [downloadUrl, setDownloadUrl] = useState<string>("");
@@ -128,7 +126,6 @@ export const DepositProgressModal: React.FC<DepositProgressModalProps> = ({
 
   const closeModal = () => {
     if (isConfirmed || offlineSuccess) {
-      setAnalyticsCompleteAction(AnalyticsFlow.deposit);
       navigate("/dashboard");
     }
 

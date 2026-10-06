@@ -6,7 +6,6 @@ import { WagmiProvider, type Config } from "wagmi";
 
 import { wagmiAdapter, projectId, networks } from "@/config/appkit";
 
-import { GoogleAnalyticsProvider } from "./GoogleAnalyticsContext";
 import { SelectedValidatorProvider } from "./SelectedValidatorContext";
 
 const queryClient = new QueryClient();
@@ -38,9 +37,7 @@ function ContextProvider({ children }: { children: ReactNode }) {
       reconnectOnMount={false}
     >
       <QueryClientProvider client={queryClient}>
-        <GoogleAnalyticsProvider>
-          <SelectedValidatorProvider>{children}</SelectedValidatorProvider>
-        </GoogleAnalyticsProvider>
+        <SelectedValidatorProvider>{children}</SelectedValidatorProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

@@ -10,16 +10,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { OfflineProgress } from "@/components/OfflineProgress";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConsolidate } from "@/hooks/useConsolidate";
 import { useValidators } from "@/hooks/useValidators";
 import { useWithdraw } from "@/hooks/useWithdraw";
-import { AnalyticsFlow, ConsolidateEntry, WithdrawalEntry } from "@/types";
+import { ConsolidateEntry, WithdrawalEntry } from "@/types";
 
 import { BaseDialog } from "../BaseDialog";
 
 interface OfflineMultiModalProps<T> {
-  flow: AnalyticsFlow;
   open: boolean;
   onClose: () => void;
   title: string;
@@ -28,14 +26,12 @@ interface OfflineMultiModalProps<T> {
 }
 
 export const OfflineMultiModal = <T,>({
-  flow,
   open,
   onClose,
   title,
   transactions,
   type,
 }: OfflineMultiModalProps<T>) => {
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
   const navigate = useNavigate();
   const {
     offlineData: offlineConsolidate,
@@ -135,9 +131,6 @@ export const OfflineMultiModal = <T,>({
   const onFinish = () => {
     setCurrentIndex(0);
     setTransactionComplete(false);
-
-    setAnalyticsCompleteAction(flow);
-
     refetchValidators();
     navigate("/dashboard");
   };

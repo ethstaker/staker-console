@@ -13,7 +13,6 @@ import Footer from "@/sections/Footer";
 import Header from "@/sections/Header";
 import Sidebar from "@/sections/Sidebar";
 
-import { GoogleAnalytics } from "./components/GoogleAnalytics";
 import { ScrollToTop } from "./components/ScrollToTop/ScrollToTop";
 
 const protectedRoutes = [
@@ -102,7 +101,6 @@ function App() {
       <CssBaseline />
       <ContextProvider>
         <BrowserRouter>
-          <GoogleAnalytics />
           <AppContent />
         </BrowserRouter>
       </ContextProvider>

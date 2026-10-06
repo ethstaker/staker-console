@@ -18,7 +18,6 @@ import {
 } from "@/modals/Consolidate";
 import { OfflineMultiModal } from "@/modals/OfflineMulti";
 import { TargetValidatorSelectionModal } from "@/modals/TargetValidatorSelectionModal";
-import { AnalyticsFlow } from "@/types";
 import { ConsolidateEntry } from "@/types/consolidate";
 import { Credentials, Validator, ValidatorStatus } from "@/types/validator";
 
@@ -344,7 +343,6 @@ const Consolidate: React.FC = () => {
             />
           ) : isOffline ? (
             <OfflineMultiModal
-              flow={AnalyticsFlow.consolidate}
               open={showProgressModal}
               onClose={handleCloseProgressModal}
               title="Offline Consolidate"

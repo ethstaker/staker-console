@@ -20,10 +20,9 @@ import {
 } from "@/components/CustomTable";
 import { QueueWarning } from "@/components/QueueWarning";
 import { WarningAlert } from "@/components/WarningAlert";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConnectedBalance } from "@/hooks/useConnectedBalance";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { AnalyticsFlow, Validator, WithdrawalEntry } from "@/types";
+import { Validator, WithdrawalEntry } from "@/types";
 
 interface PartialWithdrawConfirmModalProps {
   open: boolean;
@@ -49,17 +48,14 @@ export const PartialWithdrawConfirmModal: React.FC<
     isLoading: isBalanceLoading,
     isError: isBalanceError,
   } = useConnectedBalance();
-  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [acknowledged, setAcknowledged] = useState(false);
   const [feeAcknowledged, setFeeAcknowledged] = useState(true);
 
   useEffect(() => {
     if (!open) {
       setAcknowledged(false);
-    } else {
-      setAnalyticsStartAction(AnalyticsFlow.partialWithdraw);
     }
-  }, [open, setAnalyticsStartAction]);
+  }, [open]);
 
   const formatBalance = (balance: number | string) => {
     return new BigNumber(balance).toFixed(4);

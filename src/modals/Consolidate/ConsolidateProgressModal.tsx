@@ -5,12 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { ExplorerLink } from "@/components/ExplorerLink";
 import { TransactionDetail } from "@/components/TransactionDetail";
 import { TransactionStatus } from "@/components/TransactionState";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConsolidate } from "@/hooks/useConsolidate";
 import { useTransactions } from "@/hooks/useTransactions";
 import { ProgressModal } from "@/modals/ProgressModal";
 import {
-  AnalyticsFlow,
   ConsolidateEntry,
   ConsolidateTransaction,
   TransactionState,
@@ -27,7 +25,6 @@ export const ConsolidateProgressModal: React.FC<
 > = ({ open, onClose, consolidateEntries }) => {
   const { contractAddress, sendConsolidate, reset, ...consolidateProps } =
     useConsolidate();
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
 
   const navigate = useNavigate();
 
@@ -89,7 +86,6 @@ export const ConsolidateProgressModal: React.FC<
 
   const handleModalClose = () => {
     if (allCompleted) {
-      setAnalyticsCompleteAction(AnalyticsFlow.consolidate);
       navigate("/dashboard");
     } else {
       onClose();

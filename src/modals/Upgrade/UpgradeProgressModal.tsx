@@ -5,16 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { ExplorerLink } from "@/components/ExplorerLink/ExplorerLink";
 import { TransactionDetail } from "@/components/TransactionDetail";
 import { TransactionStatus } from "@/components/TransactionState";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useConsolidate } from "@/hooks/useConsolidate";
 import { useTransactions } from "@/hooks/useTransactions";
 import { ProgressModal } from "@/modals/ProgressModal";
-import {
-  AnalyticsFlow,
-  ConsolidateEntry,
-  Transaction,
-  TransactionState,
-} from "@/types";
+import { ConsolidateEntry, Transaction, TransactionState } from "@/types";
 
 interface UpgradeProgressModalProps {
   open: boolean;
@@ -29,7 +23,6 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
 }) => {
   const { contractAddress, sendConsolidate, reset, ...consolidateProps } =
     useConsolidate();
-  const { setAnalyticsCompleteAction } = useGoogleAnalytics();
 
   const navigate = useNavigate();
 
@@ -91,7 +84,6 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
 
   const handleModalClose = () => {
     if (allCompleted) {
-      setAnalyticsCompleteAction(AnalyticsFlow.upgrade);
       navigate("/dashboard");
     } else {
       onClose();

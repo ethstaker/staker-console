@@ -20,10 +20,9 @@ import {
 } from "@/components/CustomTable";
 import { QueueWarning } from "@/components/QueueWarning";
 import { WarningAlert } from "@/components/WarningAlert";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { useValidators } from "@/hooks/useValidators";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { AnalyticsFlow, Validator } from "@/types";
+import { Validator } from "@/types";
 
 interface ConsolidateConfirmModalProps {
   open: boolean;
@@ -48,7 +47,6 @@ export const ConsolidateConfirmModal: React.FC<
   newBalance,
   onConfirm,
 }) => {
-  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const { data: validatorData } = useValidators();
   const [acknowledged, setAcknowledged] = useState<boolean>(false);
   const [ackExternal, setAckExternal] = useState<boolean>(false);
@@ -58,10 +56,8 @@ export const ConsolidateConfirmModal: React.FC<
     if (!open) {
       setAcknowledged(false);
       setAckExternal(false);
-    } else {
-      setAnalyticsStartAction(AnalyticsFlow.consolidate);
     }
-  }, [open, setAnalyticsStartAction]);
+  }, [open]);
 
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);

@@ -20,9 +20,8 @@ import {
 import { Input } from "@/components/Input";
 import { QueueWarning } from "@/components/QueueWarning";
 import { WarningAlert } from "@/components/WarningAlert";
-import { useGoogleAnalytics } from "@/context/GoogleAnalyticsContext";
 import { BaseDialog } from "@/modals/BaseDialog";
-import { AnalyticsFlow, Validator } from "@/types";
+import { Validator } from "@/types";
 
 interface ExitConfirmModalProps {
   open: boolean;
@@ -43,17 +42,14 @@ export const ExitConfirmModal: React.FC<ExitConfirmModalProps> = ({
 }) => {
   const { address } = useAccount();
   const { data: walletBalanceResponse } = useBalance({ address });
-  const { setAnalyticsStartAction } = useGoogleAnalytics();
   const [confirmationText, setConfirmationText] = useState("");
   const [feeAcknowledged, setFeeAcknowledged] = useState(true);
 
   useEffect(() => {
     if (!open) {
       setConfirmationText("");
-    } else {
-      setAnalyticsStartAction(AnalyticsFlow.exit);
     }
-  }, [open, setAnalyticsStartAction]);
+  }, [open]);
 
   const formatBalance = (balance: number) => {
     return balance.toFixed(4);

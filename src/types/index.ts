@@ -1,7 +1,6 @@
 export * from "./beaconchain";
 export * from "./consolidate";
 export * from "./deposit";
-export * from "./googleAnalytics";
 export * from "./multicall";
 export * from "./sendMany";
 export * from "./topup";

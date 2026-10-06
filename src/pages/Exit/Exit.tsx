@@ -13,7 +13,7 @@ import {
   ExitProgressModal,
 } from "@/modals/Exit";
 import { OfflineMultiModal } from "@/modals/OfflineMulti";
-import { AnalyticsFlow, WithdrawalEntry } from "@/types";
+import { WithdrawalEntry } from "@/types";
 
 const Exit: React.FC = () => {
   const { address } = useAccount();
@@ -39,8 +39,8 @@ const Exit: React.FC = () => {
 
   const selectedValidatorData = useMemo(() => {
     return selectedValidators
-      .map(
-        (pubkey) => validatorData.validators.find((v) => v.pubkey === pubkey)!,
+      .map((pubkey) =>
+        validatorData.validators.find((v) => v.pubkey === pubkey)!,
       )
       .filter(Boolean);
   }, [selectedValidators, validatorData]);
@@ -152,7 +152,6 @@ const Exit: React.FC = () => {
         />
       ) : isOffline ? (
         <OfflineMultiModal
-          flow={AnalyticsFlow.exit}
           open={showProgressModal}
           onClose={handleCloseProgressModal}
           title="Offline Exit"

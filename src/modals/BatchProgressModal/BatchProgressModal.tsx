@@ -164,6 +164,7 @@ export const BatchProgressModal: React.FC<BatchProgressModalProps> = ({
     <ProgressModal
       open={open}
       onClose={handleModalClose}
+      showFinish={setupStep === null}
       success={allCompleted}
       title={
         setupStep !== null
@@ -204,7 +205,6 @@ export const BatchProgressModal: React.FC<BatchProgressModalProps> = ({
         {setupStep === "fee" && (
           <BatchFeeSetup
             label={label}
-            needsUpgrade={atomicStatus === "ready"}
             onBegin={startBatch}
             queueType={queueType}
             requestCount={requestCount}
@@ -270,7 +270,7 @@ export const BatchProgressModal: React.FC<BatchProgressModalProps> = ({
 
                     <Box className="flex items-center gap-2">
                       <Typography className="text-sm text-white">
-                        {bundle.requests.length} validator
+                        {bundle.requests.length} request
                         {bundle.requests.length === 1 ? "" : "s"}
                       </Typography>
                       {bundle.fee !== undefined &&

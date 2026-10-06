@@ -16,7 +16,6 @@ import { FeeInput } from "./FeeInput";
 
 interface BatchFeeSetupProps {
   label: string;
-  needsUpgrade: boolean;
   onBegin: (maxFee: bigint) => void;
   queueType: QueueType;
   requestCount: number;
@@ -24,7 +23,6 @@ interface BatchFeeSetupProps {
 
 export const BatchFeeSetup = ({
   label,
-  needsUpgrade,
   onBegin,
   queueType,
   requestCount,
@@ -48,7 +46,7 @@ export const BatchFeeSetup = ({
 
   return (
     <Box className="mb-6 flex flex-col gap-4">
-      <Box className="flex flex-col gap-3 rounded border border-primary/40 bg-primary/10 p-6">
+      <Box className="flex flex-col gap-3">
         <Typography variant="h6" className="text-white">
           Set a maximum queue fee
         </Typography>
@@ -67,7 +65,7 @@ export const BatchFeeSetup = ({
         </Typography>
 
         <Typography className="text-sm text-secondaryText">
-          Current fee:{" "}
+          Current queue fee:{" "}
           <span className="font-mono text-white">
             {currentFee === undefined
               ? "Checking…"
@@ -100,13 +98,6 @@ export const BatchFeeSetup = ({
           )}
         </Box>
       </Box>
-
-      {needsUpgrade && (
-        <Typography className="text-sm leading-[1.6] text-secondaryText">
-          Your wallet will ask you to approve the account upgrade together with
-          the first transaction.
-        </Typography>
-      )}
 
       <Box className="flex gap-4">
         <Button disabled={maxFee === null} onClick={begin} variant="contained">

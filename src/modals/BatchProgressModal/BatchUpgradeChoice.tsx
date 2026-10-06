@@ -13,7 +13,7 @@ export const BatchUpgradeChoice = ({
 }: BatchUpgradeChoiceProps) => {
   return (
     <Box className="mb-6 flex flex-col gap-4">
-      <Box className="flex flex-col gap-3 rounded border border-primary/40 bg-primary/10 p-6">
+      <Box className="flex flex-col gap-3">
         <Typography variant="h6" className="text-white">
           Upgrade your account to batch transactions
         </Typography>

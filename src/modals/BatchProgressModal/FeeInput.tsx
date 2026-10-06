@@ -20,7 +20,7 @@ export const FeeInput = ({
 }: FeeInputProps) => (
   <CustomTextField
     autoFocus={autoFocus}
-    className="w-[240px]"
+    className="w-full max-w-[300px]"
     error={isInvalid}
     onChange={(e) => onChange(e.target.value)}
     onKeyDown={(e) => {

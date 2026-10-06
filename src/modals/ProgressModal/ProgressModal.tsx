@@ -15,6 +15,7 @@ interface ProgressModalProps {
   success: boolean;
   open: boolean;
   onClose: () => void;
+  showFinish?: boolean;
   title: string;
 }
 
@@ -23,6 +24,7 @@ export const ProgressModal: React.FC<ProgressModalProps> = ({
   success,
   open,
   onClose,
+  showFinish = true,
   title,
 }) => {
   return (
@@ -43,11 +45,13 @@ export const ProgressModal: React.FC<ProgressModalProps> = ({
 
           {children}
 
-          <Box className="mt-4 flex justify-center border-t border-t-[#404040] px-6 py-4">
-            <Button variant="contained" onClick={onClose} disabled={!success}>
-              Finish
-            </Button>
-          </Box>
+          {showFinish && (
+            <Box className="mt-4 flex justify-center border-t border-t-[#404040] px-6 py-4">
+              <Button variant="contained" onClick={onClose} disabled={!success}>
+                Finish
+              </Button>
+            </Box>
+          )}
         </Box>
       </DialogContent>
     </BaseDialog>

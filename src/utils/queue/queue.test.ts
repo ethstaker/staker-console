@@ -1,13 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-import { getQueue } from "./index";
+import {
+  FEE_CONFIRM_THRESHOLD,
+  FEE_WARNING_THRESHOLD,
+  formatFee,
+  getFeeLevel,
+  getQueue,
+  parseFeeInput,
+} from "./index";
 
 describe("getQueue", () => {
-  const mockAddress = "0x1234567890123456789012345678901234567890" as `0x${string}`;
+  const mockAddress =
+    "0x1234567890123456789012345678901234567890" as `0x${string}`;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   describe("successful queue retrieval", () => {
@@ -41,12 +49,22 @@ describe("getQueue", () => {
         getStorageAt: vi.fn().mockResolvedValue("0xa"),
       };
 
-      const resultWithAddition3 = await getQueue(mockAddress, mockPublicClient as any, 3);
-      const resultWithAddition10 = await getQueue(mockAddress, mockPublicClient as any, 10);
+      const resultWithAddition3 = await getQueue(
+        mockAddress,
+        mockPublicClient as any,
+        3,
+      );
+      const resultWithAddition10 = await getQueue(
+        mockAddress,
+        mockPublicClient as any,
+        10,
+      );
 
       expect(resultWithAddition3?.fee).toBe(2n);
       expect(resultWithAddition10?.fee).toBe(3n);
-      expect(resultWithAddition10?.fee).toBeGreaterThan(resultWithAddition3?.fee!);
+      expect(resultWithAddition10?.fee).toBeGreaterThan(
+        resultWithAddition3?.fee!,
+      );
     });
 
     it("handles large queue lengths with the exact fee", async () => {
@@ -136,7 +154,11 @@ describe("getQueue", () => {
       };
 
       const result1 = await getQueue(mockAddress, mockPublicClient1 as any, 0);
-      const result10 = await getQueue(mockAddress, mockPublicClient10 as any, 0);
+      const result10 = await getQueue(
+        mockAddress,
+        mockPublicClient10 as any,
+        0,
+      );
 
       expect(result10?.fee).toBeGreaterThan(result1?.fee!);
     });
@@ -157,7 +179,8 @@ describe("getQueue", () => {
     });
 
     it("uses the provided contract address", async () => {
-      const customAddress = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd" as `0x${string}`;
+      const customAddress =
+        "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd" as `0x${string}`;
       const mockPublicClient = {
         getStorageAt: vi.fn().mockResolvedValue("0x0"),
       };
@@ -207,5 +230,61 @@ describe("getQueue", () => {
       expect(result3?.fee).not.toBe(result10?.fee);
       expect(result10?.fee).toBeGreaterThan(result3?.fee!);
     });
+  });
+});
+
+describe("getFeeLevel", () => {
+  it("is normal below the warning threshold", () => {
+    expect(getFeeLevel(1n)).toBe("normal");
+    expect(getFeeLevel(FEE_WARNING_THRESHOLD - 1n)).toBe("normal");
+  });
+
+  it("is high from the warning threshold up to the confirm threshold", () => {
+    expect(getFeeLevel(FEE_WARNING_THRESHOLD)).toBe("high");
+    expect(getFeeLevel(FEE_CONFIRM_THRESHOLD)).toBe("high");
+  });
+
+  it("is excessive above the confirm threshold", () => {
+    expect(getFeeLevel(FEE_CONFIRM_THRESHOLD + 1n)).toBe("excessive");
+  });
+});
+
+describe("formatFee", () => {
+  it("formats fees below 1 Gwei in wei", () => {
+    expect(formatFee(1n)).toBe("1 wei");
+    expect(formatFee(999_999_999n)).toBe("999999999 wei");
+  });
+
+  it("formats small fees in Gwei", () => {
+    expect(formatFee(10n ** 9n)).toBe("1 Gwei");
+    expect(formatFee(150n * 10n ** 9n)).toBe("150 Gwei");
+  });
+
+  it("keeps fractional Gwei instead of rounding it away", () => {
+    expect(formatFee(1_500_000_000n)).toBe("1.5 Gwei");
+    expect(formatFee(1_234_567_890n)).toBe("1.235 Gwei");
+  });
+
+  it("switches to ETH above 100,000 Gwei", () => {
+    expect(formatFee(100000n * 10n ** 9n)).toBe("100000 Gwei");
+    expect(formatFee(100000n * 10n ** 9n + 1n)).toBe("0.000100 ETH");
+  });
+
+  it("formats large fees in ETH", () => {
+    expect(formatFee(2n * 10n ** 16n)).toBe("0.020000 ETH");
+  });
+});
+
+describe("parseFeeInput", () => {
+  it("parses an ETH amount into wei", () => {
+    expect(parseFeeInput("0.01")).toBe(10n ** 16n);
+    expect(parseFeeInput(" 1 ")).toBe(10n ** 18n);
+  });
+
+  it("rejects empty, zero, negative and malformed input", () => {
+    expect(parseFeeInput("")).toBeNull();
+    expect(parseFeeInput("0")).toBeNull();
+    expect(parseFeeInput("-1")).toBeNull();
+    expect(parseFeeInput("abc")).toBeNull();
   });
 });

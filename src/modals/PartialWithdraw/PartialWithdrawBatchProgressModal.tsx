@@ -1,106 +1,47 @@
-import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useChainId } from "wagmi";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useSendMany } from "@/hooks/useSendMany";
-import {
-  ProgressModal,
-  ProgressModalSigning,
-  ProgressModalConfirming,
-  ProgressModalSuccess,
-} from "@/modals/ProgressModal";
-import { SendManyCall, WithdrawalEntry } from "@/types";
-import {
-  generateWithdrawalCalldata,
-  getContractAddress,
-} from "@/utils/withdraw";
+import { useValidators } from "@/hooks/useValidators";
+import { BatchProgressModal } from "@/modals/BatchProgressModal";
+import { WithdrawalEntry } from "@/types";
+import { generateWithdrawalCalldata } from "@/utils/withdraw";
 
 interface PartialWithdrawBatchProgressModalProps {
   open: boolean;
   onClose: () => void;
+  onUseSync: () => void;
   withdrawals: WithdrawalEntry[];
 }
 
 export const PartialWithdrawBatchProgressModal: React.FC<
   PartialWithdrawBatchProgressModalProps
-> = ({ open, onClose, withdrawals }) => {
-  const chainId = useChainId();
-  const {
-    confirmError,
-    isConfirmed,
-    isPendingSignature,
-    reset,
-    sendError,
-    sendMany,
-    txHash,
-  } = useSendMany();
-
-  const executeTransaction = () => {
-    const address = getContractAddress(chainId);
-    const calls: SendManyCall[] = withdrawals.map((w) => {
-      return {
-        to: address,
-        value: BigInt(0),
-        data: generateWithdrawalCalldata(
-          w.validator.pubkey,
-          w.withdrawalAmount,
-        ),
-      };
-    });
-    sendMany(calls);
-  };
-
-  useEffect(() => {
-    if (open) {
-      executeTransaction();
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- must submit exactly once when the modal opens; executeTransaction is re-created every render, so listing it would re-send the transaction on every render
-  }, [open]);
-
-  const retry = () => {
-    reset();
-    executeTransaction();
-  };
+> = ({ open, onClose, onUseSync, withdrawals }) => {
+  const { refetch: refetchValidators } = useValidators();
+  const navigate = useNavigate();
 
   return (
-    <ProgressModal
-      open={open}
+    <BatchProgressModal
+      buildRequests={() =>
+        withdrawals.map((w) => ({
+          pubkey: w.validator.pubkey,
+          data: generateWithdrawalCalldata(
+            w.validator.pubkey,
+            w.withdrawalAmount,
+          ),
+        }))
+      }
+      contractType="Withdrawal"
+      description="Once each transaction is confirmed its withdrawal requests will be processed by the Beacon Chain and then added to the withdrawal queue."
+      label="withdrawal request"
       onClose={onClose}
-      success={isConfirmed}
-      title="Submitting Withdrawal Transactions"
-    >
-      <Box className="px-6">
-        <Typography
-          className="mb-6 text-secondaryText"
-          sx={{ lineHeight: 1.6 }}
-        >
-          Once the transaction is submitted and confirmed your withdrawal
-          request will be processed by the Beacon Chain and then added to the
-          exit queue.
-        </Typography>
-
-        <Box className="mb-4">
-          <ProgressModalSigning
-            isSigning={isPendingSignature}
-            onRetry={retry}
-            signingError={sendError}
-            signedMessage="Successfully signed and submitted the transaction"
-            signingMessage="Signing transaction with your wallet"
-          />
-
-          <ProgressModalConfirming
-            confirmationError={confirmError}
-            confirmedMessage="Transaction confirmed"
-            confirmingMessage="Waiting for transaction confirmation"
-            isWaiting={isPendingSignature || !!sendError}
-            onRetry={retry}
-            success={isConfirmed}
-            waitingMessage="Waiting for signature"
-          />
-
-          {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
-        </Box>
-      </Box>
-    </ProgressModal>
+      onFinish={() => {
+        refetchValidators();
+        navigate("/dashboard");
+      }}
+      onUseSync={onUseSync}
+      open={open}
+      queueType="withdrawal"
+      title="Withdrawal"
+    />
   );
 };

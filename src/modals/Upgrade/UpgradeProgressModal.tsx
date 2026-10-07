@@ -110,7 +110,7 @@ export const UpgradeProgressModal: React.FC<UpgradeProgressModalProps> = ({
               : `${completedCount} validators upgraded successfully. ${
                   transactions.length - completedCount
                 } validators encountered errors and were skipped.`
-            : "Upgrading your validators to compounding credentials. Each validator requires a separate transaction."}
+            : "Upgrading your validators to compounding credentials."}
         </Typography>
 
         <Box

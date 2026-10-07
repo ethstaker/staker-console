@@ -1,104 +1,47 @@
-import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useChainId } from "wagmi";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useSendMany } from "@/hooks/useSendMany";
-import {
-  ProgressModal,
-  ProgressModalSigning,
-  ProgressModalConfirming,
-  ProgressModalSuccess,
-} from "@/modals/ProgressModal";
-import { SendManyCall, Validator } from "@/types";
-import {
-  generateWithdrawalCalldata,
-  getContractAddress,
-} from "@/utils/withdraw";
+import { useValidators } from "@/hooks/useValidators";
+import { BatchProgressModal } from "@/modals/BatchProgressModal";
+import { Validator } from "@/types";
+import { generateWithdrawalCalldata } from "@/utils/withdraw";
 
 interface ExitBatchProgressModalProps {
   open: boolean;
   onClose: () => void;
+  onUseSync: () => void;
   validators: Validator[];
 }
 
 export const ExitBatchProgressModal: React.FC<ExitBatchProgressModalProps> = ({
   open,
   onClose,
+  onUseSync,
   validators,
 }) => {
-  const chainId = useChainId();
-  const {
-    confirmError,
-    isConfirmed,
-    isPendingSignature,
-    reset,
-    sendError,
-    sendMany,
-    txHash,
-  } = useSendMany();
-
-  const executeTransaction = () => {
-    const address = getContractAddress(chainId);
-    const calls: SendManyCall[] = validators.map((validator) => {
-      return {
-        to: address,
-        value: BigInt(0),
-        data: generateWithdrawalCalldata(validator.pubkey, "0"),
-      };
-    });
-    sendMany(calls);
-  };
-
-  useEffect(() => {
-    if (open) {
-      executeTransaction();
-    }
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- must submit exactly once when the modal opens; executeTransaction is re-created every render, so listing it would re-send the transaction on every render
-  }, [open]);
-
-  const retry = () => {
-    reset();
-    executeTransaction();
-  };
+  const { refetch: refetchValidators } = useValidators();
+  const navigate = useNavigate();
 
   return (
-    <ProgressModal
-      open={open}
+    <BatchProgressModal
+      buildRequests={() =>
+        validators.map((validator) => ({
+          pubkey: validator.pubkey,
+          data: generateWithdrawalCalldata(validator.pubkey, "0"),
+        }))
+      }
+      contractType="Withdrawal"
+      description="Once each transaction is confirmed its exit requests will be processed by the Beacon Chain and then added to the exit queue."
+      label="exit request"
       onClose={onClose}
-      success={isConfirmed}
-      title="Submitting Exit Transactions"
-    >
-      <Box className="px-6">
-        <Typography
-          className="mb-6 text-secondaryText"
-          sx={{ lineHeight: 1.6 }}
-        >
-          Once the transaction is submitted and confirmed your exit request will
-          be processed by the Beacon Chain and then added to the exit queue.
-        </Typography>
-
-        <Box className="mb-4">
-          <ProgressModalSigning
-            isSigning={isPendingSignature}
-            onRetry={retry}
-            signingError={sendError}
-            signedMessage="Successfully signed and submitted the transaction"
-            signingMessage="Signing transaction with your wallet"
-          />
-
-          <ProgressModalConfirming
-            confirmationError={confirmError}
-            confirmedMessage="Transaction confirmed"
-            confirmingMessage="Waiting for transaction confirmation"
-            isWaiting={isPendingSignature || !!sendError}
-            onRetry={retry}
-            success={isConfirmed}
-            waitingMessage="Waiting for signature"
-          />
-
-          {isConfirmed && txHash && <ProgressModalSuccess hash={txHash} />}
-        </Box>
-      </Box>
-    </ProgressModal>
+      onFinish={() => {
+        refetchValidators();
+        navigate("/dashboard");
+      }}
+      onUseSync={onUseSync}
+      open={open}
+      queueType="withdrawal"
+      title="Exit"
+    />
   );
 };

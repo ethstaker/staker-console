@@ -224,7 +224,7 @@ export const TargetValidatorSelectionModal: React.FC<
             <Box>
               <Typography
                 variant="h6"
-                className="mb-3 font-semibold text-white"
+                className="mt-6 mb-3 font-semibold text-white"
               >
                 {searchedValidator
                   ? `Discovered Validator ${searchedValidator.index}`

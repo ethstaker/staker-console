@@ -1,73 +1,18 @@
-import { useMemo, useState } from "react";
-import {
-  useChainId,
-  useWaitForTransactionReceipt,
-  useCapabilities,
-  useSendCalls,
-  useAccount,
-} from "wagmi";
-
-import { SendManyCall } from "@/types";
+import { useAccount, useCapabilities, useChainId } from "wagmi";
 
 export const useSendMany = () => {
-  const { address } = useAccount();
-  const { data: capabilities } = useCapabilities();
-  const chainId = useChainId();
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
-
-  const allowSendMany = useMemo(() => {
-    // Disable Send Many until Hoodi support and thorough testing
-    /*
-    if (capabilities && chainId) {
-      return capabilities[chainId]?.atomic?.status === "ready";
-    }
-    */
-    return false;
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- deps kept for the block commented out above, which is restored when Send Many is enabled for Hoodi
-  }, [capabilities, chainId]);
-
-  const {
-    sendCallsAsync,
-    isPending: isPendingSignature,
-    error: sendError,
-    isSuccess: isSendSuccess,
-    reset: resetWriteContract,
-  } = useSendCalls();
-
-  const {
-    isPending: isPendingConfirmation,
-    isSuccess: isConfirmed,
-    error: confirmError,
-  } = useWaitForTransactionReceipt({
-    hash: txHash,
+  const { connector } = useAccount();
+  const { data: capabilities, refetch: refetchCapabilities } = useCapabilities({
+    scopeKey: connector?.uid,
   });
+  const chainId = useChainId();
 
-  const sendMany = async (calls: SendManyCall[]) => {
-    setTxHash(undefined);
-
-    const response = await sendCallsAsync({
-      account: address,
-      calls,
-    });
-
-    console.log(response);
-  };
-
-  const reset = () => {
-    setTxHash(undefined);
-    resetWriteContract();
-  };
+  const atomicStatus =
+    capabilities && chainId ? capabilities[chainId]?.atomic?.status : undefined;
 
   return {
-    allowSendMany,
-    confirmError,
-    sendError,
-    isConfirmed,
-    isPendingConfirmation: isPendingConfirmation && !!txHash,
-    isPendingSignature: isPendingSignature || !txHash,
-    isSendSuccess,
-    reset,
-    sendMany,
-    txHash,
+    allowSendMany: atomicStatus === "ready" || atomicStatus === "supported",
+    atomicStatus,
+    refetchCapabilities,
   };
 };

@@ -73,6 +73,15 @@ export const getFeeLevel = (fee: bigint): FeeLevel => {
   return "normal";
 };
 
+const FEE_LEVEL_RANK: { [key in FeeLevel]: number } = {
+  normal: 0,
+  high: 1,
+  excessive: 2,
+};
+
+export const isFeeLevelHigher = (level: FeeLevel, than: FeeLevel): boolean =>
+  FEE_LEVEL_RANK[level] > FEE_LEVEL_RANK[than];
+
 const GWEI = 10n ** 9n;
 
 export const formatFee = (fee: bigint): string => {

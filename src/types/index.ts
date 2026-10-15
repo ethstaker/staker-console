@@ -1,4 +1,5 @@
 export * from "./beaconchain";
+export * from "./builder";
 export * from "./consolidate";
 export * from "./deposit";
 export * from "./multicall";

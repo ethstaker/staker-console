@@ -68,18 +68,6 @@ export default defineConfig(({ command, mode }) => {
           changeOrigin: true,
           secure: true,
         },
-        '/api/plataberget': {
-          target: env.VITE_PLATABERGET_API_URL,
-          changeOrigin: true,
-          secure: true,
-          rewrite: (path) => path.replace(/^\/api\/plataberget/, '/api'),
-        },
-        '/rpc/plataberget': {
-          target: 'https://rpc.plataberget.ethpandaops.io',
-          changeOrigin: true,
-          secure: true,
-          rewrite: () => '/',
-        },
       },
     },
     test: {

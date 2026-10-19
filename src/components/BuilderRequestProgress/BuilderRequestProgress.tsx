@@ -41,8 +41,8 @@ export const BuilderRequestProgress = ({
       <Box className="px-6">
         <QueueFeeWarning fee={request.feeReview} type={feeLabel}>
           <Typography className="mt-3 text-sm text-white">
-            The fee increased since you confirmed. Signing now pays the fee
-            shown above.
+            The current fee is above normal. Signing now pays the fee shown
+            above.
           </Typography>
           <Box className="mt-4 flex justify-end gap-2">
             {feeReviewActions}

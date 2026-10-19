@@ -575,8 +575,8 @@ export const BuilderDepositModal: React.FC<BuilderDepositModalProps> = ({
                               type="builder deposit"
                             >
                               <Typography className="mt-3 text-sm text-white">
-                                The fee increased since you confirmed. Signing
-                                now pays the fee shown above.
+                                The current fee is above normal. Signing now
+                                pays the fee shown above.
                               </Typography>
                               <Box className="mt-4 flex gap-4">
                                 <Button

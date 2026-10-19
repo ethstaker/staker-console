@@ -1,11 +1,19 @@
 import { Check, PriorityHigh } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
-import { SendCallsErrorType, type WriteContractErrorType } from "@wagmi/core";
+import {
+  SendCallsErrorType,
+  type SendTransactionErrorType,
+  type WriteContractErrorType,
+} from "@wagmi/core";
 
 interface SigningProps {
   isSigning: boolean;
   onRetry: () => void;
-  signingError: WriteContractErrorType | SendCallsErrorType | null;
+  signingError:
+    | WriteContractErrorType
+    | SendCallsErrorType
+    | SendTransactionErrorType
+    | null;
   signedMessage: string;
   signingMessage: string;
 }

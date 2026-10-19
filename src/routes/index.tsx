@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAccount } from "wagmi";
 
+import Builders from "@/pages/Builders";
 import Consolidate from "@/pages/Consolidate";
 import Dashboard from "@/pages/Dashboard";
 import Deposit from "@/pages/Deposit";
@@ -24,6 +25,7 @@ function Pages() {
           <Route path="/consolidate" element={<Consolidate />} />
           <Route path="/withdraw" element={<PartialWithdraw />} />
           <Route path="/exit" element={<Exit />} />
+          <Route path="/builders" element={<Builders />} />
         </>
       )}
       <Route path="version" element={<Version />} />

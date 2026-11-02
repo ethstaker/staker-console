@@ -7,6 +7,7 @@ import {
   getFeeLevel,
   getQueue,
   parseFeeInput,
+  isFeeLevelHigher,
 } from "./index";
 
 describe("getQueue", () => {
@@ -286,5 +287,19 @@ describe("parseFeeInput", () => {
     expect(parseFeeInput("0")).toBeNull();
     expect(parseFeeInput("-1")).toBeNull();
     expect(parseFeeInput("abc")).toBeNull();
+  });
+});
+
+describe("isFeeLevelHigher", () => {
+  it("orders normal, high and excessive", () => {
+    expect(isFeeLevelHigher("high", "normal")).toBe(true);
+    expect(isFeeLevelHigher("excessive", "high")).toBe(true);
+    expect(isFeeLevelHigher("excessive", "normal")).toBe(true);
+  });
+
+  it("is false for the same or a lower level", () => {
+    expect(isFeeLevelHigher("high", "high")).toBe(false);
+    expect(isFeeLevelHigher("normal", "high")).toBe(false);
+    expect(isFeeLevelHigher("high", "excessive")).toBe(false);
   });
 });

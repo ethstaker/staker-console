@@ -28,6 +28,8 @@ export const DepositMessageContainer = new ContainerType({
 
 export const DOMAIN_DEPOSIT = Uint8Array.from([0x03, 0x00, 0x00, 0x00]);
 
+export const DOMAIN_BUILDER_DEPOSIT = Uint8Array.from([0x0e, 0x00, 0x00, 0x00]);
+
 export const ZERO_BYTES32 = new Uint8Array(32);
 
 export const ForkDataContainer = new ContainerType({

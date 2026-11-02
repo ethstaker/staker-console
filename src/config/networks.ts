@@ -13,10 +13,14 @@ type NetworkConfig = {
   withdrawContractAddress: `0x${string}`;
   multicallContractAddress: `0x${string}`;
   consolidateContractAddress: `0x${string}`;
+  builderDepositContractAddress: `0x${string}`;
+  builderExitContractAddress: `0x${string}`;
   addressExplorer: string;
   transactionExplorer: string;
   beaconExplorer: string;
   pendingActionExplorer: string;
+  builderExplorer?: string;
+  gloasForkEpoch?: number;
 };
 
 const networks: Record<Network, NetworkConfig> = {
@@ -29,6 +33,8 @@ const networks: Record<Network, NetworkConfig> = {
     withdrawContractAddress: "0x00000961Ef480Eb55e80D19ad83579A64c007002",
     multicallContractAddress: "0xcA11bde05977b3631167028862bE2a173976CA11",
     consolidateContractAddress: "0x0000BBdDc7CE488642fb579F8B00f3a590007251",
+    builderDepositContractAddress: "0x0000bFF46984e3725691FA540a8C7589300D8282",
+    builderExitContractAddress: "0x000064D678505ad48F8cCb093BC65613800E8282",
     addressExplorer: "https://etherscan.io/address/",
     transactionExplorer: "https://etherscan.io/tx/",
     beaconExplorer: "https://beaconcha.in/validator/",
@@ -43,10 +49,14 @@ const networks: Record<Network, NetworkConfig> = {
     withdrawContractAddress: "0x00000961Ef480Eb55e80D19ad83579A64c007002",
     multicallContractAddress: "0xcA11bde05977b3631167028862bE2a173976CA11",
     consolidateContractAddress: "0x0000BBdDc7CE488642fb579F8B00f3a590007251",
+    builderDepositContractAddress: "0x0000bFF46984e3725691FA540a8C7589300D8282",
+    builderExitContractAddress: "0x000064D678505ad48F8cCb093BC65613800E8282",
     addressExplorer: "https://hoodi.etherscan.io/address/",
     transactionExplorer: "https://hoodi.etherscan.io/tx/",
     beaconExplorer: "https://dora.hoodi.ethpandaops.io/validator/",
     pendingActionExplorer: "https://pectrified.com/hoodi/validator/",
+    builderExplorer: "https://dora.hoodi.ethpandaops.io/builder/",
+    gloasForkEpoch: 132352,
   },
 };
 
@@ -89,6 +99,16 @@ export const getConsolidateContractAddress = (
 ): `0x${string}` =>
   getNetworkProperty(chainId, "consolidateContractAddress") as `0x${string}`;
 
+export const getBuilderDepositContractAddress = (
+  chainId: number | undefined,
+): `0x${string}` =>
+  getNetworkProperty(chainId, "builderDepositContractAddress") as `0x${string}`;
+
+export const getBuilderExitContractAddress = (
+  chainId: number | undefined,
+): `0x${string}` =>
+  getNetworkProperty(chainId, "builderExitContractAddress") as `0x${string}`;
+
 export const getAddressExplorer = (chainId: number | undefined): string =>
   getNetworkProperty(chainId, "addressExplorer");
 
@@ -100,6 +120,14 @@ export const getBeaconExplorer = (chainId: number | undefined): string =>
 
 export const getPendingActionExplorer = (chainId: number | undefined): string =>
   getNetworkProperty(chainId, "pendingActionExplorer");
+
+export const getBuilderExplorer = (
+  chainId: number | undefined,
+): string | undefined => getNetworkProperty(chainId, "builderExplorer");
+
+export const getGloasForkEpoch = (
+  chainId: number | undefined,
+): number | undefined => getNetworkProperty(chainId, "gloasForkEpoch");
 
 export const getSlotsPerEpoch = (chainId: number | undefined): number =>
   (getNetworkProperty(chainId, "slotsPerEpoch") as number | undefined) ?? 32;

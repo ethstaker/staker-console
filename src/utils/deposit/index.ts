@@ -14,6 +14,7 @@ import {
   DepositMessageContainer,
   ForkDataContainer,
   SigningDataContainer,
+  DOMAIN_BUILDER_DEPOSIT,
   DOMAIN_DEPOSIT,
   ZERO_BYTES32,
 } from "@/types";
@@ -22,16 +23,16 @@ import { isUnprefixedHexOfLength } from "@/utils/hex";
 // Domain separation tag for the BLS proof-of-possession ciphersuite
 const BLS_SIGNATURE_DST = "BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_";
 
-export const computeDepositDomain = (forkVersion: Buffer): Buffer => {
+export const computeDepositDomain = (
+  forkVersion: Buffer,
+  domainType: Uint8Array = DOMAIN_DEPOSIT,
+): Buffer => {
   const forkDataRoot = ForkDataContainer.hashTreeRoot({
     currentVersion: forkVersion,
     genesisValidatorsRoot: ZERO_BYTES32,
   });
 
-  return Buffer.concat([
-    DOMAIN_DEPOSIT,
-    Buffer.from(forkDataRoot).subarray(0, 28),
-  ]);
+  return Buffer.concat([domainType, Buffer.from(forkDataRoot).subarray(0, 28)]);
 };
 
 export const computeSigningRoot = (
@@ -41,9 +42,13 @@ export const computeSigningRoot = (
   return Buffer.from(SigningDataContainer.hashTreeRoot({ objectRoot, domain }));
 };
 
-export const verifyDepositSignature = (deposit: DepositData): boolean => {
+export const verifyDepositSignature = (
+  deposit: DepositData,
+  domainType: Uint8Array = DOMAIN_DEPOSIT,
+): boolean => {
   const domain = computeDepositDomain(
     Buffer.from(deposit.fork_version!, "hex"),
+    domainType,
   );
   const signingRoot = computeSigningRoot(
     Buffer.from(deposit.deposit_message_root!, "hex"),
@@ -116,7 +121,88 @@ export const constructDataRoot = (depositData: DepositData): string => {
   return reconstructedDepositDataRoot;
 };
 
-export const verifyDepositFile = (data: DepositData[], chainId: number) => {
+interface DepositFileRules {
+  depositType: "validator" | "builder";
+  domainType: Uint8Array;
+  verifyCredentialsAndAmount: (deposit: DepositData) => void;
+}
+
+const verifyValidatorCredentialsAndAmount = (deposit: DepositData) => {
+  const withdrawalPrefix = deposit.withdrawal_credentials.slice(0, 2);
+  const validPrefixes = Object.values(Credentials).map((prefix) =>
+    prefix.replace("0x", ""),
+  );
+  if (!validPrefixes.includes(withdrawalPrefix)) {
+    throw new Error(
+      `Unsupported withdrawal_credentials prefix 0x${withdrawalPrefix} for ${deposit.pubkey}. Expected one of ${validPrefixes
+        .map((prefix) => `0x${prefix}`)
+        .join(", ")}`,
+    );
+  }
+
+  if (deposit.amount < 1 * 10 ** 9) {
+    throw new Error(
+      `amount must be at least ${1 * 10 ** 9} but got ${deposit.amount}`,
+    );
+  }
+  if (
+    (Credentials.compounding.includes(
+      deposit.withdrawal_credentials.slice(0, 2),
+    ) &&
+      deposit.amount > 2048 * 10 ** 9) ||
+    (!Credentials.compounding.includes(
+      deposit.withdrawal_credentials.slice(0, 2),
+    ) &&
+      deposit.amount > 32 * 10 ** 9)
+  ) {
+    throw new Error(
+      `Deposit amount for ${deposit.pubkey} is greater than the max effective balance`,
+    );
+  }
+};
+
+const verifyBuilderCredentialsAndAmount = (deposit: DepositData) => {
+  const withdrawalPrefix = deposit.withdrawal_credentials.slice(0, 2);
+  if (withdrawalPrefix.toLowerCase() !== "b0") {
+    throw new Error(
+      `Unsupported withdrawal_credentials prefix 0x${withdrawalPrefix} for ${deposit.pubkey}. Builder deposits require the 0xb0 prefix`,
+    );
+  }
+  if (!/^0{22}$/.test(deposit.withdrawal_credentials.slice(2, 24))) {
+    throw new Error(
+      `withdrawal_credentials for ${deposit.pubkey} must be 0xb0 followed by 11 zero bytes and the execution address`,
+    );
+  }
+
+  if (deposit.amount < 1 * 10 ** 9) {
+    throw new Error(
+      `amount must be at least ${1 * 10 ** 9} but got ${deposit.amount}`,
+    );
+  }
+};
+
+export const verifyDepositFile = (data: DepositData[], chainId: number) =>
+  verifyDepositEntries(data, chainId, {
+    depositType: "validator",
+    domainType: DOMAIN_DEPOSIT,
+    verifyCredentialsAndAmount: verifyValidatorCredentialsAndAmount,
+  });
+
+export const verifyBuilderDepositFile = (
+  data: DepositData[],
+  chainId: number,
+) =>
+  verifyDepositEntries(data, chainId, {
+    depositType: "builder",
+    domainType: DOMAIN_BUILDER_DEPOSIT,
+    verifyCredentialsAndAmount: verifyBuilderCredentialsAndAmount,
+  });
+
+const verifyDepositEntries = (
+  data: DepositData[],
+  chainId: number,
+  rules: DepositFileRules,
+) => {
   if (!Array.isArray(data) || data.length === 0) {
     throw new Error("Invalid file format: Expected an array of deposit data");
   }
@@ -254,44 +340,12 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
     const normalizedPubkey = deposit.pubkey.toLowerCase();
     if (seenPubkeys.has(normalizedPubkey)) {
       throw new Error(
-        `Duplicate pubkey detected: ${deposit.pubkey}. Each validator pubkey must appear only once in the deposit file`,
+        `Duplicate pubkey detected: ${deposit.pubkey}. Each ${rules.depositType} pubkey must appear only once in the deposit file`,
       );
     }
     seenPubkeys.add(normalizedPubkey);
 
-    // Verify credential prefix
-    const withdrawalPrefix = deposit.withdrawal_credentials.slice(0, 2);
-    const validPrefixes = Object.values(Credentials).map((prefix) =>
-      prefix.replace("0x", ""),
-    );
-    if (!validPrefixes.includes(withdrawalPrefix)) {
-      throw new Error(
-        `Unsupported withdrawal_credentials prefix 0x${withdrawalPrefix} for ${deposit.pubkey}. Expected one of ${validPrefixes
-          .map((prefix) => `0x${prefix}`)
-          .join(", ")}`,
-      );
-    }
-
-    // Verify amount
-    if (deposit.amount < 1 * 10 ** 9) {
-      throw new Error(
-        `amount must be at least ${1 * 10 ** 9} but got ${deposit.amount}`,
-      );
-    }
-    if (
-      (Credentials.compounding.includes(
-        deposit.withdrawal_credentials.slice(0, 2),
-      ) &&
-        deposit.amount > 2048 * 10 ** 9) ||
-      (!Credentials.compounding.includes(
-        deposit.withdrawal_credentials.slice(0, 2),
-      ) &&
-        deposit.amount > 32 * 10 ** 9)
-    ) {
-      throw new Error(
-        `Deposit amount for ${deposit.pubkey} is greater than the max effective balance`,
-      );
-    }
+    rules.verifyCredentialsAndAmount(deposit);
 
     // Verify roots
     const reconstructedDepositMessageRoot = constructMessageRoot(deposit);
@@ -326,7 +380,7 @@ export const verifyDepositFile = (data: DepositData[], chainId: number) => {
     }
 
     // Verify BLS signature
-    if (!verifyDepositSignature(deposit)) {
+    if (!verifyDepositSignature(deposit, rules.domainType)) {
       throw new Error(
         `Invalid BLS signature for pubkey ${deposit.pubkey}. The signature does not match the deposit message and this deposit would be rejected on execution, permanently burning the deposited funds. Do not use this file.`,
       );

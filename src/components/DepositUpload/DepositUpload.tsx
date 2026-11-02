@@ -9,11 +9,17 @@ import { DepositData } from "@/types";
 import { ChainMismatchError, verifyDepositFile } from "@/utils/deposit";
 
 interface DepositUploadProps {
+  description?: string;
   onFileUploaded: (data: DepositData[]) => void;
+  title?: string;
+  verifyFile?: (data: DepositData[], chainId: number) => void;
 }
 
 export const DepositUpload: React.FC<DepositUploadProps> = ({
+  description = "Upload your deposit data JSON file. If you need help generating this, please view our step-by-step guide.",
   onFileUploaded,
+  title = "Upload Deposit Data",
+  verifyFile = verifyDepositFile,
 }) => {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
@@ -40,7 +46,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
       const text = await file.text();
       const data = JSON.parse(text) as DepositData[];
 
-      verifyDepositFile(data, chainId);
+      verifyFile(data, chainId);
 
       onFileUploaded(data);
     } catch (err) {
@@ -137,7 +143,7 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
       )}
       <Box
         className={clsx(
-          "flex h-[300px] w-[600px] cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed",
+          "flex h-[300px] w-full max-w-[600px] cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed",
           isDragOver ? "border-primary" : "border-divider",
           isDragOver ? "bg-primary/5" : "bg-transparent",
         )}
@@ -155,11 +161,10 @@ export const DepositUpload: React.FC<DepositUploadProps> = ({
       >
         <Upload className="mb-4 text-5xl text-primary" />
         <Typography variant="h6" className="mb-2 font-semibold text-white">
-          Upload Deposit Data
+          {title}
         </Typography>
         <Typography className="mb-4 max-w-[400px] text-center text-secondaryText">
-          Upload your deposit data JSON file. If you need help generating this,
-          please view our step-by-step guide.
+          {description}
         </Typography>
 
         <Box className="flex justify-center">

@@ -119,10 +119,14 @@ const networks: Record<Network, NetworkConfig> = {
     withdrawContractAddress: "0x...", // Withdrawal contract address
     multicallContractAddress: "0x...", // Multicall3 contract address
     consolidateContractAddress: "0x...", // Consolidation contract address
+    builderDepositContractAddress: "0x...", // EIP-8282 builder deposit contract address
+    builderExitContractAddress: "0x...", // EIP-8282 builder exit contract address
     addressExplorer: "https://...", // Block explorer for addresses
     transactionExplorer: "https://...", // Block explorer for transactions
     beaconExplorer: "https://...", // Beacon chain explorer
     pendingActionExplorer: "http://...", // Explorer that shows pending deposits, withdrawals, etc...
+    builderExplorer: "https://...", // Optional explorer for builders
+    gloasForkEpoch: 123456, // Optional Gloas fork epoch; builder features stay hidden until it is reached
   },
 };
 ```

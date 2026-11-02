@@ -2,14 +2,13 @@ import { Typography } from "@mui/material";
 import React from "react";
 
 import { WarningAlert } from "@/components/WarningAlert";
-import { QueueType } from "@/types";
 import { formatFee, getFeeLevel } from "@/utils/queue";
 
 interface QueueFeeWarningProps {
   children?: React.ReactNode;
   fee: bigint;
   requestCount?: number;
-  type: QueueType;
+  type: string;
 }
 
 export const QueueFeeWarning = ({

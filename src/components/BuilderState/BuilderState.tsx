@@ -14,6 +14,7 @@ const statusColor: { [key in BuilderStatus]: string } = {
   [BuilderStatus.pending]: "bg-warning text-black",
   [BuilderStatus.active]: "bg-success text-black",
   [BuilderStatus.exited]: "bg-divider text-white",
+  [BuilderStatus.unknown]: "bg-divider text-white",
 };
 
 interface BuilderStateParams {

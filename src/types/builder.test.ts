@@ -76,9 +76,22 @@ describe("parseBuildersResponse", () => {
     );
   });
 
-  it("throws for an unknown status", () => {
-    const data = buildValidResponse();
-    data[0].builder.status = "active_ongoing";
+  it("maps an unrecognised status to unknown without dropping other builders", () => {
+    const [first] = buildValidResponse();
+    const second = buildValidResponse()[0];
+    second.builder.index = "1";
+    second.builder.status = "exiting";
+    const parsed = parseBuildersResponse([first, second]);
+    expect(parsed).toHaveLength(2);
+    expect(parsed[0].builder.status).toBe(BuilderStatus.active);
+    expect(parsed[1].builder.status).toBe(BuilderStatus.unknown);
+  });
+
+  it("throws when the status is not a string", () => {
+    const data = buildValidResponse() as unknown as {
+      builder: Record<string, unknown>;
+    }[];
+    data[0].builder.status = 1;
     expect(() => parseBuildersResponse(data)).toThrow(
       /invalid builder payload/,
     );

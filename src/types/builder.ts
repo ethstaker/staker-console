@@ -6,12 +6,14 @@ export enum BuilderStatus {
   pending = "pending",
   active = "active",
   exited = "exited",
+  unknown = "unknown",
 }
 
 export const BuilderStatusDisplay: { [key in BuilderStatus]: string } = {
   [BuilderStatus.pending]: "Pending",
   [BuilderStatus.active]: "Active",
   [BuilderStatus.exited]: "Exited",
+  [BuilderStatus.unknown]: "Unknown",
 };
 
 export type BuilderPendingWithdrawal = {
@@ -113,7 +115,7 @@ const isBuilderResponse = (value: unknown): value is BuilderResponse => {
 
   return (
     isIntegerString(r.index) &&
-    isBuilderStatus(r.status) &&
+    typeof r.status === "string" &&
     isIntegerString(b.balance) &&
     isIntegerString(b.deposit_epoch) &&
     isHexOfByteLength(b.execution_address, 20) &&
@@ -160,8 +162,12 @@ export const parseBuildersResponse = (data: unknown): BuildersResponse[] => {
       );
     }
 
+    const status = isBuilderStatus(entry.builder.status)
+      ? entry.builder.status
+      : BuilderStatus.unknown;
+
     return {
-      builder: entry.builder,
+      builder: { ...entry.builder, status },
       pending_payments: pendingPayments,
       pending_withdrawals: pendingWithdrawals,
     };

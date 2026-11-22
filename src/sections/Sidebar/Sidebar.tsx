@@ -6,12 +6,15 @@ import {
   SwapHoriz as ConsolidateIcon,
   TrendingDown as WithdrawIcon,
   ExitToApp as ExitIcon,
+  Construction as BuildersIcon,
 } from "@mui/icons-material";
-import { Box, List, ListItem, ListItemButton } from "@mui/material";
+import { Box, Divider, List, ListItem, ListItemButton } from "@mui/material";
 import clsx from "clsx";
-import React from "react";
+import React, { Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
+
+import { useBuilderSupport } from "@/hooks/useBuilderSupport";
 
 const sidebarItems = [
   { name: "Dashboard", icon: DashboardIcon, path: "/dashboard" },
@@ -21,12 +24,19 @@ const sidebarItems = [
   { name: "Consolidate", icon: ConsolidateIcon, path: "/consolidate" },
   { name: "Withdraw", icon: WithdrawIcon, path: "/withdraw" },
   { name: "Exit", icon: ExitIcon, path: "/exit" },
+  {
+    name: "Builders",
+    icon: BuildersIcon,
+    path: "/builders",
+    requiresBuilderSupport: true,
+  },
 ];
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isConnected } = useAccount();
+  const { isSupported: isBuilderSupported } = useBuilderSupport();
 
   return (
     <Box className="flex h-full w-20 flex-col border-r border-divider bg-background">
@@ -50,30 +60,37 @@ const Sidebar: React.FC = () => {
       </Box>
 
       <List className="flex flex-col overflow-y-auto p-1">
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-          const isDashboard = item.path === "/dashboard";
-          const isEnabled = isDashboard || isConnected;
+        {sidebarItems
+          .filter((item) => !item.requiresBuilderSupport || isBuilderSupported)
+          .map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            const isDashboard = item.path === "/dashboard";
+            const isEnabled = isDashboard || isConnected;
 
-          return (
-            <ListItem className="mb-2 p-0" key={item.name}>
-              <ListItemButton
-                className={clsx(
-                  "flex min-h-14 flex-col items-center justify-center gap-2 px-2 py-4",
-                  isActive ? "text-primary" : "text-secondaryText",
+            return (
+              <Fragment key={item.name}>
+                {item.requiresBuilderSupport && (
+                  <Divider className="mx-2 mb-3 mt-1 border-b-2 border-secondaryText/40" />
                 )}
-                onClick={() => navigate(item.path)}
-                disabled={!isEnabled}
-              >
-                <Icon className="text-lg" />
-                <Box className="text-center text-2xs" component="span">
-                  {item.name}
-                </Box>
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+                <ListItem className="mb-2 p-0">
+                  <ListItemButton
+                    className={clsx(
+                      "flex min-h-14 flex-col items-center justify-center gap-2 px-2 py-4",
+                      isActive ? "text-primary" : "text-secondaryText",
+                    )}
+                    onClick={() => navigate(item.path)}
+                    disabled={!isEnabled}
+                  >
+                    <Icon className="text-lg" />
+                    <Box className="text-center text-2xs" component="span">
+                      {item.name}
+                    </Box>
+                  </ListItemButton>
+                </ListItem>
+              </Fragment>
+            );
+          })}
       </List>
     </Box>
   );
